@@ -1,0 +1,75 @@
+allprojects {
+    repositories {
+        mavenCentral()                     // main maven repo
+        jcenter()                          // JDA and some other stuff
+        maven { url 'https://dl.bintray.com/napster/SqlSauce' }
+        mavenLocal()                       // useful for developing
+        maven { url "https://jitpack.io" } // build projects directly from github
+    }
+
+    apply plugin: 'idea'
+    group = 'com.fredboat.quarterdeck'
+}
+
+subprojects {
+    buildscript {
+        ext {
+            //@formatter:off
+
+            //plugin versions
+            gradleGitVersion        = '1.4.21'          //do not upgrade to 1.4.20, it fails builds randomly
+            springBootVersion       = '2.0.0.RELEASE'
+            propDepsVersion         = '0.0.9.RELEASE'
+
+            //@formatter:on
+        }
+        repositories {
+            maven { url "https://plugins.gradle.org/m2/" }
+            maven { url 'http://repo.spring.io/plugins-release' }
+            mavenCentral()
+        }
+        dependencies {
+            classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:${gradleGitVersion}"
+            classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+            classpath "io.spring.gradle:propdeps-plugin:${propDepsVersion}"
+        }
+    }
+    apply plugin: 'java'
+
+    sourceCompatibility = 9
+    targetCompatibility = 9
+
+    compileJava.dependsOn 'clean'
+    compileJava.options.encoding = 'UTF-8'
+    compileJava.options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    ext {
+        //@formatter:off
+        fredBoatRootVersion         = '0be2804964d55d2b93480d0ef6e5ce75fb01412c'
+        springBootVersion           = "${springBootVersion}"
+        //@formatter:on
+    }
+}
+
+version = '1.0'
+ext {
+    moduleName = 'Quarterdeck'
+}
+
+import org.gradle.api.tasks.wrapper.Wrapper.DistributionType
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.6'
+    distributionType = DistributionType.ALL
+}
+
+//create a simple version file that we will be reading to create appropriate docker tags
+void versionTxt() {
+    new File("$projectDir/VERSION.txt").text = "$rootProject.version\n"
+}
+
+versionTxt()

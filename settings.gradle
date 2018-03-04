@@ -1,0 +1,4 @@
+rootProject.name = 'Quarterdeck'
+include ':Backend'
+
+project(':Backend').projectDir = "$rootDir/Backend" as File

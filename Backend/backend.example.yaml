@@ -1,0 +1,16 @@
+spring:
+  http:
+    converters:
+      preferred-json-mapper: gson # dont touch this
+fredboat:
+  db:
+    main:
+      # jdbc url of your main database
+      jdbcUrl: ""
+    cache:
+      # jdbc url of your cache database
+      jdbcUrl: ""
+  security:
+    admins:
+      - name: "fredbotto"     # you can change this but remember to adjust the backend config in the fredboat.yaml
+        pass: ""              # <- dont leave this blank, dont set an easy pass
