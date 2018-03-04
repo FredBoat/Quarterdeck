@@ -25,7 +25,6 @@
 
 package com.fredboat.quarterdeck.backend.rest;
 
-import com.fredboat.quarterdeck.backend.Application;
 import fredboat.db.entity.main.Prefix;
 import fredboat.db.repositories.api.PrefixRepo;
 import fredboat.db.repositories.impl.rest.RestPrefixRepo;
@@ -41,7 +40,7 @@ import javax.annotation.Nullable;
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + Application.API_VERSION + RestPrefixRepo.PATH)
+@RequestMapping("/" + EntityController.VERSION_PATH + RestPrefixRepo.PATH)
 public class PrefixController extends EntityController<GuildBotComposite, Prefix> implements PrefixRepo {
 
     protected final PrefixRepo prefixRepo;

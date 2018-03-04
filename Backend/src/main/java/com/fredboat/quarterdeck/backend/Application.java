@@ -51,8 +51,6 @@ import org.springframework.context.annotation.ComponentScan;
 })
 public class Application {
 
-    public static final String API_VERSION = "v1/";
-
     public static void main(String[] args) {
         System.setProperty("spring.config.name", "backend");
         SpringApplication.run(Application.class, args);

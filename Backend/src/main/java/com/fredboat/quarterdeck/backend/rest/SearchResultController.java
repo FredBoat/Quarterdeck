@@ -25,11 +25,14 @@
 
 package com.fredboat.quarterdeck.backend.rest;
 
-import com.fredboat.quarterdeck.backend.Application;
 import fredboat.db.entity.cache.SearchResult;
 import fredboat.db.repositories.api.SearchResultRepo;
 import fredboat.db.repositories.impl.rest.RestSearchResultRepo;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Nullable;
 
@@ -37,7 +40,7 @@ import javax.annotation.Nullable;
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + Application.API_VERSION + RestSearchResultRepo.PATH)
+@RequestMapping("/" + EntityController.VERSION_PATH + RestSearchResultRepo.PATH)
 public class SearchResultController extends EntityController<SearchResult.SearchResultId, SearchResult>
         implements SearchResultRepo {
 
@@ -52,6 +55,6 @@ public class SearchResultController extends EntityController<SearchResult.Search
     @PostMapping("/getmaxaged")
     @Override
     public SearchResult getMaxAged(@RequestBody SearchResult.SearchResultId id, @RequestParam("millis") long maxAgeMillis) {
-        return searchResultRepo.getMaxAged(id, maxAgeMillis);
+        return this.searchResultRepo.getMaxAged(id, maxAgeMillis);
     }
 }

@@ -25,7 +25,6 @@
 
 package com.fredboat.quarterdeck.backend.rest;
 
-import com.fredboat.quarterdeck.backend.Application;
 import fredboat.db.entity.main.BlacklistEntry;
 import fredboat.db.repositories.api.BlacklistRepo;
 import fredboat.db.repositories.impl.rest.RestBlacklistRepo;
@@ -39,7 +38,7 @@ import java.util.List;
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + Application.API_VERSION + RestBlacklistRepo.PATH)
+@RequestMapping("/" + EntityController.VERSION_PATH + RestBlacklistRepo.PATH)
 public class BlacklistController extends EntityController<Long, BlacklistEntry> implements BlacklistRepo {
 
     protected final BlacklistRepo blacklistRepo;

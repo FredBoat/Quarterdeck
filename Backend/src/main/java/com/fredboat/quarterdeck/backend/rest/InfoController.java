@@ -25,20 +25,27 @@
 
 package com.fredboat.quarterdeck.backend.rest;
 
-import fredboat.db.entity.main.GuildPermissions;
-import fredboat.db.repositories.api.GuildPermsRepo;
-import fredboat.db.repositories.impl.rest.RestGuildPermsRepo;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 04.03.18.
  */
 @RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + RestGuildPermsRepo.PATH)
-public class GuildPermsController extends EntityController<String, GuildPermissions> implements GuildPermsRepo {
+@RequestMapping("/info")
+public class InfoController {
 
-    public GuildPermsController(GuildPermsRepo repo) {
-        super(repo);
+    @GetMapping("/version")
+    public Object getVersion() {
+        return new Version();
+    }
+
+    private static class Version {
+        private int number = EntityController.API_VERSION;
+
+        public int getNumber() {
+            return this.number;
+        }
     }
 }

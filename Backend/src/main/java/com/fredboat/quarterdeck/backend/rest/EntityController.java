@@ -44,6 +44,9 @@ import java.io.Serializable;
  */
 public abstract class EntityController<I extends Serializable, E extends SaucedEntity<I, E>> implements Repo<I, E> {
 
+    public static final int API_VERSION = 0;
+    public static final String VERSION_PATH = "v" + API_VERSION + "/";
+
     protected final Repo<I, E> repo;
 
     public EntityController(Repo<I, E> repo) {
