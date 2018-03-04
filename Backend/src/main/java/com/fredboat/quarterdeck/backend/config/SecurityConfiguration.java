@@ -39,7 +39,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
  */
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -49,9 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth, AppConfig.Security security) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth, AppConfiguration.Security security) throws Exception {
         InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuth = auth.inMemoryAuthentication();
-        for (AppConfig.Security.Admin admin : security.getAdmins()) {
+        for (AppConfiguration.Security.Admin admin : security.getAdmins()) {
             if (admin.getPass().isEmpty()) {
                 throw new RuntimeException("Admin " + admin.getName() + " configured with empty pass.");
             }

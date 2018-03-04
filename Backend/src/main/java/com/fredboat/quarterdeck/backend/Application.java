@@ -36,6 +36,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import space.npstr.sqlsauce.DatabaseWrapper;
 
@@ -49,6 +50,11 @@ import space.npstr.sqlsauce.DatabaseWrapper;
         HibernateJpaAutoConfiguration.class,
         FlywayAutoConfiguration.class
 })
+@ComponentScan(basePackages = {
+        "com.fredboat.quarterdeck.backend.config",
+        "com.fredboat.quarterdeck.backend.config.property",
+        "com.fredboat.quarterdeck.backend.rest",
+})
 public class Application {
 
     public static final String API_VERSION = "v1";
@@ -56,51 +62,5 @@ public class Application {
     public static void main(String[] args) {
         System.setProperty("spring.config.name", "backend");
         SpringApplication.run(Application.class, args);
-    }
-
-
-    //main db repos
-    @Bean
-    @Primary
-    public GuildConfigRepo guildConfigRepo(DatabaseWrapper wrapper) {
-        return new SqlSauceGuildConfigRepo(wrapper);
-    }
-
-    @Bean
-    @Primary
-    public BlacklistRepo blacklistRepo(DatabaseWrapper wrapper) {
-        return new SqlSauceBlacklistRepo(wrapper);
-    }
-
-    @Bean
-    @Primary
-    public GuildDataRepo guildDataRepo(DatabaseWrapper wrapper) {
-        return new SqlSauceGuildDataRepo(wrapper);
-    }
-
-    @Bean
-    @Primary
-    public GuildModulesRepo guildModulesRepo(DatabaseWrapper wrapper) {
-        return new SqlSauceGuildModulesRepo(wrapper);
-    }
-
-    @Bean
-    @Primary
-    public GuildPermsRepo guildPermsRepo(DatabaseWrapper wrapper) {
-        return new SqlSauceGuildPermsRepo(wrapper);
-    }
-
-    @Bean
-    @Primary
-    public PrefixRepo prefixRepo(DatabaseWrapper wrapper) {
-        return new SqlSaucePrefixRepo(wrapper);
-    }
-
-
-    //cache db repos
-    @Bean
-    @Primary
-    public SearchResultRepo searchResultRepo(@Qualifier("cacheDbWrapper") DatabaseWrapper wrapper) {
-        return new SqlSauceSearchResultRepo(wrapper);
     }
 }

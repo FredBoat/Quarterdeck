@@ -30,6 +30,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
@@ -47,90 +48,10 @@ import java.util.List;
  *
  * Mirrors the fredboat tree of the application.yaml
  */
-@ConfigurationProperties(prefix = "fredboat")
+@ConfigurationProperties
 @Configuration
 @EnableConfigurationProperties
-public class AppConfig {
-
-    @Bean("databaseManager")
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public DatabaseManager getDatabaseManager(Db dbConfig) {
-        //todo improve these parameters
-        return new DatabaseManager(null, null,
-                4, "Backend", true,
-                dbConfig.getMain().getJdbcUrl(), null,
-                dbConfig.getCache().getJdbcUrl(), null,
-                (puName, dataSource, properties, entityPackages) -> {
-                    LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
-                    emfb.setDataSource(dataSource);
-                    emfb.setPackagesToScan(entityPackages.toArray(new String[entityPackages.size()]));
-
-                    JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-                    emfb.setJpaVendorAdapter(vendorAdapter);
-                    emfb.setJpaProperties(properties);
-
-                    emfb.afterPropertiesSet(); //initiate creation of the native emf
-                    return emfb.getNativeEntityManagerFactory();
-                });
-    }
-
-    @Primary
-    @Bean("mainDbWrapper")
-    public DatabaseWrapper getMainDbWrapper(DatabaseManager databaseManager) {
-        return databaseManager.getMainDbWrapper();
-    }
-
-    @Nullable
-    @Bean("cacheDbWrapper")
-    public DatabaseWrapper getCacheDbWrapper(DatabaseManager databaseManager) {
-        return databaseManager.getCacheDbWrapper();
-    }
-
-    private final Db db = new Db();
-
-    @Bean
-    public Db getDb() {
-        return db;
-    }
-
-    public static class Db {
-
-        private final Main main = new Main();
-
-        public Main getMain() {
-            return main;
-        }
-
-        private final Cache cache = new Cache();
-
-        public Cache getCache() {
-            return cache;
-        }
-
-        public static class Main {
-            private String jdbcUrl = "";
-
-            public String getJdbcUrl() {
-                return jdbcUrl;
-            }
-
-            public void setJdbcUrl(String jdbcUrl) {
-                this.jdbcUrl = jdbcUrl;
-            }
-        }
-
-        public static class Cache {
-            private String jdbcUrl = "";
-
-            public String getJdbcUrl() {
-                return jdbcUrl;
-            }
-
-            public void setJdbcUrl(String jdbcUrl) {
-                this.jdbcUrl = jdbcUrl;
-            }
-        }
-    }
+public class AppConfiguration {
 
     private final Security security = new Security();
 

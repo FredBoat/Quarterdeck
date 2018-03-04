@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created by napster on 17.02.18.
  */
 @Configuration
-public class RequestLoggerConfig {
+public class RequestLoggerConfiguration {
 
     @Bean
     public AbstractRequestLoggingFilter logFilter() {
@@ -55,12 +55,12 @@ public class RequestLoggerConfig {
 
         @Override
         protected void beforeRequest(HttpServletRequest request, String message) {
-//                log.debug(message);
+                log.info(message);
         }
 
         @Override
         protected void afterRequest(HttpServletRequest request, String message) {
-            log.debug(message);
+            log.info(message);
         }
     }
 }
