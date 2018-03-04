@@ -15,6 +15,13 @@
 ###   key: value
 ###
 ###
+### Never edit or add a value to lines that have no default value, like:
+###
+###   credentials:
+###
+### Just leave them be. A default value may be an empty string like so: ""
+###
+###
 ### You can wrap most values into quotation marks, except numbers and booleans:
 ###
 ###   someUrl: "http://example.com"
@@ -37,13 +44,6 @@
 ###
 ### More information on correctly formatting yaml files: http://www.yaml.org/start.html
 
-spring:
-  http:
-    converters:
-      preferred-json-mapper: gson # dont touch this
-server:
-  port: 4269
-
 security:
   admins:
     # Set a name and a pass. These have to be the same as set up in the fredboat.yaml
@@ -51,7 +51,15 @@ security:
     - name: ""
       pass: ""
 
+spring:
+  http:
+    converters:
+      preferred-json-mapper: gson    # dont touch this
+server:
+  port: 4269                         # port of the backend
 
+
+# If you are using docker to host the whole FredBoat, you can ignore all database settings below this line.
 database:
   main:
     # FredBoat was written to work with PostgreSQL.
