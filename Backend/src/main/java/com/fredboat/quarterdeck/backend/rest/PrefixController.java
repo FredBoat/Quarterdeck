@@ -55,6 +55,6 @@ public class PrefixController extends EntityController<GuildBotComposite, Prefix
     @PostMapping("/getraw")
     @Override
     public String getPrefix(@RequestBody GuildBotComposite id) {
-        return prefixRepo.getPrefix(id);
+        return this.prefixRepo.getPrefix(id);
     }
 }

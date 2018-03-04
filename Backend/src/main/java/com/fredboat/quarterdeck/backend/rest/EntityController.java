@@ -53,18 +53,18 @@ public abstract class EntityController<I extends Serializable, E extends SaucedE
     @Override
     @PostMapping("/delete")
     public void delete(@RequestBody I id) {
-        repo.delete(id);
+        this.repo.delete(id);
     }
 
     @Override
     @PostMapping("/fetch")
     public E fetch(@RequestBody I id) {
-        return repo.fetch(id);
+        return this.repo.fetch(id);
     }
 
     @Override
     @PostMapping("/merge")
     public E merge(@RequestBody E entity) {
-        return repo.merge(entity);
+        return this.repo.merge(entity);
     }
 }

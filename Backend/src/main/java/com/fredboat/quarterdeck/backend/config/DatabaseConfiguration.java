@@ -29,7 +29,6 @@ import com.fredboat.quarterdeck.backend.config.property.DatabaseConfig;
 import fredboat.db.DatabaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -37,7 +36,6 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import space.npstr.sqlsauce.DatabaseConnection;
-import space.npstr.sqlsauce.DatabaseWrapper;
 
 import javax.annotation.Nullable;
 
@@ -50,18 +48,6 @@ import javax.annotation.Nullable;
 public class DatabaseConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
-
-    @Primary
-    @Bean
-    public DatabaseWrapper mainDbWrapper(DatabaseConnection mainDbConn) {
-        return new DatabaseWrapper(mainDbConn);
-    }
-
-    @Bean
-    @Nullable
-    public DatabaseWrapper cacheDbWrapper(@Nullable @Qualifier("cacheDbConn") DatabaseConnection cacheDbConn) {
-        return cacheDbConn == null ? null : new DatabaseWrapper(cacheDbConn);
-    }
 
     @Primary
     @Bean

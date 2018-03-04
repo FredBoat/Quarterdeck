@@ -25,9 +25,6 @@
 
 package com.fredboat.quarterdeck.backend;
 
-import fredboat.db.repositories.api.*;
-import fredboat.db.repositories.impl.*;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -35,10 +32,7 @@ import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Primary;
-import space.npstr.sqlsauce.DatabaseWrapper;
 
 /**
  * Created by napster on 16.02.18.
@@ -57,7 +51,7 @@ import space.npstr.sqlsauce.DatabaseWrapper;
 })
 public class Application {
 
-    public static final String API_VERSION = "v1";
+    public static final String API_VERSION = "v1/";
 
     public static void main(String[] args) {
         System.setProperty("spring.config.name", "backend");

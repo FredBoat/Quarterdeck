@@ -52,6 +52,6 @@ public class BlacklistController extends EntityController<Long, BlacklistEntry> 
     @GetMapping("/loadall")
     @Override
     public List<BlacklistEntry> loadBlacklist() {
-        return blacklistRepo.loadBlacklist();
+        return this.blacklistRepo.loadBlacklist();
     }
 }
