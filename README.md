@@ -4,7 +4,7 @@
 
 Please see the main repo for more information on the FredBoat project: [https://github.com/Frederikam/FredBoat](https://github.com/Frederikam/FredBoat)
 
-This repository is home to FredBoat's internal database backend. This this point, this is not a public API of any sorts.
+This repository is home to FredBoat's internal database backend. At this point, this is not a public API of any sorts.
 Any documentation found here is aimed at FreBoat developers. Future development of the API might include additional, semi-public services.
 
 
