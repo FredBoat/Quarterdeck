@@ -58,6 +58,8 @@ spring:
 server:
   port: 4269                         # port of the backend
 
+sentry:
+  dsn: ""
 
 # If you are using docker to host the whole FredBoat, you can ignore all database settings below this line.
 database:

@@ -47,6 +47,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {
         "com.fredboat.quarterdeck.backend.config",
         "com.fredboat.quarterdeck.backend.config.property",
+        "com.fredboat.quarterdeck.backend.info",
         "com.fredboat.quarterdeck.backend.rest",
 })
 public class Application {
