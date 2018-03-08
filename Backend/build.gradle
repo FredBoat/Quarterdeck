@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 apply plugin: 'com.gorylenko.gradle-git-properties'
 apply plugin: 'propdeps'
 apply plugin: 'propdeps-idea'
@@ -45,3 +47,15 @@ dependencies {
 
 //required by spring boot configuration processor
 compileJava.dependsOn(processResources)
+
+processResources {
+    //inject values into app.properties
+    filesMatching("**/app.properties") {
+        filter ReplaceTokens, tokens: [
+                "project.version"   : project.version,
+                "project.groupId"   : project.group,
+                "project.artifactId": project.ext.moduleName,
+                "env.BUILD_NUMBER"  : (System.getenv('CI') ? System.getenv('BUILD_NUMBER') : 'DEV')
+        ]
+    }
+}
