@@ -37,16 +37,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/info")
 public class InfoController {
 
-    @GetMapping("/version")
-    public Object getVersion() {
-        return new Version();
-    }
+    //a string array of supported version numbers
+    @GetMapping("/api/versions")
+    public String[] getVersion() {
+        String[] version = new String[1];
+        version[0] = Integer.toString(EntityController.API_VERSION);
 
-    private static class Version {
-        private int number = EntityController.API_VERSION;
-
-        public int getNumber() {
-            return this.number;
-        }
+        return version;
     }
 }

@@ -34,14 +34,19 @@ Some entity endpoints have additional calls:
   - GET /loadall
 
 - Prefix:
-  - GET /getraw
+  - POST /getraw
 
 - Search result:
   - POST /getmaxaged
 
+The entity endpoints are reachable behind the version path, for example:
+```
+GET http[s]://backend.url[:port]/v0/blacklist/loadall
+```
 
-There is an additional endpoint, that will return the version of the API:
-- GET /info/version
+
+There is an additional endpoint, that will return the supported versions of the API:
+- GET /info/api/versions
 
 Entities and ids are marshalled via [Gson](https://github.com/google/gson) on both sides.  
 Authentication happens via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).  
