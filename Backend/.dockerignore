@@ -1,0 +1,5 @@
+**
+#ignore everything except the following files, they are used in the Dockerfile to build the backend image
+!Dockerfile
+!Backend.jar
+!backend.example.yaml
