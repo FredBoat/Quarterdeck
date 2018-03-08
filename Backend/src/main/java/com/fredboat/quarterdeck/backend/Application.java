@@ -27,7 +27,7 @@ package com.fredboat.quarterdeck.backend;
 
 import com.fredboat.quarterdeck.backend.info.AppInfo;
 import com.fredboat.quarterdeck.backend.info.GitRepoState;
-import com.fredboat.quarterdeck.backend.rest.EntityController;
+import com.fredboat.quarterdeck.backend.rest.v0.EntityController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

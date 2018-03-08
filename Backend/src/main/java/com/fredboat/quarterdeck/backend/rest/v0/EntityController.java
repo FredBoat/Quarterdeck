@@ -23,7 +23,7 @@
  *
  */
 
-package com.fredboat.quarterdeck.backend.rest;
+package com.fredboat.quarterdeck.backend.rest.v0;
 
 import fredboat.db.repositories.api.Repo;
 import fredboat.db.repositories.impl.rest.RestRepo;

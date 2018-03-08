@@ -23,37 +23,22 @@
  *
  */
 
-package com.fredboat.quarterdeck.backend.rest;
+package com.fredboat.quarterdeck.backend.rest.v0;
 
-import fredboat.db.entity.main.Prefix;
-import fredboat.db.repositories.api.PrefixRepo;
-import fredboat.db.repositories.impl.rest.RestPrefixRepo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import fredboat.db.entity.main.GuildModules;
+import fredboat.db.repositories.api.GuildModulesRepo;
+import fredboat.db.repositories.impl.rest.RestGuildModulesRepo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import space.npstr.sqlsauce.entities.GuildBotComposite;
-
-import javax.annotation.Nullable;
 
 /**
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + RestPrefixRepo.PATH)
-public class PrefixController extends EntityController<GuildBotComposite, Prefix> implements PrefixRepo {
+@RequestMapping("/" + EntityController.VERSION_PATH + RestGuildModulesRepo.PATH)
+public class GuildModulesController extends EntityController<Long, GuildModules> implements GuildModulesRepo {
 
-    protected final PrefixRepo prefixRepo;
-
-    public PrefixController(PrefixRepo repo) {
+    public GuildModulesController(GuildModulesRepo repo) {
         super(repo);
-        this.prefixRepo = repo;
-    }
-
-    @Nullable
-    @PostMapping("/getraw")
-    @Override
-    public String getPrefix(@RequestBody GuildBotComposite id) {
-        return this.prefixRepo.getPrefix(id);
     }
 }

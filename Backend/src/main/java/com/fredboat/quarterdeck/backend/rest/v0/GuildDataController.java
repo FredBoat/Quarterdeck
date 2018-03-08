@@ -23,11 +23,11 @@
  *
  */
 
-package com.fredboat.quarterdeck.backend.rest;
+package com.fredboat.quarterdeck.backend.rest.v0;
 
-import fredboat.db.entity.main.GuildModules;
-import fredboat.db.repositories.api.GuildModulesRepo;
-import fredboat.db.repositories.impl.rest.RestGuildModulesRepo;
+import fredboat.db.entity.main.GuildData;
+import fredboat.db.repositories.api.GuildDataRepo;
+import fredboat.db.repositories.impl.rest.RestGuildDataRepo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,10 +35,10 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + RestGuildModulesRepo.PATH)
-public class GuildModulesController extends EntityController<Long, GuildModules> implements GuildModulesRepo {
+@RequestMapping("/" + EntityController.VERSION_PATH + RestGuildDataRepo.PATH)
+public class GuildDataController extends EntityController<Long, GuildData> implements GuildDataRepo {
 
-    public GuildModulesController(GuildModulesRepo repo) {
+    public GuildDataController(GuildDataRepo repo) {
         super(repo);
     }
 }

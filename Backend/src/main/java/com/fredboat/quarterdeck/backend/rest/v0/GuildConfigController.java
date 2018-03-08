@@ -23,7 +23,7 @@
  *
  */
 
-package com.fredboat.quarterdeck.backend.rest;
+package com.fredboat.quarterdeck.backend.rest.v0;
 
 import fredboat.db.entity.main.GuildConfig;
 import fredboat.db.repositories.api.GuildConfigRepo;

@@ -23,22 +23,38 @@
  *
  */
 
-package com.fredboat.quarterdeck.backend.rest;
+package com.fredboat.quarterdeck.backend.rest.v0;
 
-import fredboat.db.entity.main.GuildPermissions;
-import fredboat.db.repositories.api.GuildPermsRepo;
-import fredboat.db.repositories.impl.rest.RestGuildPermsRepo;
+import fredboat.db.entity.cache.SearchResult;
+import fredboat.db.repositories.api.SearchResultRepo;
+import fredboat.db.repositories.impl.rest.RestSearchResultRepo;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + RestGuildPermsRepo.PATH)
-public class GuildPermsController extends EntityController<String, GuildPermissions> implements GuildPermsRepo {
+@RequestMapping("/" + EntityController.VERSION_PATH + RestSearchResultRepo.PATH)
+public class SearchResultController extends EntityController<SearchResult.SearchResultId, SearchResult>
+        implements SearchResultRepo {
 
-    public GuildPermsController(GuildPermsRepo repo) {
+    protected final SearchResultRepo searchResultRepo;
+
+    public SearchResultController(SearchResultRepo repo) {
         super(repo);
+        this.searchResultRepo = repo;
+    }
+
+    @Nullable
+    @PostMapping("/getmaxaged")
+    @Override
+    public SearchResult getMaxAged(@RequestBody SearchResult.SearchResultId id, @RequestParam("millis") long maxAgeMillis) {
+        return this.searchResultRepo.getMaxAged(id, maxAgeMillis);
     }
 }

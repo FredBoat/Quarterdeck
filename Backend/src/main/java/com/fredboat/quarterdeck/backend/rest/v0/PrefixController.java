@@ -23,16 +23,16 @@
  *
  */
 
-package com.fredboat.quarterdeck.backend.rest;
+package com.fredboat.quarterdeck.backend.rest.v0;
 
-import fredboat.db.entity.cache.SearchResult;
-import fredboat.db.repositories.api.SearchResultRepo;
-import fredboat.db.repositories.impl.rest.RestSearchResultRepo;
+import fredboat.db.entity.main.Prefix;
+import fredboat.db.repositories.api.PrefixRepo;
+import fredboat.db.repositories.impl.rest.RestPrefixRepo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import space.npstr.sqlsauce.entities.GuildBotComposite;
 
 import javax.annotation.Nullable;
 
@@ -40,21 +40,20 @@ import javax.annotation.Nullable;
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + RestSearchResultRepo.PATH)
-public class SearchResultController extends EntityController<SearchResult.SearchResultId, SearchResult>
-        implements SearchResultRepo {
+@RequestMapping("/" + EntityController.VERSION_PATH + RestPrefixRepo.PATH)
+public class PrefixController extends EntityController<GuildBotComposite, Prefix> implements PrefixRepo {
 
-    protected final SearchResultRepo searchResultRepo;
+    protected final PrefixRepo prefixRepo;
 
-    public SearchResultController(SearchResultRepo repo) {
+    public PrefixController(PrefixRepo repo) {
         super(repo);
-        this.searchResultRepo = repo;
+        this.prefixRepo = repo;
     }
 
     @Nullable
-    @PostMapping("/getmaxaged")
+    @PostMapping("/getraw")
     @Override
-    public SearchResult getMaxAged(@RequestBody SearchResult.SearchResultId id, @RequestParam("millis") long maxAgeMillis) {
-        return this.searchResultRepo.getMaxAged(id, maxAgeMillis);
+    public String getPrefix(@RequestBody GuildBotComposite id) {
+        return this.prefixRepo.getPrefix(id);
     }
 }

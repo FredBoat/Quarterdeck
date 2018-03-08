@@ -23,22 +23,34 @@
  *
  */
 
-package com.fredboat.quarterdeck.backend.rest;
+package com.fredboat.quarterdeck.backend.rest.v0;
 
-import fredboat.db.entity.main.GuildData;
-import fredboat.db.repositories.api.GuildDataRepo;
-import fredboat.db.repositories.impl.rest.RestGuildDataRepo;
+import fredboat.db.entity.main.BlacklistEntry;
+import fredboat.db.repositories.api.BlacklistRepo;
+import fredboat.db.repositories.impl.rest.RestBlacklistRepo;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + RestGuildDataRepo.PATH)
-public class GuildDataController extends EntityController<Long, GuildData> implements GuildDataRepo {
+@RequestMapping("/" + EntityController.VERSION_PATH + RestBlacklistRepo.PATH)
+public class BlacklistController extends EntityController<Long, BlacklistEntry> implements BlacklistRepo {
 
-    public GuildDataController(GuildDataRepo repo) {
+    protected final BlacklistRepo blacklistRepo;
+
+    public BlacklistController(BlacklistRepo repo) {
         super(repo);
+        this.blacklistRepo = repo;
+    }
+
+    @GetMapping("/loadall")
+    @Override
+    public List<BlacklistEntry> loadBlacklist() {
+        return this.blacklistRepo.loadBlacklist();
     }
 }
