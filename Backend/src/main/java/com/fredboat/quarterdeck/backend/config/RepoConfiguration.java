@@ -25,7 +25,6 @@
 
 package com.fredboat.quarterdeck.backend.config;
 
-import fredboat.db.DatabaseManager;
 import fredboat.db.repositories.api.BlacklistRepo;
 import fredboat.db.repositories.api.GuildConfigRepo;
 import fredboat.db.repositories.api.GuildDataRepo;
@@ -42,6 +41,7 @@ import fredboat.db.repositories.impl.SqlSaucePrefixRepo;
 import fredboat.db.repositories.impl.SqlSauceSearchResultRepo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import space.npstr.sqlsauce.DatabaseWrapper;
 
 /**
  * Created by napster on 04.03.18.
@@ -51,39 +51,39 @@ public class RepoConfiguration {
 
     //main db repos
     @Bean
-    public GuildConfigRepo guildConfigRepo(DatabaseManager databaseManager) {
-        return new SqlSauceGuildConfigRepo(databaseManager.getMainDbWrapper());
+    public GuildConfigRepo guildConfigRepo(DatabaseWrapper mainDbWrapper) {
+        return new SqlSauceGuildConfigRepo(mainDbWrapper);
     }
 
     @Bean
-    public BlacklistRepo blacklistRepo(DatabaseManager databaseManager) {
-        return new SqlSauceBlacklistRepo(databaseManager.getMainDbWrapper());
+    public BlacklistRepo blacklistRepo(DatabaseWrapper mainDbWrapper) {
+        return new SqlSauceBlacklistRepo(mainDbWrapper);
     }
 
     @Bean
-    public GuildDataRepo guildDataRepo(DatabaseManager databaseManager) {
-        return new SqlSauceGuildDataRepo(databaseManager.getMainDbWrapper());
+    public GuildDataRepo guildDataRepo(DatabaseWrapper mainDbWrapper) {
+        return new SqlSauceGuildDataRepo(mainDbWrapper);
     }
 
     @Bean
-    public GuildModulesRepo guildModulesRepo(DatabaseManager databaseManager) {
-        return new SqlSauceGuildModulesRepo(databaseManager.getMainDbWrapper());
+    public GuildModulesRepo guildModulesRepo(DatabaseWrapper mainDbWrapper) {
+        return new SqlSauceGuildModulesRepo(mainDbWrapper);
     }
 
     @Bean
-    public GuildPermsRepo guildPermsRepo(DatabaseManager databaseManager) {
-        return new SqlSauceGuildPermsRepo(databaseManager.getMainDbWrapper());
+    public GuildPermsRepo guildPermsRepo(DatabaseWrapper mainDbWrapper) {
+        return new SqlSauceGuildPermsRepo(mainDbWrapper);
     }
 
     @Bean
-    public PrefixRepo prefixRepo(DatabaseManager databaseManager) {
-        return new SqlSaucePrefixRepo(databaseManager.getMainDbWrapper());
+    public PrefixRepo prefixRepo(DatabaseWrapper mainDbWrapper) {
+        return new SqlSaucePrefixRepo(mainDbWrapper);
     }
 
 
     //cache db repos
     @Bean
-    public SearchResultRepo searchResultRepo(DatabaseManager databaseManager) {
-        return new SqlSauceSearchResultRepo(databaseManager.getCacheDbWrapper()); //todo noop / reloading
+    public SearchResultRepo searchResultRepo(DatabaseConfiguration dbConfiguration) {
+        return new SqlSauceSearchResultRepo(dbConfiguration.cacheDbWrapper()); //todo noop / reloading
     }
 }

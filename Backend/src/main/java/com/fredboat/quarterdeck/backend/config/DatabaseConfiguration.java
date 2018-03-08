@@ -36,6 +36,7 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import space.npstr.sqlsauce.DatabaseConnection;
+import space.npstr.sqlsauce.DatabaseWrapper;
 
 import javax.annotation.Nullable;
 
@@ -48,11 +49,21 @@ import javax.annotation.Nullable;
 public class DatabaseConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
+    private final DatabaseConfig dbConf;
+
+    public DatabaseConfiguration(DatabaseConfig dbConf) {
+        this.dbConf = dbConf;
+    }
 
     @Primary
     @Bean
-    public DatabaseConnection mainDbConn(DatabaseManager databaseManager)
-            throws InterruptedException {
+    public DatabaseWrapper mainDbWrapper() throws InterruptedException {
+        return new DatabaseWrapper(mainDbConn());
+    }
+
+    @Primary
+    @Bean
+    public DatabaseConnection mainDbConn() throws InterruptedException {
         //attempt to connect to the database a few times
         // this is relevant in a dockerized environment because after a reboot there is no guarantee that the db
         // container will be started before the fredboat one
@@ -63,7 +74,7 @@ public class DatabaseConfiguration {
                 if (mainDbConn != null) {
                     mainDbConn.shutdown();
                 }
-                mainDbConn = databaseManager.getMainDbConn();
+                mainDbConn = databaseManager().getMainDbConn();
             } catch (Exception e) {
                 log.info("Could not connect to the database. Retrying in a moment...", e);
                 Thread.sleep(6000);
@@ -80,9 +91,16 @@ public class DatabaseConfiguration {
 
     @Bean
     @Nullable
-    public DatabaseConnection cacheDbConn(DatabaseManager databaseManager) {
+    public DatabaseWrapper cacheDbWrapper() {
+        DatabaseConnection cacheDbConn = cacheDbConn();
+        return cacheDbConn == null ? null : new DatabaseWrapper(cacheDbConn);
+    }
+
+    @Bean
+    @Nullable
+    public DatabaseConnection cacheDbConn() {
         try {
-            return databaseManager.getCacheDbConn();
+            return databaseManager().getCacheDbConn();
         } catch (Exception e) {
             String message = "Exception when connecting to cache db";
             log.error(message, e);
@@ -103,13 +121,13 @@ public class DatabaseConfiguration {
 //    }
 
     @Bean
-    public DatabaseManager databaseManager(DatabaseConfig dbConf) {
+    public DatabaseManager databaseManager() {
 //                                           HibernateStatisticsCollector hibernateStats,
 //                                           PrometheusMetricsTrackerFactory hikariStats) {
         DatabaseManager databaseManager = new DatabaseManager(null, null,
-                dbConf.getHikariPoolSize(), "Backend", true,
-                dbConf.getMainJdbcUrl(), dbConf.getMainSshTunnelConfig(),
-                dbConf.getCacheJdbcUrl(), dbConf.getCacheSshTunnelConfig(),
+                this.dbConf.getHikariPoolSize(), "Backend", true,
+                this.dbConf.getMainJdbcUrl(), this.dbConf.getMainSshTunnelConfig(),
+                this.dbConf.getCacheJdbcUrl(), this.dbConf.getCacheSshTunnelConfig(),
                 (puName, dataSource, properties, entityPackages) -> {
                     LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
                     emfb.setDataSource(dataSource);
