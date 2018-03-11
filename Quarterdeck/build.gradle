@@ -1,0 +1,86 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-2018 The FredBoat Org https://github.com/FredBoat/
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'com.gorylenko.gradle-git-properties'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-idea'
+apply plugin: 'org.springframework.boot'
+
+
+description = 'FredBoat backend, providing REST database services'
+version '1.0'
+ext {
+    moduleName = 'Quarterdeck'
+}
+
+bootRun {
+    //compiling tests during bootRun increases the likelyhood of catching broken tests locally instead of on the CI
+    dependsOn compileTestJava
+
+    //pass in custom jvm args
+    // source: https://stackoverflow.com/a/25079415
+    // example: ./gradlew bootRun -PjvmArgs="--illegal-access=debug -Dwhatever=value"
+    if (project.hasProperty('jvmArgs')) {
+        jvmArgs project.jvmArgs.split('\\s+')
+    }
+}
+
+bootJar {
+    archiveName = "Quarterdeck.jar"
+    doLast {
+        //copies the jar into a place where the Dockerfile can find it easily (and users maybe too)
+        copy {
+            from 'build/libs/Quarterdeck.jar'
+            into '.'
+        }
+    }
+}
+
+dependencies {
+    compile group: 'com.github.Frederikam.FredBoat', name: 'Database', version: fredBoatRootVersion
+
+    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    compile "org.springframework.boot:spring-boot-starter-security:$springBootVersion"
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    optional "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
+}
+
+//required by spring boot configuration processor
+compileJava.dependsOn(processResources)
+
+processResources {
+    //inject values into app.properties
+    filesMatching("**/app.properties") {
+        filter ReplaceTokens, tokens: [
+                "project.version"   : project.version,
+                "project.groupId"   : project.group,
+                "project.artifactId": project.ext.moduleName,
+                "env.BUILD_NUMBER"  : (System.getenv('CI') ? System.getenv('BUILD_NUMBER') : 'DEV')
+        ]
+    }
+}

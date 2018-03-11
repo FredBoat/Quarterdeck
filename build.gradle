@@ -8,7 +8,7 @@ allprojects {
     }
 
     apply plugin: 'idea'
-    group = 'com.fredboat.quarterdeck'
+    group = 'com.fredboat.backend'
 }
 
 subprojects {
@@ -57,7 +57,7 @@ subprojects {
 
 version = '1.0'
 ext {
-    moduleName = 'Quarterdeck'
+    moduleName = 'Backend'
 }
 
 import org.gradle.api.tasks.wrapper.Wrapper.DistributionType

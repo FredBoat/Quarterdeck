@@ -1,4 +1,4 @@
-rootProject.name = 'Quarterdeck'
-include ':Backend'
+rootProject.name = 'Backend'
+include ':Quarterdeck'
 
-project(':Backend').projectDir = "$rootDir/Backend" as File
+project(':Quarterdeck').projectDir = "$rootDir/Quarterdeck" as File
