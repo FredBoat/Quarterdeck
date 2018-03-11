@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import space.npstr.sqlsauce.ssh.SshTunnel;
 
 import javax.annotation.Nullable;
 
@@ -62,12 +61,6 @@ public class DatabaseConfigProperties implements DatabaseConfig {
             }
         }
         return jdbcUrl;
-    }
-
-    @Nullable
-    @Override
-    public SshTunnel.SshDetails getMainSshTunnelConfig() {
-        return this.main.getTunnel().toDetails();
     }
 
     private boolean hasWarnedEmptyCacheJdbc = false;
@@ -107,12 +100,6 @@ public class DatabaseConfigProperties implements DatabaseConfig {
         return !jdbcUrl.isEmpty() ? jdbcUrl : null;
     }
 
-    @Nullable
-    @Override
-    public SshTunnel.SshDetails getCacheSshTunnelConfig() {
-        return this.cache.getTunnel().toDetails();
-    }
-
     public void setMain(Db main) {
         this.main = main;
     }
@@ -123,7 +110,6 @@ public class DatabaseConfigProperties implements DatabaseConfig {
 
     private static class Db {
         private String jdbcUrl = "";
-        private TunnelProperties tunnel = new TunnelProperties();
 
         public String getJdbcUrl() {
             return this.jdbcUrl;
@@ -131,83 +117,6 @@ public class DatabaseConfigProperties implements DatabaseConfig {
 
         public void setJdbcUrl(String jdbcUrl) {
             this.jdbcUrl = jdbcUrl;
-        }
-
-        public TunnelProperties getTunnel() {
-            return this.tunnel;
-        }
-
-        public void setTunnel(TunnelProperties tunnel) {
-            this.tunnel = tunnel;
-        }
-    }
-
-    private static class TunnelProperties {
-
-        private String host = "";
-        private String user = "";
-        private String privateKeyFile = "";
-        private String keyPass = "";
-        private int localPort = 9333;
-        private int remotePort = 5432;
-
-        @Nullable
-        public SshTunnel.SshDetails toDetails() {
-            return this.host.isEmpty()
-                    ? null
-                    : new SshTunnel.SshDetails(this.host, this.user)
-                    .setKeyFile(this.privateKeyFile)
-                    .setPassphrase(this.keyPass)
-                    .setLocalPort(this.localPort)
-                    .setRemotePort(this.remotePort);
-        }
-
-        public String getHost() {
-            return this.host;
-        }
-
-        public void setHost(String host) {
-            this.host = host;
-        }
-
-        public String getUser() {
-            return this.user;
-        }
-
-        public void setUser(String user) {
-            this.user = user;
-        }
-
-        public String getPrivateKeyFile() {
-            return this.privateKeyFile;
-        }
-
-        public void setPrivateKeyFile(String privateKeyFile) {
-            this.privateKeyFile = privateKeyFile;
-        }
-
-        public String getKeyPass() {
-            return this.keyPass;
-        }
-
-        public void setKeyPass(String keyPass) {
-            this.keyPass = keyPass;
-        }
-
-        public int getLocalPort() {
-            return this.localPort;
-        }
-
-        public void setLocalPort(int localPort) {
-            this.localPort = localPort;
-        }
-
-        public int getRemotePort() {
-            return this.remotePort;
-        }
-
-        public void setRemotePort(int remotePort) {
-            this.remotePort = remotePort;
         }
     }
 }

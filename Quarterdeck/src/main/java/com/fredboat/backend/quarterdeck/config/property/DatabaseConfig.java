@@ -25,8 +25,6 @@
 
 package com.fredboat.backend.quarterdeck.config.property;
 
-import space.npstr.sqlsauce.ssh.SshTunnel;
-
 import javax.annotation.Nullable;
 
 /**
@@ -40,22 +38,10 @@ public interface DatabaseConfig {
     String getMainJdbcUrl();
 
     /**
-     * @return may return null if no tunnel shall be created for the main database connection
-     */
-    @Nullable
-    SshTunnel.SshDetails getMainSshTunnelConfig();
-
-    /**
      * @return JdbcUrl of the cache database, may return null if no cache database was provided.
      */
     @Nullable
     String getCacheJdbcUrl();
-
-    /**
-     * @return may return null if no tunnel shall be created for the cache database connection
-     */
-    @Nullable
-    SshTunnel.SshDetails getCacheSshTunnelConfig();
 
     /**
      * @return database connection poolsize

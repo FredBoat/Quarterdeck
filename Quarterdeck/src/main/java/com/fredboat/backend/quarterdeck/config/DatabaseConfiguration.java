@@ -126,8 +126,7 @@ public class DatabaseConfiguration {
 //                                           PrometheusMetricsTrackerFactory hikariStats) {
         DatabaseManager databaseManager = new DatabaseManager(null, null,
                 this.dbConf.getHikariPoolSize(), "Quarterdeck", true,
-                this.dbConf.getMainJdbcUrl(), this.dbConf.getMainSshTunnelConfig(),
-                this.dbConf.getCacheJdbcUrl(), this.dbConf.getCacheSshTunnelConfig(),
+                this.dbConf.getMainJdbcUrl(), this.dbConf.getCacheJdbcUrl(),
                 (puName, dataSource, properties, entityPackages) -> {
                     LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
                     emfb.setDataSource(dataSource);

@@ -74,22 +74,8 @@ database:
     # Learn more about creating databases here: https://www.postgresql.org/docs/10/static/manage-ag-createdb.html
     # Learn more about the postgres jdbc url here: https://jdbc.postgresql.org/documentation/head/connect.html
     # Learn more about creating extensions here: https://www.postgresql.org/docs/current/static/sql-createextension.html
-    # If you are using an SSH tunnel, you need to point your jdbc url to localhost and the configured tunnelLocalPort
     # Example jdbc: "jdbc:postgresql://localhost:5432/fredboat?user=fredboat&password=youshallnotpass"
-    jdbcUrl:          ""
-
-    # Ssh tunnel for a remote database. this is useful for when you don't want to expose your database on the remote server
-    # and instead use ssh tunneling to access it
-    # If you are running with docker-compose then you don't need to change any ssh value here.
-    # If you are using an SSH tunnel, you need to point your jdbc url to localhost and the configured tunnelLocalPort
-    # Keep the sshHost an empty string for no tunnel.
-    tunnel:
-      host:           ""         # add the ssh port to the ip / url, usually 22, for example: "db.example.com:22"
-      user:           ""         # user on the remote machine
-      privateKeyFile: ""         # path to an ssh private key file which is authorized to log in to the sshUser on the remote machine. learn how to create these: https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04#step-four-—-add-public-key-authentication-(recommended)
-      keyPass:        ""         # optional passphrase for the ssh key file
-      localPort:      5432       # endpoint port of the tunnel on the machine running fredboat; makes sure these dont collide; this one needs to be used in the jdbc url
-      remotePort:     5432       # port of the PostgreSQL on the remote machine, 5432 by default
+    jdbcUrl: ""
 
   cache:
     # Database for caching things, see config of main database above for details about the individual values.
@@ -99,12 +85,4 @@ database:
     # The main benefit is that you don't have to backup/migrate the cache database, it can just be dropped/recreated
     # If you do not provide a jdbc url for the cache database, FredBoat will still work (most likely), but may have a degraded
     # performance, especially in high usage environments and when using Spotify playlists.
-    # If you are going to use two different ssh tunnels for both database connections, make sure that the local tunnel ports don't collide
-    jdbcUrl:          ""
-    tunnel:
-      host:           ""
-      user:           ""
-      privateKeyFile: ""
-      keyPass:        ""
-      localPort:      5433
-      remotePort:     5432
+    jdbcUrl: ""
