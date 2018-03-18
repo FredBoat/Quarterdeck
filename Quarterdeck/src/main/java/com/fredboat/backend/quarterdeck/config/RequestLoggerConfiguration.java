@@ -55,12 +55,12 @@ public class RequestLoggerConfiguration {
 
         @Override
         protected void beforeRequest(HttpServletRequest request, String message) {
-                log.info(message);
+            log.debug(message);
         }
 
         @Override
         protected void afterRequest(HttpServletRequest request, String message) {
-            log.info(message);
+            log.debug(message);
         }
     }
 }
