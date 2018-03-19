@@ -1,6 +1,6 @@
 ![FredBoat](https://fred.moe/YY1.png)
 
-# Quarterdeck [![TeamCity (simple build status)](https://img.shields.io/teamcity/https/ci.fredboat.com/s/Quarterdeck_Build.svg)](https://ci.fredboat.com/viewType.html?buildTypeId=Quarterdeck_Build&guest=1) [![Docker Pulls](https://img.shields.io/docker/pulls/fredboat/backend.svg)](https://fredboat.com/docs/selfhosting) [![Docker layers](https://images.microbadger.com/badges/image/fredboat/fredboat:dev-v1.svg)](https://microbadger.com/images/fredboat/backend:dev-v1 "Get your own image badge on microbadger.com")
+# Quarterdeck [![TeamCity (full build status)](https://img.shields.io/teamcity/https/ci.fredboat.com/e/Quarterdeck_Build.svg?style=flat-square)](https://ci.fredboat.com/viewType.html?buildTypeId=Quarterdeck_Build&guest=1) [![Docker Pulls](https://img.shields.io/docker/pulls/fredboat/backend.svg)](https://fredboat.com/docs/selfhosting) [![Docker Layers](https://images.microbadger.com/badges/image/fredboat/backend:dev-v1.svg)](https://microbadger.com/images/fredboat/backend:dev-v1 "Get your own image badge on microbadger.com") [![Docker Version](https://images.microbadger.com/badges/version/fredboat/backend:dev-v1.svg)](https://microbadger.com/images/fredboat/backend:dev-v1 "Get your own version badge on microbadger.com")
 
 Please see the main repo for more information on the FredBoat project: [https://github.com/Frederikam/FredBoat](https://github.com/Frederikam/FredBoat)
 
