@@ -25,44 +25,38 @@
 
 package com.fredboat.backend.quarterdeck.config;
 
-import com.fredboat.backend.quarterdeck.Metrics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory;
+import io.prometheus.client.guava.cache.CacheMetricsCollector;
+import io.prometheus.client.hibernate.HibernateStatisticsCollector;
+import io.prometheus.client.logback.InstrumentedAppender;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.filter.AbstractRequestLoggingFilter;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 18.03.18.
  */
 @Configuration
-public class RequestLoggerConfiguration {
+public class MetricsConfiguration {
 
+    //guava cache metrics
     @Bean
-    public AbstractRequestLoggingFilter logFilter() {
-        RequestLogger filter = new RequestLogger();
-        filter.setIncludeQueryString(true);
-        filter.setIncludePayload(true);
-        filter.setMaxPayloadLength(10000);
-        filter.setIncludeHeaders(true);
-        filter.setAfterMessagePrefix("REQUEST DATA : ");
-        return filter;
+    public CacheMetricsCollector cacheMetrics() {
+        return new CacheMetricsCollector().register();
     }
 
-    private static class RequestLogger extends AbstractRequestLoggingFilter {
-        private static final Logger log = LoggerFactory.getLogger(RequestLogger.class);
+    //challenge: call register on the hibernate stats after all database connections are set up
+    @Bean
+    public HibernateStatisticsCollector hibernateStatisticsCollector() {
+        return new HibernateStatisticsCollector();
+    }
 
-        @Override
-        protected void beforeRequest(HttpServletRequest request, String message) {
-            log.debug(message);
-            Metrics.apiRequests.labels(request.getServletPath()).inc();
-        }
+    @Bean
+    public PrometheusMetricsTrackerFactory prometheusMetricsTrackerFactory() {
+        return new PrometheusMetricsTrackerFactory();
+    }
 
-        @Override
-        protected void afterRequest(HttpServletRequest request, String message) {
-            log.debug(message);
-        }
+    @Bean
+    public InstrumentedAppender instrumentedAppender() {
+        return new InstrumentedAppender();
     }
 }

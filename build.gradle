@@ -49,7 +49,7 @@ subprojects {
 
     ext {
         //@formatter:off
-        fredBoatRootVersion         = 'e8b983b344'
+        fredBoatRootVersion         = '3f9b000c5ddee01339e8f07085252423b449f2be'
         springBootVersion           = "${springBootVersion}"
         //@formatter:on
     }

@@ -26,7 +26,9 @@
 package com.fredboat.backend.quarterdeck.config;
 
 import com.fredboat.backend.quarterdeck.config.property.DatabaseConfig;
+import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory;
 import fredboat.db.DatabaseManager;
+import io.prometheus.client.hibernate.HibernateStatisticsCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -57,13 +59,13 @@ public class DatabaseConfiguration {
 
     @Primary
     @Bean
-    public DatabaseWrapper mainDbWrapper() throws InterruptedException {
-        return new DatabaseWrapper(mainDbConn());
+    public DatabaseWrapper mainDbWrapper(DatabaseConnection mainDbConn) {
+        return new DatabaseWrapper(mainDbConn);
     }
 
     @Primary
     @Bean
-    public DatabaseConnection mainDbConn() throws InterruptedException {
+    public DatabaseConnection mainDbConn(DatabaseManager databaseManager) throws InterruptedException {
         //attempt to connect to the database a few times
         // this is relevant in a dockerized environment because after a reboot there is no guarantee that the db
         // container will be started before the fredboat one
@@ -74,7 +76,7 @@ public class DatabaseConfiguration {
                 if (mainDbConn != null) {
                     mainDbConn.shutdown();
                 }
-                mainDbConn = databaseManager().getMainDbConn();
+                mainDbConn = databaseManager.getMainDbConn();
             } catch (Exception e) {
                 log.info("Could not connect to the database. Retrying in a moment...", e);
                 Thread.sleep(6000);
@@ -91,16 +93,16 @@ public class DatabaseConfiguration {
 
     @Bean
     @Nullable
-    public DatabaseWrapper cacheDbWrapper() {
-        DatabaseConnection cacheDbConn = cacheDbConn();
+    public DatabaseWrapper cacheDbWrapper(DatabaseManager databaseManager) {
+        DatabaseConnection cacheDbConn = cacheDbConn(databaseManager);
         return cacheDbConn == null ? null : new DatabaseWrapper(cacheDbConn);
     }
 
     @Bean
     @Nullable
-    public DatabaseConnection cacheDbConn() {
+    public DatabaseConnection cacheDbConn(DatabaseManager databaseManager) {
         try {
-            return databaseManager().getCacheDbConn();
+            return databaseManager.getCacheDbConn();
         } catch (Exception e) {
             String message = "Exception when connecting to cache db";
             log.error(message, e);
@@ -108,23 +110,10 @@ public class DatabaseConfiguration {
         }
     }
 
-//    @Nullable
-//    @Bean
-//    public HibernateStatisticsCollector hibernateStats() {
-//        return null; //todo
-//    }
-//
-//    @Nullable
-//    @Bean
-//    public PrometheusMetricsTrackerFactory hikariStats() {
-//        return null; //todo
-//    }
-
     @Bean
-    public DatabaseManager databaseManager() {
-//                                           HibernateStatisticsCollector hibernateStats,
-//                                           PrometheusMetricsTrackerFactory hikariStats) {
-        DatabaseManager databaseManager = new DatabaseManager(null, null,
+    public DatabaseManager databaseManager(HibernateStatisticsCollector hibernateStats,
+                                           PrometheusMetricsTrackerFactory hikariStats) {
+        DatabaseManager databaseManager = new DatabaseManager(hibernateStats, hikariStats,
                 this.dbConf.getHikariPoolSize(), "Quarterdeck", true,
                 this.dbConf.getMainJdbcUrl(), this.dbConf.getCacheJdbcUrl(),
                 (puName, dataSource, properties, entityPackages) -> {

@@ -43,7 +43,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().anyRequest().authenticated()
+        http.csrf().disable().authorizeRequests()
+                .antMatchers("/metrics").permitAll() //these should rather be handled by nginx whitelisting (or other proxy choices)
+                .anyRequest().authenticated()
                 .and().httpBasic()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

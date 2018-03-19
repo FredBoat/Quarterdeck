@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.config;
 
+import fredboat.db.DatabaseManager;
 import fredboat.db.repositories.api.BlacklistRepo;
 import fredboat.db.repositories.api.GuildConfigRepo;
 import fredboat.db.repositories.api.GuildDataRepo;
@@ -83,7 +84,7 @@ public class RepoConfiguration {
 
     //cache db repos
     @Bean
-    public SearchResultRepo searchResultRepo(DatabaseConfiguration dbConfiguration) {
-        return new SqlSauceSearchResultRepo(dbConfiguration.cacheDbWrapper()); //todo noop / reloading
+    public SearchResultRepo searchResultRepo(DatabaseConfiguration dbConfiguration, DatabaseManager databaseManager) {
+        return new SqlSauceSearchResultRepo(dbConfiguration.cacheDbWrapper(databaseManager)); //todo noop / reloading
     }
 }
