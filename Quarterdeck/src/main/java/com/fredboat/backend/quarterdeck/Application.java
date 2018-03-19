@@ -37,7 +37,6 @@ import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -52,12 +51,6 @@ import java.time.format.DateTimeFormatter;
         DataSourceTransactionManagerAutoConfiguration.class,
         HibernateJpaAutoConfiguration.class,
         FlywayAutoConfiguration.class
-})
-@ComponentScan(basePackages = {
-        "com.fredboat.backend.quarterdeck.config",
-        "com.fredboat.backend.quarterdeck.config.property",
-        "com.fredboat.backend.quarterdeck.info",
-        "com.fredboat.backend.quarterdeck.rest",
 })
 public class Application {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
