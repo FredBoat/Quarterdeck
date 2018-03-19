@@ -1,0 +1,12 @@
+FROM arm64v8/openjdk:9-jdk-slim
+
+ENV ENV docker
+
+WORKDIR /opt/Quarterdeck
+
+COPY quarterdeck.example.yaml /opt/Quarterdeck/quarterdeck.yaml
+COPY Quarterdeck.jar /opt/Quarterdeck/Quarterdeck.jar
+
+EXPOSE 4269
+
+ENTRYPOINT ["java", "-Xmx64m", "-jar", "Quarterdeck.jar"]
