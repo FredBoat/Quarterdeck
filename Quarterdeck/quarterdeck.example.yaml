@@ -92,8 +92,6 @@ database:
     jdbcUrl: ""
 
 # tune these according to your needs, or just leave them as is.
-debug: true               # true to turn on debug logging
-trace: false              # true to turn on trace logging
 logging:
   file:
     max-history: 30
