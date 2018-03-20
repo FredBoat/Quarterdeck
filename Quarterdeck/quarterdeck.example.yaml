@@ -55,6 +55,10 @@ spring:
   http:
     converters:
       preferred-json-mapper: gson    # dont touch this
+  output:
+    ansi:
+      enabled: detect                # for developers: setting this to "always" will force colored logs in your console
+
 server:
   port: 4269                         # port of the backend
 
@@ -86,3 +90,17 @@ database:
     # If you do not provide a jdbc url for the cache database, FredBoat will still work (most likely), but may have a degraded
     # performance, especially in high usage environments and when using Spotify playlists.
     jdbcUrl: ""
+
+# tune these according to your needs, or just leave them as is.
+debug: true               # true to turn on debug logging
+trace: false              # true to turn on trace logging
+logging:
+  file:
+    max-history: 30
+    max-size: 1GB
+  path: ./logs/
+
+  level:
+    root: INFO
+    fredboat: DEBUG
+    com.fredboat: DEBUG

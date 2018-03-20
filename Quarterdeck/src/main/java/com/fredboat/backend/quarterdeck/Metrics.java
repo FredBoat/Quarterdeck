@@ -47,8 +47,6 @@ public class Metrics {
 
     public Metrics(InstrumentedAppender prometheusAppender, HibernateStatisticsCollector hibernateStats,
                    DatabaseWrapper mainDbWrapper, DatabaseConfiguration dbConfig, DatabaseManager databaseManager) {
-        log.info("Setting up metrics");
-
         //log metrics
         final LoggerContext factory = (LoggerContext) LoggerFactory.getILoggerFactory();
         final ch.qos.logback.classic.Logger root = factory.getLogger(Logger.ROOT_LOGGER_NAME);
