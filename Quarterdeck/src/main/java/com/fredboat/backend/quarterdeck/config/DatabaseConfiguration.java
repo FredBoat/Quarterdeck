@@ -26,8 +26,8 @@
 package com.fredboat.backend.quarterdeck.config;
 
 import com.fredboat.backend.quarterdeck.config.property.DatabaseConfig;
+import com.fredboat.backend.quarterdeck.db.DatabaseManager;
 import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory;
-import fredboat.db.DatabaseManager;
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

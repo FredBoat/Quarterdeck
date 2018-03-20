@@ -23,34 +23,24 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
+package com.fredboat.backend.quarterdeck.db.repositories.api;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
-import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fredboat.backend.quarterdeck.db.entities.main.BlacklistEntry;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 05.02.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "prefix/")
-public class PrefixController extends EntityController<Prefix.GuildBotId, Prefix> {
+public interface BlacklistRepo extends Repo<Long, BlacklistEntry> {
 
-    protected final PrefixRepo prefixRepo;
-
-    public PrefixController(PrefixRepo repo) {
-        super(repo);
-        this.prefixRepo = repo;
-    }
-
-    @Nullable
-    @PostMapping("/getraw")
-    public String getPrefix(@RequestBody Prefix.GuildBotId id) {
-        return this.prefixRepo.getPrefix(id);
-    }
+    /**
+     * @return the whole blacklist aka all entries. Not a lightweight operation, and shouldn't be called outside
+     * of initial population of the blacklist (and probably not even then, reworking the ratelimiter is planned).
+     *
+     * @deprecated This loads a ton of data all at once. A better endpoint will be provided in the future, if a
+     * legitimate use case can be found. Meanwhile, {@link BlacklistRepo#fetch(Object)}} + a cache are good enough.
+     */
+    @Deprecated
+    List<BlacklistEntry> loadBlacklist();
 }

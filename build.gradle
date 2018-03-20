@@ -49,8 +49,15 @@ subprojects {
 
     ext {
         //@formatter:off
-        fredBoatRootVersion         = '3f9b000c5ddee01339e8f07085252423b449f2be'
+        fredBoatRootVersion         = '308f4af83b'
         springBootVersion           = "${springBootVersion}"
+
+        gsonVersion                 = '2.8.2'
+        sqlsauceVersion             = '0.0.13'
+        hibernateVersion            = '5.2.14.Final'
+        flywayVersion               = '5.0.7'
+        dsProxyVersion              = '1.4.7'
+        jaxbApiVersion              = '2.3.0'
         //@formatter:on
     }
 }

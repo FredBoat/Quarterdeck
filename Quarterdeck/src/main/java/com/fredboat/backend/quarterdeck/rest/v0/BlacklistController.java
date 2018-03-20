@@ -25,9 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0;
 
-import fredboat.db.entity.main.BlacklistEntry;
-import fredboat.db.repositories.api.BlacklistRepo;
-import fredboat.db.repositories.impl.rest.RestBlacklistRepo;
+import com.fredboat.backend.quarterdeck.db.entities.main.BlacklistEntry;
+import com.fredboat.backend.quarterdeck.db.repositories.api.BlacklistRepo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,8 +37,8 @@ import java.util.List;
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + RestBlacklistRepo.PATH)
-public class BlacklistController extends EntityController<Long, BlacklistEntry> implements BlacklistRepo {
+@RequestMapping("/" + EntityController.VERSION_PATH + "blacklist/")
+public class BlacklistController extends EntityController<Long, BlacklistEntry> {
 
     protected final BlacklistRepo blacklistRepo;
 
@@ -49,7 +48,6 @@ public class BlacklistController extends EntityController<Long, BlacklistEntry> 
     }
 
     @GetMapping("/loadall")
-    @Override
     public List<BlacklistEntry> loadBlacklist() {
         return this.blacklistRepo.loadBlacklist();
     }

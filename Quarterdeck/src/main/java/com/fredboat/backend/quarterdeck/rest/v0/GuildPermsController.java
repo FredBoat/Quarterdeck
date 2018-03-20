@@ -25,9 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0;
 
-import fredboat.db.entity.main.GuildPermissions;
-import fredboat.db.repositories.api.GuildPermsRepo;
-import fredboat.db.repositories.impl.rest.RestGuildPermsRepo;
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
+import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPermsRepo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,8 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + RestGuildPermsRepo.PATH)
-public class GuildPermsController extends EntityController<String, GuildPermissions> implements GuildPermsRepo {
+@RequestMapping("/" + EntityController.VERSION_PATH + "guildperms/")
+public class GuildPermsController extends EntityController<String, GuildPermissions> {
 
     public GuildPermsController(GuildPermsRepo repo) {
         super(repo);

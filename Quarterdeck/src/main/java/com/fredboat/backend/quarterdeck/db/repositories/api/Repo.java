@@ -23,34 +23,33 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
-
-import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
-import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Nullable;
+package com.fredboat.backend.quarterdeck.db.repositories.api;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 05.02.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "prefix/")
-public class PrefixController extends EntityController<Prefix.GuildBotId, Prefix> {
+public interface Repo<I, E> {
 
-    protected final PrefixRepo prefixRepo;
+    /**
+     * @param id
+     *         of the entity that shall be deleted
+     */
+    void delete(I id);
 
-    public PrefixController(PrefixRepo repo) {
-        super(repo);
-        this.prefixRepo = repo;
-    }
+    /**
+     * @param id
+     *         id of the entity that shall be returned
+     *
+     * @return the entity of the provided id, if such an entity exists in the database, a default entity otherwise.
+     * Expect this to return a entity constructed through its default constructor, with setId(id) called on it.
+     */
+    E fetch(I id);
 
-    @Nullable
-    @PostMapping("/getraw")
-    public String getPrefix(@RequestBody Prefix.GuildBotId id) {
-        return this.prefixRepo.getPrefix(id);
-    }
+    /**
+     * @param entity
+     *         entity to be merged into the database
+     *
+     * @return the merged entity
+     */
+    E merge(E entity);
 }

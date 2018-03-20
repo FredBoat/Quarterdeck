@@ -61,7 +61,16 @@ bootJar {
 }
 
 dependencies {
-    compile group: 'com.github.Frederikam.FredBoat', name: 'Database', version: fredBoatRootVersion
+    //actually just the Shared module, jitpack falls back to top level project naming if there is only 1 artifact
+    compile group: 'com.github.Frederikam', name: 'FredBoat', version: fredBoatRootVersion
+
+    compile group: 'space.npstr.SqlSauce', name: 'sqlsauce-core', version: sqlsauceVersion
+    compile group: 'org.hibernate', name: 'hibernate-ehcache', version: hibernateVersion
+    compile group: 'org.flywaydb', name: 'flyway-core', version: flywayVersion
+    compile group: 'net.ttddyy', name: 'datasource-proxy', version: dsProxyVersion
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: jaxbApiVersion // required by hibernate for java 9
+
+    compile group: 'com.google.code.gson', name: 'gson', version: gsonVersion
 
     compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion") {

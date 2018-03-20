@@ -23,34 +23,25 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
+package com.fredboat.backend.quarterdeck.db.repositories.api;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
-import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Nullable;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 05.02.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "prefix/")
-public class PrefixController extends EntityController<Prefix.GuildBotId, Prefix> {
+public interface PrefixRepo extends Repo<Prefix.GuildBotId, Prefix> {
 
-    protected final PrefixRepo prefixRepo;
-
-    public PrefixController(PrefixRepo repo) {
-        super(repo);
-        this.prefixRepo = repo;
-    }
-
+    /**
+     * @param id
+     *         if of the requested prefix
+     *
+     * @return prefix (the actual string) of the prefix entity with the requested id, or null if no prefix has been set.
+     * Basically a shortcut to loading the whole entity and then getting the prefix property, because prefixes are in
+     * high demand, and we want to avoid the cruft of loading an entity object when all we are interested in is a String.
+     */
     @Nullable
-    @PostMapping("/getraw")
-    public String getPrefix(@RequestBody Prefix.GuildBotId id) {
-        return this.prefixRepo.getPrefix(id);
-    }
+    String getPrefix(Prefix.GuildBotId id);
 }

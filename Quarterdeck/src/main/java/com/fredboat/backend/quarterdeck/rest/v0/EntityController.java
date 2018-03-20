@@ -25,8 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0;
 
-import fredboat.db.repositories.api.Repo;
-import fredboat.db.repositories.impl.rest.RestRepo;
+import com.fredboat.backend.quarterdeck.db.repositories.api.Repo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import space.npstr.sqlsauce.entities.SaucedEntity;
@@ -35,8 +34,6 @@ import java.io.Serializable;
 
 /**
  * Created by napster on 17.02.18.
- * <p>
- * Counterpart to the {@link RestRepo}
  * <p>
  * Oh no, all those PostMappings are totally against Https/Rest principles...too bad that GET / DELETE do not support
  * RequestBodies, and our Ids can be a bit more than a simple string / long. So they are passed as json as part of the

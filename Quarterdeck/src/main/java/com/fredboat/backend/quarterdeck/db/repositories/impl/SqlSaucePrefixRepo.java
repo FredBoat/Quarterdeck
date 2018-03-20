@@ -23,34 +23,42 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
+package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
 import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
+import space.npstr.sqlsauce.DatabaseWrapper;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 05.02.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "prefix/")
-public class PrefixController extends EntityController<Prefix.GuildBotId, Prefix> {
+@Component
+public class SqlSaucePrefixRepo extends SqlSauceRepo<Prefix.GuildBotId, Prefix> implements PrefixRepo {
 
-    protected final PrefixRepo prefixRepo;
-
-    public PrefixController(PrefixRepo repo) {
-        super(repo);
-        this.prefixRepo = repo;
+    public SqlSaucePrefixRepo(DatabaseWrapper dbWrapper) {
+        super(dbWrapper, Prefix.class);
     }
 
     @Nullable
-    @PostMapping("/getraw")
-    public String getPrefix(@RequestBody Prefix.GuildBotId id) {
-        return this.prefixRepo.getPrefix(id);
+    @Override
+    public String getPrefix(Prefix.GuildBotId id) {
+        //language=JPAQL
+        String query = "SELECT p.prefix FROM Prefix p WHERE p.id = :id";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        List<String> result = this.dbWrapper.selectJpqlQuery(query, params, String.class);
+
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.get(0);
+        }
     }
 }

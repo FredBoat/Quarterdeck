@@ -23,34 +23,36 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
+package com.fredboat.backend.quarterdeck.db.migrations.main;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
-import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
-import javax.annotation.Nullable;
+import java.sql.Connection;
+import java.sql.Statement;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 23.01.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "prefix/")
-public class PrefixController extends EntityController<Prefix.GuildBotId, Prefix> {
+public class V4__CreateGuildData implements JdbcMigration {
 
-    protected final PrefixRepo prefixRepo;
+    private static final String DROP
+            = "DROP TABLE IF EXISTS public.guild_data;";
 
-    public PrefixController(PrefixRepo repo) {
-        super(repo);
-        this.prefixRepo = repo;
-    }
+    private static final String CREATE
+            = "CREATE TABLE public.guild_data "
+            + "( "
+            + "    guild_id      BIGINT NOT NULL, "
+            + "    ts_hello_sent BIGINT NOT NULL, "
+            + "    CONSTRAINT guild_data_pkey PRIMARY KEY (guild_id) "
+            + ");";
 
-    @Nullable
-    @PostMapping("/getraw")
-    public String getPrefix(@RequestBody Prefix.GuildBotId id) {
-        return this.prefixRepo.getPrefix(id);
+    @Override
+    public void migrate(Connection connection) throws Exception {
+        try (Statement drop = connection.createStatement()) {
+            drop.execute(DROP);
+        }
+        try (Statement create = connection.createStatement()) {
+            create.execute(CREATE);
+        }
     }
 }

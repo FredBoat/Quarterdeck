@@ -27,7 +27,7 @@ package com.fredboat.backend.quarterdeck;
 
 import ch.qos.logback.classic.LoggerContext;
 import com.fredboat.backend.quarterdeck.config.DatabaseConfiguration;
-import fredboat.db.DatabaseManager;
+import com.fredboat.backend.quarterdeck.db.DatabaseManager;
 import io.prometheus.client.Counter;
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
 import io.prometheus.client.hotspot.DefaultExports;

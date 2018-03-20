@@ -23,34 +23,28 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
+package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
-import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fredboat.backend.quarterdeck.db.entities.main.BlacklistEntry;
+import com.fredboat.backend.quarterdeck.db.repositories.api.BlacklistRepo;
+import org.springframework.stereotype.Component;
+import space.npstr.sqlsauce.DatabaseWrapper;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 05.02.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "prefix/")
-public class PrefixController extends EntityController<Prefix.GuildBotId, Prefix> {
+@Component
+public class SqlSauceBlacklistRepo extends SqlSauceRepo<Long, BlacklistEntry> implements BlacklistRepo {
 
-    protected final PrefixRepo prefixRepo;
-
-    public PrefixController(PrefixRepo repo) {
-        super(repo);
-        this.prefixRepo = repo;
+    public SqlSauceBlacklistRepo(DatabaseWrapper dbWrapper) {
+        super(dbWrapper, BlacklistEntry.class);
     }
 
-    @Nullable
-    @PostMapping("/getraw")
-    public String getPrefix(@RequestBody Prefix.GuildBotId id) {
-        return this.prefixRepo.getPrefix(id);
+    @Override
+    public List<BlacklistEntry> loadBlacklist() {
+        return this.dbWrapper.loadAll(BlacklistEntry.class);
     }
+
 }

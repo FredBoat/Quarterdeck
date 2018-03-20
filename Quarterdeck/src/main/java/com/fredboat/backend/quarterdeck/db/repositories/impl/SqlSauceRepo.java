@@ -23,34 +23,48 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
+package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
-import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fredboat.backend.quarterdeck.db.repositories.api.Repo;
+import space.npstr.sqlsauce.DatabaseWrapper;
+import space.npstr.sqlsauce.entities.SaucedEntity;
+import space.npstr.sqlsauce.fp.types.EntityKey;
 
-import javax.annotation.Nullable;
+import java.io.Serializable;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 05.02.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "prefix/")
-public class PrefixController extends EntityController<Prefix.GuildBotId, Prefix> {
+public abstract class SqlSauceRepo<I extends Serializable, E extends SaucedEntity<I, E>> implements Repo<I, E> {
 
-    protected final PrefixRepo prefixRepo;
+    protected final DatabaseWrapper dbWrapper;
+    protected final Class<E> entityClass;
 
-    public PrefixController(PrefixRepo repo) {
-        super(repo);
-        this.prefixRepo = repo;
+    public SqlSauceRepo(DatabaseWrapper dbWrapper, Class<E> entityClass) {
+        this.dbWrapper = dbWrapper;
+        this.entityClass = entityClass;
     }
 
-    @Nullable
-    @PostMapping("/getraw")
-    public String getPrefix(@RequestBody Prefix.GuildBotId id) {
-        return this.prefixRepo.getPrefix(id);
+    public DatabaseWrapper getDatabaseWrapper() {
+        return this.dbWrapper;
+    }
+
+    public Class<E> getEntityClass() {
+        return this.entityClass;
+    }
+
+    @Override
+    public void delete(I id) {
+        this.dbWrapper.deleteEntity(EntityKey.of(id, this.entityClass));
+    }
+
+    @Override
+    public E fetch(I id) {
+        return this.dbWrapper.getOrCreate(EntityKey.of(id, this.entityClass));
+    }
+
+    @Override
+    public E merge(E entity) {
+        return this.dbWrapper.merge(entity);
     }
 }

@@ -52,7 +52,7 @@ import java.util.Set;
 @RequestMapping("/metrics")
 public class MetricsController {
 
-    private CollectorRegistry registry;
+    private final CollectorRegistry registry;
 
     public MetricsController() {
         this.registry = CollectorRegistry.defaultRegistry;

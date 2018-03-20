@@ -23,35 +23,45 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
+package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
+import com.fredboat.backend.quarterdeck.config.DatabaseConfiguration;
+import com.fredboat.backend.quarterdeck.db.DatabaseManager;
 import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResult;
 import com.fredboat.backend.quarterdeck.db.repositories.api.SearchResultRepo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 05.02.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "searchresult/")
-public class SearchResultController extends EntityController<SearchResult.SearchResultId, SearchResult> {
+@Component
+public class SqlSauceSearchResultRepo extends SqlSauceRepo<SearchResult.SearchResultId, SearchResult>
+        implements SearchResultRepo {
 
-    protected final SearchResultRepo searchResultRepo;
-
-    public SearchResultController(SearchResultRepo repo) {
-        super(repo);
-        this.searchResultRepo = repo;
+    public SqlSauceSearchResultRepo(DatabaseConfiguration dbConfiguration, DatabaseManager databaseManager) {
+        super(dbConfiguration.cacheDbWrapper(databaseManager), SearchResult.class); //todo noop / reloading
     }
 
     @Nullable
-    @PostMapping("/getmaxaged")
-    public SearchResult getMaxAged(@RequestBody SearchResult.SearchResultId id, @RequestParam("millis") long maxAgeMillis) {
-        return this.searchResultRepo.getMaxAged(id, maxAgeMillis);
+    @Override
+    public SearchResult getMaxAged(SearchResult.SearchResultId id, long maxAgeMillis) {
+        //language=JPAQL
+        String query = "SELECT sr FROM SearchResult sr WHERE sr.searchResultId = :id AND sr.timestamp > :oldest";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        params.put("oldest", maxAgeMillis < 0 ? 0 : System.currentTimeMillis() - maxAgeMillis);
+
+        List<SearchResult> queryResult = this.dbWrapper.selectJpqlQuery(query, params, SearchResult.class, 1);
+
+        if (queryResult.isEmpty()) {
+            return null;
+        } else {
+            return queryResult.get(0);
+        }
     }
 }

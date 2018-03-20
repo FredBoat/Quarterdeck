@@ -25,9 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0;
 
-import fredboat.db.entity.main.GuildData;
-import fredboat.db.repositories.api.GuildDataRepo;
-import fredboat.db.repositories.impl.rest.RestGuildDataRepo;
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildData;
+import com.fredboat.backend.quarterdeck.db.repositories.api.GuildDataRepo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,8 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by napster on 17.02.18.
  */
 @RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + RestGuildDataRepo.PATH)
-public class GuildDataController extends EntityController<Long, GuildData> implements GuildDataRepo {
+@RequestMapping("/" + EntityController.VERSION_PATH + "guilddata/")
+public class GuildDataController extends EntityController<Long, GuildData> {
 
     public GuildDataController(GuildDataRepo repo) {
         super(repo);
