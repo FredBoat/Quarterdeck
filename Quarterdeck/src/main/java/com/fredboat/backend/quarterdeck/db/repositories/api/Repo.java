@@ -25,6 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.db.repositories.api;
 
+import java.util.Map;
+
 /**
  * Created by napster on 05.02.18.
  */
@@ -52,4 +54,18 @@ public interface Repo<I, E> {
      * @return the merged entity
      */
     E merge(E entity);
+
+
+    /**
+     * Patch an entity. A patch allows for partial updates of an entity, the caller is not required to send the full
+     * entity if they want to change a subset of its values.
+     *
+     * @param id
+     *         id of the entitiy that shall be patched
+     * @param partialUpdate
+     *         a map of the values that shall be patched. caution when processing them is required
+     *
+     * @return the full entity with the patch applied
+     */
+    E patch(I id, Map<String, Object> partialUpdate);
 }

@@ -23,48 +23,31 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.db.repositories.impl;
+package com.fredboat.backend.quarterdeck.db.repositories.api;
 
-import com.fredboat.backend.quarterdeck.db.repositories.api.RepoAdapter;
-import space.npstr.sqlsauce.DatabaseWrapper;
-import space.npstr.sqlsauce.entities.SaucedEntity;
-import space.npstr.sqlsauce.fp.types.EntityKey;
-
-import java.io.Serializable;
+import java.util.Map;
 
 /**
- * Created by napster on 05.02.18.
+ * Created by napster on 21.03.18.
  */
-public abstract class SqlSauceRepo<I extends Serializable, E extends SaucedEntity<I, E>> extends RepoAdapter<I, E> {
-
-    protected final DatabaseWrapper dbWrapper;
-    protected final Class<E> entityClass;
-
-    public SqlSauceRepo(DatabaseWrapper dbWrapper, Class<E> entityClass) {
-        this.dbWrapper = dbWrapper;
-        this.entityClass = entityClass;
-    }
-
-    public DatabaseWrapper getDatabaseWrapper() {
-        return this.dbWrapper;
-    }
-
-    public Class<E> getEntityClass() {
-        return this.entityClass;
-    }
-
+public class RepoAdapter<I, E> implements Repo<I, E> {
     @Override
     public void delete(I id) {
-        this.dbWrapper.deleteEntity(EntityKey.of(id, this.entityClass));
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
     public E fetch(I id) {
-        return this.dbWrapper.getOrCreate(EntityKey.of(id, this.entityClass));
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
     public E merge(E entity) {
-        return this.dbWrapper.merge(entity);
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
+    public E patch(I id, Map<String, Object> partialUpdate) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

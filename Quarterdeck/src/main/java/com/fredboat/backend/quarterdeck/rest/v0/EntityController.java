@@ -39,7 +39,7 @@ import java.io.Serializable;
  * RequestBodies, and our Ids can be a bit more than a simple string / long. So they are passed as json as part of the
  * body.
  */
-public abstract class EntityController<I extends Serializable, E extends SaucedEntity<I, E>> implements Repo<I, E> {
+public abstract class EntityController<I extends Serializable, E extends SaucedEntity<I, E>> {
 
     public static final int API_VERSION = 0;
     public static final String VERSION_PATH = "v" + API_VERSION + "/";
@@ -50,19 +50,16 @@ public abstract class EntityController<I extends Serializable, E extends SaucedE
         this.repo = repo;
     }
 
-    @Override
     @PostMapping("/delete")
     public void delete(@RequestBody I id) {
         this.repo.delete(id);
     }
 
-    @Override
     @PostMapping("/fetch")
     public E fetch(@RequestBody I id) {
         return this.repo.fetch(id);
     }
 
-    @Override
     @PostMapping("/merge")
     public E merge(@RequestBody E entity) {
         return this.repo.merge(entity);
