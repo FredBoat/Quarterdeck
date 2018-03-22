@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * Created by napster on 21.03.18.
@@ -60,6 +61,14 @@ public class RestExceptionHandler {
                 + "\nYour request was: " + request.getHttpMethod() + " " + request.getRequest().getRequestURI();
 
         return handleError(request, message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleWrongPathVariable(MethodArgumentTypeMismatchException e, WebRequest request) {
+        String message = String.format("The parameter '%s' needs to be of type '%s', which your provided value '%s' is not.",
+                e.getName(), e.getRequiredType(), e.getValue());
+
+        return handleError(request, message, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<Object> handleError(WebRequest request, String message, HttpStatus status) {
