@@ -50,7 +50,7 @@ import java.util.Set;
  * We try to enhance Spring's exception handling by returning an {@link ErrorMessage} object with a helpful message,
  * as well as debug information.
  *
- * This is also the place to
+ * This is also the place to add {@link ExceptionHandler}s for our own Exceptions
  */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -115,7 +115,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
-    
+
     // ################################################################################
     // ##                        ErrorMessage defaults and creation
     // ################################################################################
