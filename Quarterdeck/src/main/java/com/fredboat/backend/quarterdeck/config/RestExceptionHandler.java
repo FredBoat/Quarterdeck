@@ -34,6 +34,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 
 /**
  * Created by napster on 21.03.18.
@@ -54,11 +55,53 @@ public class RestExceptionHandler {
         log.error("Caught unhandled RuntimeException. Please add en ExceptionHandler for it that gives comprehensive "
                 + "and secure feedback to the caller of the API about what went wrong.", e);
 
-        MultiValueMap<String, String> header = new HttpHeaders();
-        header.add("Content-Type", "text/plain");
+        String message = UNCAUGHT_EXCEPTION_MESSAGE
+                + "\n\nYou are user: " + (request.getRemoteUser() == null ? "anonymous" : request.getRemoteUser())
+                + "\nYour request was: " + request.getHttpMethod() + " " + request.getRequest().getRequestURI();
 
-        String message = UNCAUGHT_EXCEPTION_MESSAGE + "\n\n" + "Path of your request: " + request.getRequest().getRequestURI();
-        return new ResponseEntity<>(message, header, HttpStatus.BAD_REQUEST);
+        return handleError(request, message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    private ResponseEntity<Object> handleError(WebRequest request, String message, HttpStatus status) {
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        Object response;
+        String contentType = request.getHeader("Content-Type");
+        if (contentType != null && contentType.contains("application/json")) {
+            headers.add("Content-Type", "application/json");
+            response = new ErrorMessage(status.value(), message);
+        } else {
+            headers.add("Content-Type", "text/plain");
+            response = "Status " + status.value() + " " + status.getReasonPhrase() + "\n" + message;
+        }
+
+        return new ResponseEntity<>(response, headers, status);
+    }
+
+    @SuppressWarnings("unused")
+    private static class ErrorMessage {
+
+        private int status;
+        private String developerMessage;
+
+        public ErrorMessage(int status, String developerMessage) {
+            this.status = status;
+            this.developerMessage = developerMessage;
+        }
+
+        public String getDeveloperMessage() {
+            return this.developerMessage;
+        }
+
+        public void setDeveloperMessage(String developerMessage) {
+            this.developerMessage = developerMessage;
+        }
+
+        public int getStatus() {
+            return this.status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+    }
 }
