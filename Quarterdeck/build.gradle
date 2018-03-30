@@ -85,16 +85,20 @@ dependencies {
     optional "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
 
     //testing
-    //includes mockito and hamcrest
+    //includes mockito, hamcrest and jayway
     testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion") {
-        exclude group: 'junit', module: 'junit'
+        exclude group: 'junit', module: 'junit' //don't drag in junit 4
+        exclude group: 'com.vaadin.external.google', module: 'android-json' //don't drag in weird conflicting JSONObject
     }
     testCompile group: 'org.springframework.security', name: 'spring-security-test', version: springSecurityTestVersion
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: jUnitVersion
+    //required for the docker compose rule https://github.com/palantir/docker-compose-rule/issues/224
+    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-migrationsupport', version: jUnitVersion
     // To avoid compiler warnings about @API annotations in JUnit code.
     testCompileOnly group: 'org.apiguardian', name: 'apiguardian-api', version: apiGuardianVersion
-    testCompile group: 'com.jayway.jsonpath', name: 'json-path-assert', version: jsonPathAssertVersion
+    //allows us to fire up docker containers to test with, for example our postgres database
+    testCompile group: 'com.palantir.docker.compose', name: 'docker-compose-rule-junit4', version: dockerComposeRuleVersion
 }
 
 //required by spring boot configuration processor

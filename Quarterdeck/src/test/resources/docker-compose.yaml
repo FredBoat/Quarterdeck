@@ -1,0 +1,6 @@
+version: '3'
+services:
+  db:
+    image: fredboat/postgres:latest
+    ports:
+      - 5433:5432

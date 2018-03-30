@@ -30,7 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Created by napster on 30.03.18.
  */
-@ExtendWith(LogExceptionExtension.class)
+@ExtendWith({LogExceptionExtension.class, PostgresDockerExtension.class})
 public class BaseTest {
     
 }

@@ -1,0 +1,18 @@
+security:
+  admins:
+    - name: 123
+      pass: 123
+
+spring:
+  http:
+    converters:
+      preferred-json-mapper: gson
+  output:
+    ansi:
+      enabled: always
+
+database:
+  main:
+    jdbcUrl: "jdbc:postgresql://localhost:5433/fredboat?user=fredboat" # local db
+  cache:
+    jdbcUrl: "jdbc:postgresql://localhost:5433/fredboat_cache?user=fredboat" # local db

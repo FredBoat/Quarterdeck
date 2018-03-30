@@ -3,6 +3,7 @@ allprojects {
         mavenCentral()                     // main maven repo
         jcenter()                          // JDA and some other stuff
         maven { url 'https://dl.bintray.com/napster/SqlSauce' }
+        maven { url 'https://dl.bintray.com/palantir/releases' }
         mavenLocal()                       // useful for developing
         maven { url "https://jitpack.io" } // build projects directly from github
     }
@@ -65,6 +66,7 @@ subprojects {
         mockitoVersion              = '2.16.0'
         jsonPathAssertVersion       = '2.4.0'
         springSecurityTestVersion   = '5.0.3.RELEASE'
+        dockerComposeRuleVersion    = '0.33.0'
         //@formatter:on
     }
 }

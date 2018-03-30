@@ -95,6 +95,12 @@ higher long values.
 - camelCase for attributes. camelCase is a Java and Javascript convention. It does clash with postgres' case insensitive 
 and therefore snake_case tables and columns, so if we using changefeeds a function will have to be added to convert those.
 
+
+## Building Quarterdeck
+To run tests against our postgres database, quarterdeck requires docker and docker-compose installed, as well an 
+unoccupied port 5433.
+
+
 ## Contributing
 If you are interested, you can read about contributing to this project [here](https://github.com/Frederikam/FredBoat/blob/master/CONTRIBUTING.md).
 
