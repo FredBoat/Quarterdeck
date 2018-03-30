@@ -60,6 +60,10 @@ bootJar {
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     //actually just the Shared module, jitpack falls back to top level project naming if there is only 1 artifact
     compile group: 'com.github.Frederikam', name: 'FredBoat', version: fredBoatRootVersion
@@ -78,8 +82,19 @@ dependencies {
     }
     compile "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-security:$springBootVersion"
-    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     optional "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
+
+    //testing
+    //includes mockito and hamcrest
+    testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion") {
+        exclude group: 'junit', module: 'junit'
+    }
+    testCompile group: 'org.springframework.security', name: 'spring-security-test', version: springSecurityTestVersion
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
+    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: jUnitVersion
+    // To avoid compiler warnings about @API annotations in JUnit code.
+    testCompileOnly group: 'org.apiguardian', name: 'apiguardian-api', version: apiGuardianVersion
+    testCompile group: 'com.jayway.jsonpath', name: 'json-path-assert', version: jsonPathAssertVersion
 }
 
 //required by spring boot configuration processor
