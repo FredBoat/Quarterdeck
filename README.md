@@ -77,9 +77,9 @@ Concrete examples:
 ```
 
 Supporting the following http requests:
-GET: return the existing or default entity
-DELETE: reset the entity
-PATCH: update one, several, or all attributes of an entity
+- GET: return the existing or default entity
+- DELETE: reset the entity
+- PATCH: update one, several, or all attributes of an entity
 
 
 
@@ -88,12 +88,12 @@ PATCH: update one, several, or all attributes of an entity
 
 Besides doing a best effort to comply with the various existing RFCs out there, here are a few conventions we adhere to
 from v1 ongoing:
-- Java longs and any other number values taking up more than 32 bits are sent as a String.
+- Java longs and any other number values taking up more than 32 bits are sent as a string.
 While JSON specs don't seem to set an explicit limit to what a number can be, in practice 
 there are clients that will parse a JSON number as a double, leading to precision loss for
 higher long values.
-- camelCase for attributes. camelCase is a Java and Javascript convention. It does clash with postgres' case insensitive 
-and therefore snake_case tables and columns, so if we using changefeeds a function will have to be added to convert those.
+- camelCase for attributes. camelCase is a Java and JavaScript convention. It does clash with postgres' case insensitive 
+and therefore snake_case tables and columns, so if we are going to use changefeeds a function will have to be added to convert those.
 
 
 ## Building Quarterdeck
