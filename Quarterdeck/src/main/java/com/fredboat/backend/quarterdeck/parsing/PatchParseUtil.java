@@ -32,11 +32,27 @@ import java.util.Map;
  */
 public class PatchParseUtil {
 
-    public static long parseLong(String input) {
-        try {
-            return Long.parseLong(input);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse long value: " + input, e); //todo what exception class to use?
+    /**
+     * @return the long parsed from the provided map of attributes and provided key
+     *
+     * @throws LongParseException
+     *         If we were not able to parse the input into a long.
+     */
+    public static long parseLong(String key, Map<String, Object> attributes) {
+        Object value = attributes.get(key);
+        if (value instanceof Long) {
+            return (long) value;
+        } else if (value instanceof Number) {
+            //this can lead to precision loss, but only for values that would be anyways outside of the expected long range
+            return ((Number) value).longValue();
+        } else if (value instanceof String) {
+            try {
+                return Long.parseLong((String) (value));
+            } catch (Exception e) {
+                throw new LongParseException(key, value);
+            }
+        } else {
+            throw new LongParseException(key, value);
         }
     }
 

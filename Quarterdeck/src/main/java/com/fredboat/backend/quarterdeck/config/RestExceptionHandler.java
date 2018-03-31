@@ -26,6 +26,7 @@
 package com.fredboat.backend.quarterdeck.config;
 
 import com.fredboat.backend.quarterdeck.parsing.LanguageParseException;
+import com.fredboat.backend.quarterdeck.parsing.LongParseException;
 import com.fredboat.backend.quarterdeck.parsing.ParseCastException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +110,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     // ################################################################################
 
 
-    @ExceptionHandler({ParseCastException.class, LanguageParseException.class})
+    @ExceptionHandler({ParseCastException.class, LanguageParseException.class, LongParseException.class})
     public ResponseEntity<Object> handleParseException(Exception e, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ErrorMessage message = buildErrorMessage(status, e.getMessage(), request);
