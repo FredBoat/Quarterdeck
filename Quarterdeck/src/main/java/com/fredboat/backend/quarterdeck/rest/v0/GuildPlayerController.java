@@ -23,24 +23,10 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.parsing;
+package com.fredboat.backend.quarterdeck.rest.v0;
 
 /**
- * Created by napster on 31.03.18.
+ * Created by napster on 28.03.18.
  */
-public class LongParseException extends RuntimeException {
-
-    private final String key;
-    private final Object value;
-
-    public LongParseException(String key, Object value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    @Override
-    public String getMessage() {
-        return "Your provided value " + this.value.toString() + " for key " + this.key
-                + " is neither a number not a string that can be parsed into a long.";
-    }
+public class GuildPlayerController {
 }

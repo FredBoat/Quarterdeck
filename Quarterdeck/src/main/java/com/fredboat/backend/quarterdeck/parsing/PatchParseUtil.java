@@ -33,9 +33,33 @@ import java.util.Map;
 public class PatchParseUtil {
 
     /**
+     * @return the integer parsed from the provided map of attributes and provided key
+     *
+     * @throws NumberParseException
+     *         If we were not able to parse the input into an integer.
+     */
+    public static int parseInt(String key, Map<String, Object> attributes) {
+        Object value = attributes.get(key);
+        if (value instanceof Integer) {
+            return (int) value;
+        } else if (value instanceof Number) {
+            //this can lead to precision loss, but only for values that would be anyways outside of the expected integer range
+            return ((Number) value).intValue();
+        } else if (value instanceof String) {
+            try {
+                return Integer.parseInt((String) (value));
+            } catch (Exception e) {
+                throw new NumberParseException(key, value, Integer.class);
+            }
+        } else {
+            throw new NumberParseException(key, value, Integer.class);
+        }
+    }
+
+    /**
      * @return the long parsed from the provided map of attributes and provided key
      *
-     * @throws LongParseException
+     * @throws NumberParseException
      *         If we were not able to parse the input into a long.
      */
     public static long parseLong(String key, Map<String, Object> attributes) {
@@ -49,10 +73,10 @@ public class PatchParseUtil {
             try {
                 return Long.parseLong((String) (value));
             } catch (Exception e) {
-                throw new LongParseException(key, value);
+                throw new NumberParseException(key, value, Long.class);
             }
         } else {
-            throw new LongParseException(key, value);
+            throw new NumberParseException(key, value, Long.class);
         }
     }
 
