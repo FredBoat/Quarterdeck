@@ -26,6 +26,7 @@
 package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildPlayer;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +45,7 @@ import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -114,5 +116,31 @@ public class GuildPlayerControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.repeatMode", is("ALL")))
                 .andExpect(jsonPath("$.isShuffled", isA(Boolean.class)))
                 .andExpect(jsonPath("$.isShuffled", is(false)));
+    }
+
+    @WithMockUser(roles = "ADMIN")
+    @Test
+    public void testDelete() throws Exception {
+        String path = ("/v1/guilds/3/player");
+
+        this.mockMvc.perform(get(path))
+                .andExpect(jsonPath("$.volume", is(GuildPlayer.DEFAULT_VOLUME)));
+
+        Map<String, Object> patchGuildData = new HashMap<>();
+        patchGuildData.put("volume", 69);
+        MockHttpServletRequestBuilder patch = patch(path)
+                .content(this.gson.toJson(patchGuildData))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        this.mockMvc.perform(patch)
+                .andExpect(jsonPath("$.volume", is(69)));
+
+        this.mockMvc.perform(get(path))
+                .andExpect(jsonPath("$.volume", is(69)));
+
+        this.mockMvc.perform(delete(path))
+                .andExpect(status().isOk());
+
+        this.mockMvc.perform(get(path))
+                .andExpect(jsonPath("$.volume", is(GuildPlayer.DEFAULT_VOLUME)));
     }
 }

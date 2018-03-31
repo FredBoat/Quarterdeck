@@ -26,6 +26,7 @@
 package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildData;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +45,7 @@ import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -95,5 +97,32 @@ public class GuildDataControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.guildId", is("2")))
                 .andExpect(jsonPath("$.helloSent", isA(String.class)))
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));
+    }
+
+    @WithMockUser(roles = "ADMIN")
+    @Test
+    public void testDelete() throws Exception {
+        String path = ("/v1/guilds/3/data");
+
+        this.mockMvc.perform(get(path))
+                .andExpect(jsonPath("$.helloSent", is(Long.toString(GuildData.DEFAULT_HELLO_SENT_TIMESTAMP))));
+
+        Map<String, Object> patchGuildData = new HashMap<>();
+        long now = System.currentTimeMillis();
+        patchGuildData.put("helloSent", now);
+        MockHttpServletRequestBuilder patch = patch(path)
+                .content(this.gson.toJson(patchGuildData))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        this.mockMvc.perform(patch)
+                .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));
+
+        this.mockMvc.perform(get(path))
+                .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));
+
+        this.mockMvc.perform(delete(path))
+                .andExpect(status().isOk());
+
+        this.mockMvc.perform(get(path))
+                .andExpect(jsonPath("$.helloSent", is(Long.toString(GuildData.DEFAULT_HELLO_SENT_TIMESTAMP))));
     }
 }

@@ -49,6 +49,8 @@ import javax.persistence.Table;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "guild_data")
 public class GuildData extends SaucedEntity<Long, GuildData> {
 
+    public static final long DEFAULT_HELLO_SENT_TIMESTAMP = 0;
+
     @Id
     @Column(name = "guild_id", nullable = false)
     private long guildId;
@@ -56,7 +58,7 @@ public class GuildData extends SaucedEntity<Long, GuildData> {
     @Column(name = "ts_hello_sent",
             nullable = false)
     @ColumnDefault(value = "0")
-    private long timestampHelloSent;
+    private long timestampHelloSent = DEFAULT_HELLO_SENT_TIMESTAMP;
 
 
     //for jpa / db wrapper

@@ -26,7 +26,9 @@
 package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig;
 import com.google.gson.Gson;
+import fredboat.definitions.Language;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +44,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -103,5 +107,31 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.autoResume", is(true)))
                 .andExpect(jsonPath("$.language", isA(String.class)))
                 .andExpect(jsonPath("$.language", is("de_DE")));
+    }
+
+    @WithMockUser(roles = "ADMIN")
+    @Test
+    public void testDelete() throws Exception {
+        String path = ("/v1/guilds/3/config");
+
+        this.mockMvc.perform(get(path))
+                .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE))));
+
+        Map<String, Object> patchGuildConfig = new HashMap<>();
+        patchGuildConfig.put("language", Language.DE_DE.getCode());
+        MockHttpServletRequestBuilder patch = patch(path)
+                .content(this.gson.toJson(patchGuildConfig))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        this.mockMvc.perform(patch)
+                .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))));
+
+        this.mockMvc.perform(get(path))
+                .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))));
+
+        this.mockMvc.perform(delete(path))
+                .andExpect(status().isOk());
+
+        this.mockMvc.perform(get(path))
+                .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE))));
     }
 }

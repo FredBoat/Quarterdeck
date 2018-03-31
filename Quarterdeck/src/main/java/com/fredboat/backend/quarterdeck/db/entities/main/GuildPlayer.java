@@ -51,6 +51,8 @@ import javax.persistence.Table;
 @SuppressWarnings("unused")
 public class GuildPlayer extends SaucedEntity<Long, GuildPlayer> {
 
+    public static final int DEFAULT_VOLUME = 100;
+
     @Id
     @NaturalId
     @Column(name = "guild_id", nullable = false)
@@ -67,7 +69,7 @@ public class GuildPlayer extends SaucedEntity<Long, GuildPlayer> {
 
     //constraints: 0 - 150
     @Column(name = "volume", nullable = false)
-    private int volume = 100;
+    private int volume = DEFAULT_VOLUME;
 
     @Enumerated(EnumType.STRING)
     @Type(type = "pgsql_enum")

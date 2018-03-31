@@ -27,6 +27,7 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildConfigRepo;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildConfigTransfer;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,5 +59,10 @@ public class V1GuildConfigController {
     public GuildConfigTransfer patchGuildConfig(@PathVariable("guild_id") long guildId,
                                                 @RequestBody Map<String, Object> partialGuildConfig) {
         return GuildConfigTransfer.of(this.guildConfigRepo.patch(Long.toString(guildId), partialGuildConfig));
+    }
+
+    @DeleteMapping
+    public void deleteGuildConfig(@PathVariable("guild_id") long guildId) {
+        this.guildConfigRepo.delete(Long.toString(guildId));
     }
 }

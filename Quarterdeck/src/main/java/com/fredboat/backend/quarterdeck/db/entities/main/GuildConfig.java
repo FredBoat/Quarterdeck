@@ -42,6 +42,8 @@ import javax.persistence.Table;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "guild_config")
 public class GuildConfig extends SaucedEntity<String, GuildConfig> {
 
+    public static final String DEFAULT_LANGAUGE = "en_US";
+
     @Id
     @Column(name = "guildid", nullable = false)
     private String guildId;
@@ -53,7 +55,7 @@ public class GuildConfig extends SaucedEntity<String, GuildConfig> {
     private boolean autoResume = false;
 
     @Column(name = "lang", nullable = false)
-    private String lang = "en_US";
+    private String lang = DEFAULT_LANGAUGE;
 
     //for jpa / db wrapper
     GuildConfig() {

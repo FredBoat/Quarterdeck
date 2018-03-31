@@ -42,7 +42,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class PostgresDockerExtension implements BeforeAllCallback {
 
-    //todo randomize outer port? https://github.com/palantir/docker-compose-rule#accessing-services-in-containers-from-outside-a-container
     private static DockerComposeRule docker = DockerComposeRule.builder()
             .pullOnStartup(true)
             .file("src/test/resources/docker-compose.yaml")
@@ -59,7 +58,7 @@ public class PostgresDockerExtension implements BeforeAllCallback {
     public void beforeAll(ExtensionContext context) throws Exception {
         docker.before();
     }
-    
+
 
     //executing it via the built in DockerComposeRule#exec() is not possible due to quotation marks handling
     private static SuccessOrFailure postgresHealthCheck(Container container) {
