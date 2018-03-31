@@ -26,6 +26,7 @@
 package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +37,15 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,6 +63,10 @@ public class GuildConfigControllerTest extends BaseTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @SuppressWarnings("NullableProblems")
+    @Autowired
+    private Gson gson;
+
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testGet() throws Exception {
@@ -68,5 +78,30 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
                 .andExpect(jsonPath("$.lang", isA(String.class)));
+    }
+
+    @WithMockUser(roles = "ADMIN")
+    @Test
+    public void testPatch() throws Exception {
+        Map<String, Object> patchGuildConfig = new HashMap<>();
+        patchGuildConfig.put("trackAnnounce", false);
+        patchGuildConfig.put("autoResume", true);
+        patchGuildConfig.put("language", "de_DE");
+
+        MockHttpServletRequestBuilder request = patch("/v1/guilds/2/config")
+                .content(this.gson.toJson(patchGuildConfig))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+
+        this.mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.guildId", isA(String.class)))
+                .andExpect(jsonPath("$.guildId", is("2")))
+                .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
+                .andExpect(jsonPath("$.trackAnnounce", is(false)))
+                .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
+                .andExpect(jsonPath("$.autoResume", is(true)))
+                .andExpect(jsonPath("$.lang", isA(String.class)))
+                .andExpect(jsonPath("$.lang", is("de_DE")));
     }
 }
