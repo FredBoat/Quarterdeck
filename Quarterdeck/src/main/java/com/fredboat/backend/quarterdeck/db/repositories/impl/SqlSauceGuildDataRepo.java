@@ -27,8 +27,12 @@ package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildData;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildDataRepo;
+import com.fredboat.backend.quarterdeck.parsing.PatchParseUtil;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
+
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Created by napster on 05.02.18.
@@ -40,4 +44,16 @@ public class SqlSauceGuildDataRepo extends SqlSauceRepo<Long, GuildData> impleme
         super(dbWrapper, GuildData.class);
     }
 
+    @Override
+    public GuildData patch(Long id, Map<String, Object> partialUpdate) {
+        Function<GuildData, GuildData> update = guildData -> guildData;
+
+        //hello sent
+        if (partialUpdate.containsKey("helloSent")) {
+            long helloSent = PatchParseUtil.parseLong("helloSent", partialUpdate);
+            update = update.andThen(guildConfig -> guildConfig.helloSent(helloSent));
+        }
+
+        return this.dbWrapper.findApplyAndMerge(GuildData.key(id), update);
+    }
 }

@@ -55,7 +55,8 @@ public class V1GuildConfigController {
     }
 
     @PatchMapping
-    public GuildConfig patchGuildConfig(@PathVariable("guild_id") long guildId, @RequestBody Map<String, Object> partialGuildConfig) {
+    public GuildConfig patchGuildConfig(@PathVariable("guild_id") long guildId,
+                                        @RequestBody Map<String, Object> partialGuildConfig) {
         return this.guildConfigRepo.patch(Long.toString(guildId), partialGuildConfig);
     }
 }

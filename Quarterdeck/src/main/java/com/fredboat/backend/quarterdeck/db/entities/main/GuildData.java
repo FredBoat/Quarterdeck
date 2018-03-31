@@ -29,6 +29,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.ColumnDefault;
 import space.npstr.sqlsauce.entities.SaucedEntity;
+import space.npstr.sqlsauce.fp.types.EntityKey;
 
 import javax.annotation.CheckReturnValue;
 import javax.persistence.Cacheable;
@@ -62,6 +63,10 @@ public class GuildData extends SaucedEntity<Long, GuildData> {
     GuildData() {
     }
 
+    public static EntityKey<Long, GuildData> key(long guildId) {
+        return EntityKey.of(guildId, GuildData.class);
+    }
+
     @Override
     public GuildData setId(Long guildId) {
         this.guildId = guildId;
@@ -80,6 +85,12 @@ public class GuildData extends SaucedEntity<Long, GuildData> {
     @CheckReturnValue
     public GuildData helloSent() {
         this.timestampHelloSent = System.currentTimeMillis();
+        return this;
+    }
+
+    @CheckReturnValue
+    public GuildData helloSent(long timestampHelloSent) {
+        this.timestampHelloSent = timestampHelloSent;
         return this;
     }
 }
