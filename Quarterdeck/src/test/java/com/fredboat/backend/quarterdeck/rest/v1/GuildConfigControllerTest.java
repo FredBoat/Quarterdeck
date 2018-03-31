@@ -77,7 +77,7 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.guildId", is("1")))
                 .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
-                .andExpect(jsonPath("$.lang", isA(String.class)));
+                .andExpect(jsonPath("$.language", isA(String.class)));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -101,7 +101,7 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.trackAnnounce", is(false)))
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", is(true)))
-                .andExpect(jsonPath("$.lang", isA(String.class)))
-                .andExpect(jsonPath("$.lang", is("de_DE")));
+                .andExpect(jsonPath("$.language", isA(String.class)))
+                .andExpect(jsonPath("$.language", is("de_DE")));
     }
 }

@@ -25,8 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.rest.v1;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildConfigRepo;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildConfigTransfer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,13 +50,13 @@ public class V1GuildConfigController {
     }
 
     @GetMapping
-    public GuildConfig getGuildConfig(@PathVariable("guild_id") long guildId) {
-        return this.guildConfigRepo.fetch(Long.toString(guildId));
+    public GuildConfigTransfer getGuildConfig(@PathVariable("guild_id") long guildId) {
+        return GuildConfigTransfer.of(this.guildConfigRepo.fetch(Long.toString(guildId)));
     }
 
     @PatchMapping
-    public GuildConfig patchGuildConfig(@PathVariable("guild_id") long guildId,
-                                        @RequestBody Map<String, Object> partialGuildConfig) {
-        return this.guildConfigRepo.patch(Long.toString(guildId), partialGuildConfig);
+    public GuildConfigTransfer patchGuildConfig(@PathVariable("guild_id") long guildId,
+                                                @RequestBody Map<String, Object> partialGuildConfig) {
+        return GuildConfigTransfer.of(this.guildConfigRepo.patch(Long.toString(guildId), partialGuildConfig));
     }
 }
