@@ -21,6 +21,7 @@ subprojects {
             gradleGitVersion        = '1.4.21'          //do not upgrade to 1.4.20, it fails builds randomly
             springBootVersion       = '2.0.0.RELEASE'
             propDepsVersion         = '0.0.9.RELEASE'
+            asciiDoctorVersion      = '1.5.7'
 
             //@formatter:on
         }
@@ -33,6 +34,7 @@ subprojects {
             classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:${gradleGitVersion}"
             classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
             classpath "io.spring.gradle:propdeps-plugin:${propDepsVersion}"
+            classpath "org.asciidoctor:asciidoctor-gradle-plugin:${asciiDoctorVersion}"
         }
     }
     apply plugin: 'java'
@@ -67,6 +69,7 @@ subprojects {
         jsonPathAssertVersion       = '2.4.0'
         springSecurityTestVersion   = '5.0.3.RELEASE'
         dockerComposeRuleVersion    = '0.33.0'
+        springRestDocsVersion       = '2.0.0.RELEASE'
         //@formatter:on
     }
 }

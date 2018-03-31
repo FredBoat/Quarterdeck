@@ -27,18 +27,10 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig;
-import com.google.gson.Gson;
 import fredboat.definitions.Language;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.HashMap;
@@ -47,6 +39,7 @@ import java.util.Map;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -57,19 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by napster on 28.03.18.
  */
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@ActiveProfiles("test")
-@AutoConfigureMockMvc
 public class GuildConfigControllerTest extends BaseTest {
-
-    @SuppressWarnings("NullableProblems")
-    @Autowired
-    private MockMvc mockMvc;
-
-    @SuppressWarnings("NullableProblems")
-    @Autowired
-    private Gson gson;
 
     @WithMockUser(roles = "ADMIN")
     @Test
@@ -81,7 +62,8 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.guildId", is("1")))
                 .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
-                .andExpect(jsonPath("$.language", isA(String.class)));
+                .andExpect(jsonPath("$.language", isA(String.class)))
+                .andDo(document("guild/config/get"));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -106,7 +88,8 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", is(true)))
                 .andExpect(jsonPath("$.language", isA(String.class)))
-                .andExpect(jsonPath("$.language", is("de_DE")));
+                .andExpect(jsonPath("$.language", is("de_DE")))
+                .andDo(document("guild/config/patch"));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -129,7 +112,8 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))));
 
         this.mockMvc.perform(delete(path))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("guild/config/delete"));
 
         this.mockMvc.perform(get(path))
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE))));

@@ -19,6 +19,10 @@ The plans for v1 and future versions include:
 - a success/error layer
 - end-user access and authorization
 
+### v1 [WIP]
+
+The v1 docs can be found [here](https://koakuma.fredboat.com/qd/docs/index.html).
+
 ### v0
 
 The existing entity endpoints are:
@@ -59,41 +63,6 @@ There is an additional endpoint, that will return the supported versions of the 
 Entities and ids are marshalled via [Gson](https://github.com/google/gson) on both sides.  
 Authentication happens via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).  
 No kind of authorization is existent, you either have access, or you don't. In terms of security, treat this the same way you would treat a redis instance.  
-
-
-### v1 [WIP]
-
-Proposed path pattern for guild and user bound entities, which is similar to how the Discord API looks:
-```
-/v1/guilds/{id}/{entity}
-/v1/users/{id}/{entity}
-etc
-```
-
-Concrete examples:
-```
-/v1/guilds/174820236481134592/config
-/v1/users/166604053629894657/aliases
-```
-
-Supporting the following http requests:
-- GET: return the existing or default entity
-- DELETE: reset the entity
-- PATCH: update one, several, or all attributes of an entity
-
-
-
-
-## Conventions
-
-Besides doing a best effort to comply with the various existing RFCs out there, here are a few conventions we adhere to
-from v1 ongoing:
-- Java longs and any other number values taking up more than 32 bits are sent as a string.
-While JSON specs don't seem to set an explicit limit to what a number can be, in practice 
-there are clients that will parse a JSON number as a double, leading to precision loss for
-higher long values.
-- camelCase for attributes. camelCase is a Java and JavaScript convention. It does clash with postgres' case insensitive 
-and therefore snake_case tables and columns, so if we are going to use changefeeds a function will have to be added to convert those.
 
 
 ## Building Quarterdeck

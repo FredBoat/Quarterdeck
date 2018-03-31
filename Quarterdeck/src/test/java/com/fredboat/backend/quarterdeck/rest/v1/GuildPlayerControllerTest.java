@@ -27,17 +27,9 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPlayer;
-import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.HashMap;
@@ -45,6 +37,7 @@ import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -55,19 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by napster on 28.03.18.
  */
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@ActiveProfiles("test")
-@AutoConfigureMockMvc
 public class GuildPlayerControllerTest extends BaseTest {
-
-    @SuppressWarnings("NullableProblems")
-    @Autowired
-    private MockMvc mockMvc;
-
-    @SuppressWarnings("NullableProblems")
-    @Autowired
-    private Gson gson;
 
     @WithMockUser(roles = "ADMIN")
     @Test
@@ -82,7 +63,8 @@ public class GuildPlayerControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.isPaused", isA(Boolean.class)))
                 .andExpect(jsonPath("$.volume", isA(Integer.class)))
                 .andExpect(jsonPath("$.repeatMode", isA(String.class)))
-                .andExpect(jsonPath("$.isShuffled", isA(Boolean.class)));
+                .andExpect(jsonPath("$.isShuffled", isA(Boolean.class)))
+                .andDo(document("guild/player/get"));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -115,7 +97,8 @@ public class GuildPlayerControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.repeatMode", isA(String.class)))
                 .andExpect(jsonPath("$.repeatMode", is("ALL")))
                 .andExpect(jsonPath("$.isShuffled", isA(Boolean.class)))
-                .andExpect(jsonPath("$.isShuffled", is(false)));
+                .andExpect(jsonPath("$.isShuffled", is(false)))
+                .andDo(document("guild/player/patch"));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -138,7 +121,8 @@ public class GuildPlayerControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.volume", is(69)));
 
         this.mockMvc.perform(delete(path))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("guild/player/delete"));
 
         this.mockMvc.perform(get(path))
                 .andExpect(jsonPath("$.volume", is(GuildPlayer.DEFAULT_VOLUME)));

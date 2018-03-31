@@ -1,0 +1,244 @@
+= Quarterdeck - FredBoat Backend API
+The FredBoat Org <https://github.com/FredBoat>
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:homepage: https://github.com/FredBoat/Backend
+
+[introduction]
+= Introduction
+
+Quarterdeck bundles several databased services for FredBoat.
+At this point, this is not a public API of any sorts.
+Any documentation found here is aimed at FreBoat developers.
+Future development of the API might include additional, semi-public services.
+This documentation is covering v1+ resources and conventions.
+
+* * *
+
+CAUTION: The Quarterdeck v1 API's status is **work in progress**. Things are open to be changed,
+so do not build anything production grade relying on it yet,
+but also please do not hesitate to provide feedback.
+
+* * *
+
+[[overview]]
+= Overview
+
+[[overview-http-verbs]]
+== HTTP verbs
+|===
+| Verb | Usage
+
+| `GET`
+| Used to retrieve a resource
+
+| `POST`
+| Used to create a new resource
+
+| `PATCH`
+| Used to update an existing resource, including partial updates
+
+| `DELETE`
+| Used to delete or reset an existing resource
+|===
+
+[[overview-http-status-codes]]
+== HTTP status codes
+Quarterdeck does not use any special http status codes and does not stray far away from the one true
+path of RFCs detailing the usage and implementation of http status codes. In case of erroneous requests,
+Quarterdeck tries to provide comprehensive error messages in its responses,
+so you should keep an eye out for those. A full list of http status codes with
+short explanations can be found http://www.restapitutorial.com/httpstatuscodes.html[here],
+however Quarterdeck will likely never use more than a small subset of those.
+
+The most important ones are listed here:
+
+|===
+| Status code | Usage
+
+| `2xx`
+| Standard response for successful HTTP requests. The actual response will depend on the request method used.
+In a GET request, the response will contain an entity corresponding to the requested resource.
+In a POST or PATCH request, the response will contain an entity describing or containing the result of the action.
+A DELETE request will probably just be empty.
+
+| `4xx`
+| Something is wrong with your request. Pay attention to the concrete status code as well as the attached message,
+those will usually contain more information to help fix your request.
+
+| `5xx`
+| Something unexpected blew up on Quarterdecks side. Try again later, and if the 5xx persists, please
+https://github.com/FredBoat/Backend/issues[file an issue].
+
+|===
+
+
+[[overview-authentication]]
+== Authentication
+Quarterdeck uses https://tools.ietf.org/html/rfc7617[basic access authentication].
+
+[[overview-authorization]]
+== Authorization
+Quarterdeck is currently targeted at FredBoat internal apps only. Each app gets a user and
+pass assigned, giving it Admin access.
+
+[[overview-conventions]]
+== Conventions
+Besides doing a best effort to comply with the various existing RFCs out there,
+here are a few conventions we adhere to:
+
+- **Longs and any other number values taking up more than 32 bits are sent as a string.**
+While JSON specs don't seem to set an explicit limit to what a number can be,
+in practice there are clients that will parse a JSON number as a double,
+leading to precision loss for higher long values.
+- **camelCase for attributes.** camelCase is a Java and JavaScript convention.
+It does clash with postgres' case insensitive and therefore snake_case tables and columns,
+so if we are going to use changefeeds a function will have to be added to convert those.
+
+
+[[resources]]
+= Resources
+
+
+[[resources-guild-config]]
+== Guild Config
+The Guild Config resource is used to see and modify the configuration of a guild.
+
+[[resource-guild-config-get]]
+=== Fetching a Guild Config
+A `GET` request fetches the config of a guild. This always returns an entity, even if a guild did not
+customize their config or a reset just happened, as in those cases default values are returned.
+
+==== Example request
+
+include::{snippets}/guild/config/get/curl-request.adoc[]
+include::{snippets}/guild/config/get/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/guild/config/get/http-response.adoc[]
+
+
+[[resource-guild-config-patch]]
+=== Updating a Guild Config
+A `PATCH` request updates the config of a guild. This can be the full entity, or just a partial update.
+This request returns the updated entity.
+
+==== Example request
+
+include::{snippets}/guild/config/patch/curl-request.adoc[]
+include::{snippets}/guild/config/patch/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/guild/config/patch/http-response.adoc[]
+
+[[resource-guild-config-reset]]
+=== Resetting a Guild Config
+A `DELETE` request resets the config of a guild to the defaults.
+
+==== Example request
+
+include::{snippets}/guild/config/delete/curl-request.adoc[]
+include::{snippets}/guild/config/delete/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/guild/config/delete/http-response.adoc[]
+
+[[resources-guild-data]]
+== Guild Data
+The Guild Data resource is used to see and persist various datapoints about a guild.
+
+[[resource-guild-data-get]]
+=== Fetching Guild Data
+A `GET` request fetches the data of a guild. This always returns an entity, even if no data has been saved yet
+or a reset just happened, as in those cases default values are returned.
+
+==== Example request
+
+include::{snippets}/guild/data/get/curl-request.adoc[]
+include::{snippets}/guild/data/get/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/guild/data/get/http-response.adoc[]
+
+
+[[resource-guild-data-patch]]
+=== Updating Guild Data
+A `PATCH` request updates the data of a guild. This can be the full entity, or just a partial update.
+This request returns the updated entity.
+
+==== Example request
+
+include::{snippets}/guild/data/patch/curl-request.adoc[]
+include::{snippets}/guild/data/patch/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/guild/data/patch/http-response.adoc[]
+
+[[resource-guild-data-reset]]
+=== Resetting Guild Data
+A `DELETE` request resets the data of a guild to the defaults.
+
+==== Example request
+
+include::{snippets}/guild/data/delete/curl-request.adoc[]
+include::{snippets}/guild/data/delete/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/guild/data/delete/http-response.adoc[]
+
+
+[[resources-guild-player]]
+== Guild Player
+The Guild Player resource is used to see and modify the state of the music player of a guild.
+
+[[resource-guild-player-get]]
+=== Fetching the Guild Player
+A `GET` request fetches the player of a guild. This always returns an entity, even if no data has been saved
+yet or a reset just happened, as in those cases default values are returned.
+
+==== Example request
+
+include::{snippets}/guild/player/get/curl-request.adoc[]
+include::{snippets}/guild/player/get/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/guild/player/get/http-response.adoc[]
+
+
+[[resource-guild-player-patch]]
+=== Updating a Guild Player
+A `PATCH` request updates the player of a guild. This can be the full entity, or just a partial update.
+This request returns the updated entity.
+
+==== Example request
+
+include::{snippets}/guild/player/patch/curl-request.adoc[]
+include::{snippets}/guild/player/patch/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/guild/player/patch/http-response.adoc[]
+
+[[resource-guild-player-reset]]
+=== Resetting a Guild Player
+A `DELETE` request resets the player of a guild to the defaults.
+
+==== Example request
+
+include::{snippets}/guild/player/delete/curl-request.adoc[]
+include::{snippets}/guild/player/delete/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/guild/player/delete/http-response.adoc[]

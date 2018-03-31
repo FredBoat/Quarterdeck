@@ -27,17 +27,9 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildData;
-import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.HashMap;
@@ -45,6 +37,7 @@ import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -55,18 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by napster on 31.03.18.
  */
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@ActiveProfiles("test")
-@AutoConfigureMockMvc
 public class GuildDataControllerTest extends BaseTest {
-    @SuppressWarnings("NullableProblems")
-    @Autowired
-    private MockMvc mockMvc;
-
-    @SuppressWarnings("NullableProblems")
-    @Autowired
-    private Gson gson;
 
     @WithMockUser(roles = "ADMIN")
     @Test
@@ -76,7 +58,8 @@ public class GuildDataControllerTest extends BaseTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.guildId", isA(String.class)))
                 .andExpect(jsonPath("$.guildId", is("1")))
-                .andExpect(jsonPath("$.helloSent", isA(String.class)));
+                .andExpect(jsonPath("$.helloSent", isA(String.class)))
+                .andDo(document("guild/data/get"));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -96,7 +79,8 @@ public class GuildDataControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.guildId", isA(String.class)))
                 .andExpect(jsonPath("$.guildId", is("2")))
                 .andExpect(jsonPath("$.helloSent", isA(String.class)))
-                .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));
+                .andExpect(jsonPath("$.helloSent", is(Long.toString(now))))
+                .andDo(document("guild/data/patch"));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -120,7 +104,8 @@ public class GuildDataControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));
 
         this.mockMvc.perform(delete(path))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("guild/data/delete"));
 
         this.mockMvc.perform(get(path))
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(GuildData.DEFAULT_HELLO_SENT_TIMESTAMP))));
