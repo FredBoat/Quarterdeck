@@ -75,9 +75,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        if (this.docsConfig.isOpen()) {
-            http.cors().disable();
-        }
         http.csrf().disable().authorizeRequests() // todo enable csrf when doing proper authorization for end users
                 .antMatchers(getAuthWhitelist()).permitAll()
                 .anyRequest().authenticated()
