@@ -23,32 +23,25 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v1.transfer;
+package com.fredboat.backend.quarterdeck.parsing;
 
 /**
- * Created by napster on 01.04.18.
+ * Created by napster on 02.04.18.
  */
-public class DiscordSnowflake {
+public class DiscordSnowflakeParseException extends ParseException {
 
-    private final long snowflakeId;
+    private final String key;
+    private final Object value;
 
-    public DiscordSnowflake(long snowflakeId) {
-        this.snowflakeId = snowflakeId;
+    public DiscordSnowflakeParseException(String key, Object value) {
+        super();
+        this.key = key;
+        this.value = value;
     }
 
-    /**
-     * @throws NumberFormatException
-     *         if the passed snowflakeId is not an unsigned long
-     */
-    public DiscordSnowflake(String snowflakeId) throws NumberFormatException {
-        this.snowflakeId = Long.parseUnsignedLong(snowflakeId);
-    }
-
-    public String getSnowflakeId() {
-        return Long.toString(this.snowflakeId);
-    }
-
-    public long longValue() {
-        return this.snowflakeId;
+    @Override
+    public String getMessage() {
+        return "Your provided value " + this.value.toString() + " for key " + this.key + " is not a Discord snowflake. "
+                + "A Discord snowflake should be a string that can be parsed into an unsigned long (64bit integer).";
     }
 }

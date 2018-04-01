@@ -25,12 +25,35 @@
 
 package com.fredboat.backend.quarterdeck.parsing;
 
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
+
 import java.util.Map;
 
 /**
  * Created by napster on 28.03.18.
  */
 public class PatchParseUtil {
+
+    /**
+     * @return the DiscordSnowflake parsed from the provided map of attributes and provided key
+     *
+     * @throws DiscordSnowflakeParseException
+     *         If we were not able to parse the input into a {@link DiscordSnowflake}.
+     */
+    public static DiscordSnowflake parseDiscordSnowflake(String key, Map<String, Object> attributes) {
+        Object value = attributes.get(key);
+        if (value instanceof Long) { // be lenient
+            return new DiscordSnowflake((long) value);
+        } else if (value instanceof String) {
+            try {
+                return new DiscordSnowflake((String) (value));
+            } catch (Exception e) {
+                throw new DiscordSnowflakeParseException(key, value);
+            }
+        } else {
+            throw new DiscordSnowflakeParseException(key, value);
+        }
+    }
 
     /**
      * @return the integer parsed from the provided map of attributes and provided key
