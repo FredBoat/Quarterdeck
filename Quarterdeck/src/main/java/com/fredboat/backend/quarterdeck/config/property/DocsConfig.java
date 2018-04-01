@@ -23,35 +23,16 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v1.transfer;
-
-import com.fredboat.backend.quarterdeck.db.entities.main.GuildPlayer;
+package com.fredboat.backend.quarterdeck.config.property;
 
 /**
- * Created by napster on 31.03.18.
+ * Created by napster on 01.04.18.
  */
-public class GuildPlayerTransfer {
+public interface DocsConfig {
 
-    private final long guildId;
-    private final long voiceChannelId;
-    private final long activeTextChannelId;
-    private final boolean isPaused;
-    private final int volume;
-    private final String repeatMode;
-    private final boolean isShuffled;
+    boolean isOpen();
 
+    String getHost();
 
-    public static GuildPlayerTransfer of(GuildPlayer guildPlayer) {
-        return new GuildPlayerTransfer(guildPlayer);
-    }
-
-    private GuildPlayerTransfer(GuildPlayer guildPlayer) {
-        this.guildId = guildPlayer.getId();
-        this.voiceChannelId = guildPlayer.getVoiceChannelId();
-        this.activeTextChannelId = guildPlayer.getActiveTextChannelId();
-        this.isPaused = guildPlayer.isPaused();
-        this.volume = guildPlayer.getVolume();
-        this.repeatMode = guildPlayer.getRepeatMode().name();
-        this.isShuffled = guildPlayer.isShuffled();
-    }
+    String getBasePath();
 }

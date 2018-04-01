@@ -27,21 +27,33 @@ package com.fredboat.backend.quarterdeck.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Created by napster on 31.03.18.
  * <p>
- * We use this to serve the docs under /docs
+ * We use this to serve the docs under /docs and /swagger-ui.html
  */
 @Configuration
 public class StaticResourceConfiguration implements WebMvcConfigurer {
 
-    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:/static/"};
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // spring rest docs
         registry.addResourceHandler("/**")
-                .addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
+                .addResourceLocations("classpath:/static/");
+
+        // springfox swagger - only necessary due to the above one, if spring rest docs is deleted,
+        // this whole class can be deleted
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addRedirectViewController("/", "/swagger-ui.html");
     }
 }

@@ -26,7 +26,10 @@
 package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPlayerRepo;
-import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPlayerTransfer;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPlayer;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -50,19 +53,35 @@ public class GuildPlayerController {
         this.guildPlayerRepo = guildPlayerRepo;
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "guild_id", dataTypeClass = DiscordSnowflake.class, example = "174820236481134592",
+                    required = true, paramType = "path", type = "string", format = "Discord snowflake",
+                    value = "Discord snowflake")
+    })
     @GetMapping
-    public GuildPlayerTransfer getGuildPlayer(@PathVariable("guild_id") long guildId) {
-        return GuildPlayerTransfer.of(this.guildPlayerRepo.fetch(guildId));
+    public GuildPlayer getGuildPlayer(@PathVariable("guild_id") DiscordSnowflake guildId) {
+        return GuildPlayer.of(this.guildPlayerRepo.fetch(guildId.longValue()));
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "guild_id", dataTypeClass = DiscordSnowflake.class, example = "174820236481134592",
+                    required = true, paramType = "path", type = "string", format = "Discord snowflake",
+                    value = "Discord snowflake"),
+            @ApiImplicitParam(name = "partialGuildPlayer", dataType = "GuildPlayer", required = true)
+    })
     @PatchMapping
-    public GuildPlayerTransfer getGuildPlayer(@PathVariable("guild_id") long guildId,
-                                              @RequestBody Map<String, Object> partialGuildPlayer) {
-        return GuildPlayerTransfer.of(this.guildPlayerRepo.patch(guildId, partialGuildPlayer));
+    public GuildPlayer getGuildPlayer(@PathVariable("guild_id") DiscordSnowflake guildId,
+                                      @RequestBody Map<String, Object> partialGuildPlayer) {
+        return GuildPlayer.of(this.guildPlayerRepo.patch(guildId.longValue(), partialGuildPlayer));
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "guild_id", dataTypeClass = DiscordSnowflake.class, example = "174820236481134592",
+                    required = true, paramType = "path", type = "string", format = "Discord snowflake",
+                    value = "Discord snowflake")
+    })
     @DeleteMapping
-    public void deleteGuildPlayer(@PathVariable("guild_id") long guildId) {
-        this.guildPlayerRepo.delete(guildId);
+    public void deleteGuildPlayer(@PathVariable("guild_id") DiscordSnowflake guildId) {
+        this.guildPlayerRepo.delete(guildId.longValue());
     }
 }

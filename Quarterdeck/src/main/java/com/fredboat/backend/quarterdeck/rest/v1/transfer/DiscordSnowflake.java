@@ -25,24 +25,26 @@
 
 package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.GuildData;
-
 /**
- * Created by napster on 31.03.18.
- *
- * @see com.fredboat.backend.quarterdeck.rest.v1.transfer (package-info.java)
+ * Created by napster on 01.04.18.
  */
-public class GuildDataTransfer {
+public class DiscordSnowflake {
 
-    private final long guildId;
-    private final long helloSent;
+    private final long snowflakeId;
 
-    public static GuildDataTransfer of(GuildData guildData) {
-        return new GuildDataTransfer(guildData);
+    public DiscordSnowflake(long snowflakeId) {
+        this.snowflakeId = snowflakeId;
     }
 
-    private GuildDataTransfer(GuildData guildData) {
-        this.guildId = guildData.getId();
-        this.helloSent = guildData.getTimestampHelloSent();
+    public DiscordSnowflake(String snowflakeId) {
+        this.snowflakeId = Long.parseUnsignedLong(snowflakeId);
+    }
+
+    public String getSnowflakeId() {
+        return Long.toString(this.snowflakeId);
+    }
+
+    public long longValue() {
+        return this.snowflakeId;
     }
 }

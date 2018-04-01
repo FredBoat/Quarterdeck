@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.config;
 
+import com.fredboat.backend.quarterdeck.config.property.DocsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -34,6 +35,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by napster on 18.02.18.
  */
@@ -41,11 +46,40 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private final DocsConfig docsConfig;
+
+    protected SecurityConfiguration(DocsConfig docsConfig) {
+        this.docsConfig = docsConfig;
+    }
+
+    private String[] getAuthWhitelist() {
+        List<String> antMatchers = new ArrayList<>();
+        // metrics
+        antMatchers.add("/metrics"); // these should rather be handled by nginx whitelisting (or other proxy choices)
+
+        if (this.docsConfig.isOpen()) {
+            // spring rest docs
+            antMatchers.add("/docs/**");
+
+            // swagger ui
+            antMatchers.addAll(Arrays.asList(
+                    "/swagger-resources/**",
+                    "/", // does a redirect
+                    "/swagger-ui.html",
+                    "/v2/api-docs",
+                    "/webjars/**"));
+        }
+
+        return antMatchers.toArray(new String[0]);
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests()
-                .antMatchers("/metrics").permitAll() //these should rather be handled by nginx whitelisting (or other proxy choices)
-                .antMatchers("/docs/**").permitAll()
+        if (this.docsConfig.isOpen()) {
+            http.cors().disable();
+        }
+        http.csrf().disable().authorizeRequests() // todo enable csrf when doing proper authorization for end users
+                .antMatchers(getAuthWhitelist()).permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

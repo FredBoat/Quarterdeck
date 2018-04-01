@@ -23,30 +23,47 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v1.transfer;
+package com.fredboat.backend.quarterdeck.config.property;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
- * Created by napster on 31.03.18.
- *
- * @see com.fredboat.backend.quarterdeck.rest.v1.transfer (package-info.java)
+ * Created by napster on 01.04.18.
  */
-public class GuildConfigTransfer {
+@Component
+@ConfigurationProperties(prefix = "docs")
+@SuppressWarnings("unused")
+public class DocsConfigProperties implements DocsConfig {
 
-    private final long guildId;
-    private final boolean trackAnnounce;
-    private final boolean autoResume;
-    private final String language;
+    private boolean open = false;
+    private String host = "";
+    private String basePath = "";
 
-    public static GuildConfigTransfer of(GuildConfig guildConfig) {
-        return new GuildConfigTransfer(guildConfig);
+    @Override
+    public boolean isOpen() {
+        return this.open;
     }
 
-    private GuildConfigTransfer(GuildConfig guildConfig) {
-        this.guildId = Long.valueOf(guildConfig.getId());
-        this.trackAnnounce = guildConfig.isTrackAnnounce();
-        this.autoResume = guildConfig.isAutoResume();
-        this.language = guildConfig.getLang();
+    @Override
+    public String getHost() {
+        return this.host;
+    }
+
+    @Override
+    public String getBasePath() {
+        return this.basePath;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
     }
 }

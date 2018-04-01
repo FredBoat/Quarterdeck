@@ -25,11 +25,22 @@
 
 package com.fredboat.backend.quarterdeck.config;
 
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.LongSerializationPolicy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.spring.web.json.Json;
+
+import java.lang.reflect.Type;
 
 /**
  * Created by napster on 30.03.18.
@@ -41,6 +52,37 @@ public class GsonConfiguration {
     public Gson gson() {
         return new GsonBuilder()
                 .setLongSerializationPolicy(LongSerializationPolicy.STRING)
+                .registerTypeAdapter(Json.class, new SpringfoxJsonToGsonAdapter())
+                .registerTypeAdapter(DiscordSnowflake.class, new DiscordSnowflakeoGsonAdapter())
                 .create();
+    }
+
+    /**
+     * Make springfox play nice with gson
+     * <p>
+     * source: https://stackoverflow.com/questions/30219946
+     */
+    private static class SpringfoxJsonToGsonAdapter implements JsonSerializer<Json> {
+
+        private final JsonParser parser = new JsonParser();
+
+        @Override
+        public JsonElement serialize(Json json, Type type, JsonSerializationContext context) {
+            return this.parser.parse(json.value());
+        }
+    }
+
+
+    private static class DiscordSnowflakeoGsonAdapter implements JsonSerializer<DiscordSnowflake>, JsonDeserializer<DiscordSnowflake> {
+
+        @Override
+        public JsonElement serialize(DiscordSnowflake snowflake, Type type, JsonSerializationContext context) {
+            return new JsonPrimitive(snowflake.getSnowflakeId());
+        }
+
+        @Override
+        public DiscordSnowflake deserialize(JsonElement json, Type type, JsonDeserializationContext context) {
+            return new DiscordSnowflake(json.getAsJsonPrimitive().getAsString());
+        }
     }
 }

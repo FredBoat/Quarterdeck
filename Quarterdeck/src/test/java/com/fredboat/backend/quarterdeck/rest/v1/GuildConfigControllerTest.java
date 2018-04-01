@@ -72,7 +72,7 @@ public class GuildConfigControllerTest extends BaseTest {
         Map<String, Object> patchGuildConfig = new HashMap<>();
         patchGuildConfig.put("trackAnnounce", false);
         patchGuildConfig.put("autoResume", true);
-        patchGuildConfig.put("language", "de_DE");
+        patchGuildConfig.put("language", Language.DE_DE.getCode());
 
         MockHttpServletRequestBuilder request = patch("/v1/guilds/2/config")
                 .content(this.gson.toJson(patchGuildConfig))
@@ -88,7 +88,7 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", is(true)))
                 .andExpect(jsonPath("$.language", isA(String.class)))
-                .andExpect(jsonPath("$.language", is("de_DE")))
+                .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))))
                 .andDo(document("guild/config/patch"));
     }
 
@@ -98,7 +98,7 @@ public class GuildConfigControllerTest extends BaseTest {
         String path = ("/v1/guilds/3/config");
 
         this.mockMvc.perform(get(path))
-                .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE))));
+                .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE.getCode()))));
 
         Map<String, Object> patchGuildConfig = new HashMap<>();
         patchGuildConfig.put("language", Language.DE_DE.getCode());
@@ -116,6 +116,6 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andDo(document("guild/config/delete"));
 
         this.mockMvc.perform(get(path))
-                .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE))));
+                .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE.getCode()))));
     }
 }

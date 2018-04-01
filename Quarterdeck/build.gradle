@@ -99,6 +99,9 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-security:$springBootVersion"
     optional "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
 
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: springfoxVersion
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: springfoxVersion
+
     //testing
     //includes mockito, hamcrest and jayway
     testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion") {

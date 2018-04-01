@@ -52,7 +52,7 @@ subprojects {
 
     ext {
         //@formatter:off
-        fredBoatRootVersion         = '14ccf37073942eb6da1b58ae8f28a008b8971021'
+        fredBoatRootVersion         = 'f914bc016f88fff43a95deab4ae5cef8f3f1d25b'
         springBootVersion           = "${springBootVersion}"
 
         gsonVersion                 = '2.8.2'
@@ -61,6 +61,7 @@ subprojects {
         flywayVersion               = '5.0.7'
         dsProxyVersion              = '1.4.7'
         jaxbApiVersion              = '2.3.0'
+        springfoxVersion            = '2.8.0'
 
         jUnitVersion                = '5.0.2'
         apiGuardianVersion          = '1.0.0'
@@ -79,11 +80,10 @@ ext {
     moduleName = 'Backend'
 }
 
-import org.gradle.api.tasks.wrapper.Wrapper.DistributionType
-
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
-    distributionType = DistributionType.ALL
+    //noinspection UnnecessaryQualifiedReference
+    distributionType = Wrapper.DistributionType.ALL
 }
 
 //create a simple version file that we will be reading to create appropriate docker tags

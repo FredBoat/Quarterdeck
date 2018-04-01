@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
+import fredboat.definitions.Language;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import space.npstr.sqlsauce.entities.SaucedEntity;
@@ -42,7 +43,7 @@ import javax.persistence.Table;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "guild_config")
 public class GuildConfig extends SaucedEntity<String, GuildConfig> {
 
-    public static final String DEFAULT_LANGAUGE = "en_US";
+    public static final Language DEFAULT_LANGAUGE = Language.EN_US;
 
     @Id
     @Column(name = "guildid", nullable = false)
@@ -55,7 +56,7 @@ public class GuildConfig extends SaucedEntity<String, GuildConfig> {
     private boolean autoResume = false;
 
     @Column(name = "lang", nullable = false)
-    private String lang = DEFAULT_LANGAUGE;
+    private String lang = DEFAULT_LANGAUGE.getCode();
 
     //for jpa / db wrapper
     GuildConfig() {
@@ -100,6 +101,10 @@ public class GuildConfig extends SaucedEntity<String, GuildConfig> {
 
     public String getLang() {
         return this.lang;
+    }
+
+    public Language getLanguage() {
+        return Language.parse(this.lang).orElse(DEFAULT_LANGAUGE);
     }
 
     public GuildConfig setLang(String lang) {

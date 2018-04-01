@@ -102,3 +102,9 @@ logging:
     root: INFO
     fredboat: DEBUG
     com.fredboat: DEBUG
+
+docs:
+  open: false               # Open the documentation endpoints for the public, and disable certain security features.
+                            # DO NOT OPEN these on a production system.
+  host: ""                  # Reference: https://swagger.io/docs/specification/2-0/api-host-and-base-path/
+  basePath: ""              # Tell swagger where to find this Quarterdeck for Try out queries
