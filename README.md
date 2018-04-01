@@ -21,7 +21,8 @@ The plans for v1 and future versions include:
 
 ### v1 [WIP]
 
-The v1 docs can be found [here](https://koakuma.fredboat.com/qd/docs/index.html).
+The v1 docs can be found [here](https://koakuma.fredboat.com/qd/docs/index.html) and [here](https://koakuma.fredboat.com/qd/swagger-ui.html)
+(one of these is going away in the future).
 
 ### v0
 
