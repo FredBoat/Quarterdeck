@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.config;
 
+import com.fredboat.backend.quarterdeck.config.property.DocsConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -37,6 +38,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class StaticResourceConfiguration implements WebMvcConfigurer {
+
+    private final DocsConfig docsConfig;
+
+    public StaticResourceConfiguration(DocsConfig docsConfig) {
+        this.docsConfig = docsConfig;
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -54,6 +61,11 @@ public class StaticResourceConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/", "/swagger-ui.html");
+        String redirectPath = "/swagger-ui.html";
+        String basePath = this.docsConfig.getBasePath();
+        if (!basePath.isEmpty()) {
+            redirectPath = basePath + redirectPath;
+        }
+        registry.addRedirectViewController("/", redirectPath);
     }
 }
