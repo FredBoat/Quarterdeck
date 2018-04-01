@@ -98,8 +98,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                                                         WebRequest request) {
         if (ex instanceof MethodArgumentTypeMismatchException) {
             MethodArgumentTypeMismatchException e = (MethodArgumentTypeMismatchException) ex;
-            String message = String.format("The parameter \"%s\" needs to be of type \"%s\", which your provided value \"%s\" is not.",
-                    e.getName(), e.getRequiredType(), e.getValue());
+            String requiredType = e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "unknown";
+            String message = String.format("The parameter '%s' needs to be of type '%s', which your provided value '%s' is not.",
+                    e.getName(), requiredType, e.getValue());
             return super.handleExceptionInternal(ex, buildErrorMessage(status, message, request), headers, status, request);
         }
         return super.handleTypeMismatch(ex, headers, status, request);
@@ -134,13 +135,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     private static final String UNDOCUMENTED_EXCEPTION_MESSAGE = "OOPSIE WOOPSIE!! Uwu We made a fucky wucky!! A " +
-            "wittle fucko boingo! The code monkeys at our headquarters are working VEWY HAWD to fix this!" +
-            "\n\nOr in other words: Whatever you did, we don't have a comprehensive and secure error message for you " +
+            "wittle fucko boingo! The code monkeys at our headquarters are working VEWY HAWD to fix this! " +
+            "Or in other words: Whatever you did, we don't have a comprehensive and secure error message for you " +
             "yet. You should probably give the status code of this response a good look, as well as the headers, and " +
-            "maybe try again later." +
-            "\n\nIf this isn't going away, and you are not a machine but an actual human, please lend us a hand and " +
-            "tell us what request you are trying to do on our issue tracker over at https://github.com/FredBoat/Backend" +
-            "\nThanks!";
+            "maybe try again later. " +
+            "If this isn't going away, and you are not a machine but an actual human, please lend us a hand and " +
+            "tell us what request you are trying to do on our issue tracker over at https://github.com/FredBoat/Backend " +
+            "Thanks!";
 
 
     private ErrorMessage buildUndocumentedErrorMessage(HttpStatus status, WebRequest request) {
@@ -151,15 +152,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * Create an error message showing the status code and the error message along with a bit of debug information.
      */
     private ErrorMessage buildErrorMessage(HttpStatus status, String message, WebRequest request) {
-        String msg = message;
-        msg += "\n\nYou are user: " + (request.getRemoteUser() == null ? "anonymous" : request.getRemoteUser());
+        String template = "%s You are user: '%s'. Your request was: '%s'";
+        String user = request.getRemoteUser() == null ? "anonymous" : request.getRemoteUser();
+        String requestDesc = "";
         if (request instanceof ServletWebRequest) {
             ServletWebRequest req = (ServletWebRequest) request;
-            msg += "\nYour request was: " + req.getHttpMethod() + " " + req.getRequest().getRequestURI();
+            requestDesc = req.getHttpMethod() + " " + req.getRequest().getRequestURI();
         } else {
-            msg += "\nYour request was: " + request.getDescription(true);
+            requestDesc = request.getDescription(true);
         }
-        return new ErrorMessage(status.value(), msg);
+        return new ErrorMessage(status.value(), String.format(template, message, user, requestDesc));
 
     }
 
