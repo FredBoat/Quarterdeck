@@ -25,10 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.config;
 
-import com.fredboat.backend.quarterdeck.parsing.LanguageParseException;
-import com.fredboat.backend.quarterdeck.parsing.NumberParseException;
-import com.fredboat.backend.quarterdeck.parsing.ParseCastException;
-import com.fredboat.backend.quarterdeck.parsing.RepeatModeParseException;
+import com.fredboat.backend.quarterdeck.parsing.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -112,9 +109,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     // ################################################################################
 
 
-    @ExceptionHandler({ParseCastException.class, LanguageParseException.class, NumberParseException.class,
-            RepeatModeParseException.class})
-    public ResponseEntity<Object> handleParseException(Exception e, WebRequest request) {
+    @ExceptionHandler(ParseException.class)
+    public ResponseEntity<Object> handleParseException(ParseException e, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ErrorMessage message = buildErrorMessage(status, e.getMessage(), request);
         return handleExceptionInternal(e, message, new HttpHeaders(), status, request);

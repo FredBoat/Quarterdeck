@@ -28,7 +28,7 @@ package com.fredboat.backend.quarterdeck.parsing;
 /**
  * Created by napster on 30.03.18.
  */
-public class ParseCastException extends RuntimeException {
+public class ParseCastException extends ParseException {
 
     private final String key;
     private final Object value;

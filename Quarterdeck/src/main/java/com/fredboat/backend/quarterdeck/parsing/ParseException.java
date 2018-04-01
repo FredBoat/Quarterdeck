@@ -25,29 +25,22 @@
 
 package com.fredboat.backend.quarterdeck.parsing;
 
-import fredboat.definitions.Language;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 /**
- * Created by napster on 30.03.18.
+ * Created by napster on 02.04.18.
  */
-public class LanguageParseException extends ParseException {
+public abstract class ParseException extends RuntimeException {
 
-    private static final String KNOWN_LANGUAGES = String.join(", ", Arrays.stream(Language.values())
-            .map(Language::getCode)
-            .collect(Collectors.toList()));
-
-    private final String unknown;
-
-    public LanguageParseException(String unknown) {
+    public ParseException() {
         super();
-        this.unknown = unknown;
     }
 
-    @Override
-    public String getMessage() {
-        return this.unknown + " is not a recognized language. Known languages are: " + KNOWN_LANGUAGES;
+    public ParseException(Throwable cause) {
+        super(cause);
     }
+
+    /**
+     * @return A message that explains what went wrong, securely and nicely.
+     */
+    @Override
+    public abstract String getMessage();
 }

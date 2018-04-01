@@ -28,7 +28,7 @@ package com.fredboat.backend.quarterdeck.parsing;
 /**
  * Created by napster on 31.03.18.
  */
-public class NumberParseException extends RuntimeException {
+public class NumberParseException extends ParseException {
 
     private final String key;
     private final Object value;
@@ -44,6 +44,6 @@ public class NumberParseException extends RuntimeException {
     @Override
     public String getMessage() {
         return "Your provided value " + this.value.toString() + " for key " + this.key
-                + " is neither a number not a string that can be parsed into a " + this.expected.getSimpleName() + ".";
+                + " is neither a number nor a string that can be parsed into a " + this.expected.getSimpleName() + ".";
     }
 }

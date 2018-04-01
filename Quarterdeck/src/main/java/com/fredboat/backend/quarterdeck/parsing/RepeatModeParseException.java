@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Created by napster on 31.03.18.
  */
-public class RepeatModeParseException extends RuntimeException {
+public class RepeatModeParseException extends ParseException {
 
     private static final String REPEAT_MODES = String.join(", ", Arrays.stream(RepeatMode.values())
             .map(Enum::name)
