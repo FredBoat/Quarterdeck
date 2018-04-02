@@ -59,7 +59,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 @AutoConfigureMockMvc
 public class BaseTest {
 
-    private static final AtomicLong longs = new AtomicLong(ThreadLocalRandom.current().nextLong());
+    private static final AtomicLong longs = new AtomicLong(ThreadLocalRandom.current().nextLong(Long.MAX_VALUE / 2, Long.MAX_VALUE));
 
     @SuppressWarnings("NullableProblems")
     @Autowired
@@ -82,6 +82,6 @@ public class BaseTest {
      * overwrite entities of the same guild.
      */
     protected DiscordSnowflake generateUniqueGuildId() {
-        return new DiscordSnowflake(longs.incrementAndGet());
+        return new DiscordSnowflake(longs.decrementAndGet());
     }
 }
