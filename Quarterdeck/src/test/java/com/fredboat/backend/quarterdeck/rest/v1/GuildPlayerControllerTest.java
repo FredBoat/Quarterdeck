@@ -27,6 +27,7 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPlayer;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -50,14 +51,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class GuildPlayerControllerTest extends BaseTest {
 
+    private static final String urlTemplate = "/v1/guilds/{guild_id}/player";
+
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testGet() throws Exception {
-        this.mockMvc.perform(get("/v1/guilds/1/player"))
+        DiscordSnowflake guildId = generateUniqueGuildId();
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is("1")))
+                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
                 .andExpect(jsonPath("$.voiceChannelId", isA(String.class)))
                 .andExpect(jsonPath("$.activeTextChannelId", isA(String.class)))
                 .andExpect(jsonPath("$.isPaused", isA(Boolean.class)))
@@ -77,7 +81,8 @@ public class GuildPlayerControllerTest extends BaseTest {
         patchGuildPlayer.put("volume", 3);
         patchGuildPlayer.put("repeatMode", "all");
 
-        MockHttpServletRequestBuilder request = patch("/v1/guilds/2/player")
+        DiscordSnowflake guildId = generateUniqueGuildId();
+        MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
                 .content(this.gson.toJson(patchGuildPlayer))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 
@@ -85,7 +90,7 @@ public class GuildPlayerControllerTest extends BaseTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is("2")))
+                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
                 .andExpect(jsonPath("$.voiceChannelId", isA(String.class)))
                 .andExpect(jsonPath("$.voiceChannelId", is("42")))
                 .andExpect(jsonPath("$.activeTextChannelId", isA(String.class)))
@@ -104,27 +109,27 @@ public class GuildPlayerControllerTest extends BaseTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testDelete() throws Exception {
-        String path = ("/v1/guilds/3/player");
+        DiscordSnowflake guildId = generateUniqueGuildId();
 
-        this.mockMvc.perform(get(path))
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.volume", is(GuildPlayer.DEFAULT_VOLUME)));
 
         Map<String, Object> patchGuildData = new HashMap<>();
         patchGuildData.put("volume", 69);
-        MockHttpServletRequestBuilder patch = patch(path)
+        MockHttpServletRequestBuilder patch = patch(urlTemplate, guildId)
                 .content(this.gson.toJson(patchGuildData))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.volume", is(69)));
 
-        this.mockMvc.perform(get(path))
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.volume", is(69)));
 
-        this.mockMvc.perform(delete(path))
+        this.mockMvc.perform(delete(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andDo(document("guild/player/delete"));
 
-        this.mockMvc.perform(get(path))
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.volume", is(GuildPlayer.DEFAULT_VOLUME)));
     }
 }

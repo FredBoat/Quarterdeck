@@ -27,6 +27,7 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import fredboat.definitions.Language;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -52,14 +53,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class GuildConfigControllerTest extends BaseTest {
 
+    private static final String urlTemplate = "/v1/guilds/{guild_id}/config";
+
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testGet() throws Exception {
-        this.mockMvc.perform(get("/v1/guilds/1/config"))
+        DiscordSnowflake guildId = generateUniqueGuildId();
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is("1")))
+                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
                 .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
                 .andExpect(jsonPath("$.language", isA(String.class)))
@@ -74,7 +78,8 @@ public class GuildConfigControllerTest extends BaseTest {
         patchGuildConfig.put("autoResume", true);
         patchGuildConfig.put("language", Language.DE_DE.getCode());
 
-        MockHttpServletRequestBuilder request = patch("/v1/guilds/2/config")
+        DiscordSnowflake guildId = generateUniqueGuildId();
+        MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
                 .content(this.gson.toJson(patchGuildConfig))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 
@@ -82,7 +87,7 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is("2")))
+                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
                 .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
                 .andExpect(jsonPath("$.trackAnnounce", is(false)))
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
@@ -95,27 +100,27 @@ public class GuildConfigControllerTest extends BaseTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testDelete() throws Exception {
-        String path = ("/v1/guilds/3/config");
+        DiscordSnowflake guildId = generateUniqueGuildId();
 
-        this.mockMvc.perform(get(path))
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE.getCode()))));
 
         Map<String, Object> patchGuildConfig = new HashMap<>();
         patchGuildConfig.put("language", Language.DE_DE.getCode());
-        MockHttpServletRequestBuilder patch = patch(path)
+        MockHttpServletRequestBuilder patch = patch(urlTemplate, guildId)
                 .content(this.gson.toJson(patchGuildConfig))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))));
 
-        this.mockMvc.perform(get(path))
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))));
 
-        this.mockMvc.perform(delete(path))
+        this.mockMvc.perform(delete(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andDo(document("guild/config/delete"));
 
-        this.mockMvc.perform(get(path))
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE.getCode()))));
     }
 }

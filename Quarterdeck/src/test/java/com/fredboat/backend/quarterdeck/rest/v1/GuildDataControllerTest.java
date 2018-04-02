@@ -27,6 +27,7 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildData;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -50,14 +51,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class GuildDataControllerTest extends BaseTest {
 
+    private static final String urlTemplate = "/v1/guilds/{guild_id}/data";
+
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testGet() throws Exception {
-        this.mockMvc.perform(get("/v1/guilds/1/data"))
+        DiscordSnowflake guildId = generateUniqueGuildId();
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is("1")))
+                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
                 .andExpect(jsonPath("$.helloSent", isA(String.class)))
                 .andDo(document("guild/data/get"));
     }
@@ -69,7 +73,8 @@ public class GuildDataControllerTest extends BaseTest {
         long now = System.currentTimeMillis();
         patchGuildData.put("helloSent", now);
 
-        MockHttpServletRequestBuilder request = patch("/v1/guilds/2/data")
+        DiscordSnowflake guildId = generateUniqueGuildId();
+        MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
                 .content(this.gson.toJson(patchGuildData))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 
@@ -77,7 +82,7 @@ public class GuildDataControllerTest extends BaseTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is("2")))
+                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
                 .andExpect(jsonPath("$.helloSent", isA(String.class)))
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(now))))
                 .andDo(document("guild/data/patch"));
@@ -86,28 +91,28 @@ public class GuildDataControllerTest extends BaseTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testDelete() throws Exception {
-        String path = ("/v1/guilds/3/data");
+        DiscordSnowflake guildId = generateUniqueGuildId();
 
-        this.mockMvc.perform(get(path))
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(GuildData.DEFAULT_HELLO_SENT_TIMESTAMP))));
 
         Map<String, Object> patchGuildData = new HashMap<>();
         long now = System.currentTimeMillis();
         patchGuildData.put("helloSent", now);
-        MockHttpServletRequestBuilder patch = patch(path)
+        MockHttpServletRequestBuilder patch = patch(urlTemplate, guildId)
                 .content(this.gson.toJson(patchGuildData))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));
 
-        this.mockMvc.perform(get(path))
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));
 
-        this.mockMvc.perform(delete(path))
+        this.mockMvc.perform(delete(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andDo(document("guild/data/delete"));
 
-        this.mockMvc.perform(get(path))
+        this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(GuildData.DEFAULT_HELLO_SENT_TIMESTAMP))));
     }
 }

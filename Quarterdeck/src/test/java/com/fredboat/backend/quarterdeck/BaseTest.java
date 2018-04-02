@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck;
 
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +39,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
@@ -55,6 +59,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 @AutoConfigureMockMvc
 public class BaseTest {
 
+    private static final AtomicLong longs = new AtomicLong(ThreadLocalRandom.current().nextLong());
+
     @SuppressWarnings("NullableProblems")
     @Autowired
     protected MockMvc mockMvc;
@@ -69,5 +75,13 @@ public class BaseTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
+    }
+
+    /**
+     * @return A guild id that is unique for this test run. This is useful to ensure eventual parallel tests don't
+     * overwrite entities of the same guild.
+     */
+    protected DiscordSnowflake generateUniqueGuildId() {
+        return new DiscordSnowflake(longs.incrementAndGet());
     }
 }

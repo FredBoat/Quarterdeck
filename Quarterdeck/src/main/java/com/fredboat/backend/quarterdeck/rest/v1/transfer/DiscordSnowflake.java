@@ -51,4 +51,9 @@ public class DiscordSnowflake {
     public long longValue() {
         return this.snowflakeId;
     }
+
+    @Override
+    public String toString() {
+        return getSnowflakeId();
+    }
 }
