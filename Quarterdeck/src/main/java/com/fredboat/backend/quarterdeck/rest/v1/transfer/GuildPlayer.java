@@ -26,6 +26,7 @@
 package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
 import fredboat.definitions.RepeatMode;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by napster on 31.03.18.
@@ -73,6 +74,7 @@ public class GuildPlayer {
         return this.isPaused;
     }
 
+    @ApiModelProperty(allowableValues = "range[0, 150]", example = "72")
     public int getVolume() {
         return this.volume;
     }
