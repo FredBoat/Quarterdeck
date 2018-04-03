@@ -56,7 +56,7 @@ subprojects {
         springBootVersion           = "${springBootVersion}"
 
         gsonVersion                 = '2.8.2'
-        sqlsauceVersion             = '0.0.13'
+        sqlsauceVersion             = '0.0.14'
         hibernateVersion            = '5.2.14.Final'
         flywayVersion               = '5.0.7'
         dsProxyVersion              = '1.4.7'

@@ -27,6 +27,7 @@ package com.fredboat.backend.quarterdeck.rest.v0;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
 import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
+import com.fredboat.backend.quarterdeck.rest.v0.transfer.PrefixTransfer;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,20 +38,36 @@ import javax.annotation.Nullable;
 /**
  * Created by napster on 17.02.18.
  */
+@Deprecated
 @RestController
 @RequestMapping("/" + EntityController.VERSION_PATH + "prefix/")
-public class PrefixController extends EntityController<Prefix.GuildBotId, Prefix> {
+public class PrefixController {
 
-    protected final PrefixRepo prefixRepo;
+    protected final PrefixRepo repo;
 
     public PrefixController(PrefixRepo repo) {
-        super(repo);
-        this.prefixRepo = repo;
+        this.repo = repo;
     }
 
+    @Deprecated
     @Nullable
     @PostMapping("/getraw")
     public String getPrefix(@RequestBody Prefix.GuildBotId id) {
-        return this.prefixRepo.getPrefix(id);
+        return this.repo.fetch(id).getPrefix();
+    }
+
+    @PostMapping("/merge")
+    public PrefixTransfer merge(@RequestBody PrefixTransfer transfer) {
+        return PrefixTransfer.of(this.repo.merge(Prefix.fromTransfer(transfer)));
+    }
+
+    @PostMapping("/delete")
+    public void delete(@RequestBody Prefix.GuildBotId id) {
+        this.repo.delete(id);
+    }
+
+    @PostMapping("/fetch")
+    public PrefixTransfer fetch(@RequestBody Prefix.GuildBotId id) {
+        return PrefixTransfer.of(this.repo.fetch(id));
     }
 }

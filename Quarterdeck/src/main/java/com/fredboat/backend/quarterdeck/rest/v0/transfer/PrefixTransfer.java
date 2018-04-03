@@ -23,21 +23,48 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.db.repositories.impl;
+package com.fredboat.backend.quarterdeck.rest.v0.transfer;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
-import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
-import org.springframework.stereotype.Component;
-import space.npstr.sqlsauce.DatabaseWrapper;
+
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nullable;
 
 /**
- * Created by napster on 05.02.18.
+ * @deprecated move to v1 asap pl0x
  */
-@Component
-public class SqlSaucePrefixRepo extends SqlSauceRepo<Prefix.GuildBotId, Prefix> implements PrefixRepo {
+@Deprecated
+public class PrefixTransfer {
 
-    public SqlSaucePrefixRepo(DatabaseWrapper dbWrapper) {
-        super(dbWrapper, Prefix.class);
+    private Prefix.GuildBotId id;
+    @Nullable
+    private String prefix;
+
+    PrefixTransfer(Prefix.GuildBotId id, @Nullable String prefix) {
+        this.id = id;
+        this.prefix = prefix;
     }
 
+    public static PrefixTransfer of(Prefix entity) {
+        return new PrefixTransfer(entity.getId(), entity.getPrefix());
+    }
+
+    public void setId(Prefix.GuildBotId id) {
+        this.id = id;
+    }
+
+    public Prefix.GuildBotId getId() {
+        return this.id;
+    }
+
+    @Nullable
+    public String getPrefix() {
+        return this.prefix;
+    }
+
+    @CheckReturnValue
+    public PrefixTransfer setPrefix(@Nullable String prefix) {
+        this.prefix = prefix;
+        return this;
+    }
 }

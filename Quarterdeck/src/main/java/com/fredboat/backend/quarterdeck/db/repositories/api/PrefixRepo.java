@@ -27,21 +27,9 @@ package com.fredboat.backend.quarterdeck.db.repositories.api;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
 
-import javax.annotation.Nullable;
-
 /**
  * Created by napster on 05.02.18.
  */
 public interface PrefixRepo extends Repo<Prefix.GuildBotId, Prefix> {
 
-    /**
-     * @param id
-     *         if of the requested prefix
-     *
-     * @return prefix (the actual string) of the prefix entity with the requested id, or null if no prefix has been set.
-     * Basically a shortcut to loading the whole entity and then getting the prefix property, because prefixes are in
-     * high demand, and we want to avoid the cruft of loading an entity object when all we are interested in is a String.
-     */
-    @Nullable
-    String getPrefix(Prefix.GuildBotId id);
 }

@@ -25,6 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
+import com.fredboat.backend.quarterdeck.rest.v0.transfer.PrefixTransfer;
+import org.hibernate.annotations.Type;
 import space.npstr.sqlsauce.entities.SaucedEntity;
 
 import javax.annotation.CheckReturnValue;
@@ -34,7 +36,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Created by napster on 22.12.17.
@@ -45,21 +49,17 @@ import java.util.Objects;
 @Table(name = "prefixes")
 public class Prefix extends SaucedEntity<Prefix.GuildBotId, Prefix> {
 
+    @SuppressWarnings("NullableProblems")
     @EmbeddedId
     private GuildBotId id;
 
-    @Nullable
-    //may be null to indicate that there is no custom prefix for this guild
-    @Column(name = "prefix", nullable = true, columnDefinition = "text")
-    private String prefix;
+
+    @Type(type = "hash-set-string")
+    @Column(name = "pvalues") //values is a semi-reserved keyword
+    private HashSet<String> values = new HashSet<>(Set.of(";;", "!"));
 
     //for jpa & the database wrapper
     Prefix() {
-    }
-
-    public Prefix(GuildBotId id, @Nullable String prefix) {
-        this.id = id;
-        this.prefix = prefix;
     }
 
     @Override
@@ -78,14 +78,42 @@ public class Prefix extends SaucedEntity<Prefix.GuildBotId, Prefix> {
         return Prefix.class;
     }
 
+    /**
+     * @deprecated switch to v1 asap pl0x, this method
+     */
+    @Deprecated
     @Nullable
     public String getPrefix() {
-        return this.prefix;
+        if (this.values.isEmpty()
+                || (this.values.size() == 2 && this.values.contains(";;") && this.values.contains("!"))) {
+            return null; //the client is expected to pick their default one
+        } else {
+            //after the migration, if there was a custom prefix in the old format, it will be the only one in the set
+            return this.values.iterator().next();
+        }
+    }
+
+    @Deprecated
+    public static Prefix fromTransfer(PrefixTransfer transfer) {
+        Prefix result = new Prefix().setId(transfer.getId());
+        result.values = new HashSet<>();
+        String newPrefix = transfer.getPrefix();
+        if (newPrefix != null) {
+            result.values.add(newPrefix);
+        }
+
+        return result;
     }
 
     @CheckReturnValue
-    public Prefix setPrefix(@Nullable String prefix) {
-        this.prefix = prefix;
+    public Prefix addPrefix(@Nullable String prefix) {
+        this.values.add(prefix);
+        return this;
+    }
+
+    @CheckReturnValue
+    public Prefix removePrefix(@Nullable String prefix) {
+        this.values.remove(prefix);
         return this;
     }
 
