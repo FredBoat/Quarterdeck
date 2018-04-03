@@ -37,6 +37,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
@@ -62,8 +63,7 @@ public class GuildConfigControllerTest extends BaseTest {
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
+                .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
                 .andExpect(jsonPath("$.language", isA(String.class)))
@@ -86,14 +86,11 @@ public class GuildConfigControllerTest extends BaseTest {
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
-                .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
-                .andExpect(jsonPath("$.trackAnnounce", is(false)))
-                .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
-                .andExpect(jsonPath("$.autoResume", is(true)))
-                .andExpect(jsonPath("$.language", isA(String.class)))
-                .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))))
+                .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
+                .andExpect(jsonPath("$.trackAnnounce", both(isA(Boolean.class)).and(is(false))))
+                .andExpect(jsonPath("$.autoResume", both(isA(Boolean.class)).and(is(true))))
+                .andExpect(jsonPath("$.language", both(isA(String.class))
+                        .and(is(equalToIgnoringCase(Language.DE_DE.getCode())))))
                 .andDo(document("guild/config/patch"));
     }
 

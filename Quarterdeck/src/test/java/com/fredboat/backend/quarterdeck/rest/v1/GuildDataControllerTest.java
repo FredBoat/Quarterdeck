@@ -36,6 +36,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.both;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -60,8 +61,7 @@ public class GuildDataControllerTest extends BaseTest {
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
+                .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.helloSent", isA(String.class)))
                 .andDo(document("guild/data/get"));
     }
@@ -81,10 +81,8 @@ public class GuildDataControllerTest extends BaseTest {
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
-                .andExpect(jsonPath("$.helloSent", isA(String.class)))
-                .andExpect(jsonPath("$.helloSent", is(Long.toString(now))))
+                .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
+                .andExpect(jsonPath("$.helloSent", both(isA(String.class)).and(is(Long.toString(now)))))
                 .andDo(document("guild/data/patch"));
     }
 

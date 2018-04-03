@@ -28,6 +28,7 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPlayer;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
+import fredboat.definitions.RepeatMode;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -36,6 +37,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -60,8 +63,7 @@ public class GuildPlayerControllerTest extends BaseTest {
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
+                .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.voiceChannelId", isA(String.class)))
                 .andExpect(jsonPath("$.activeTextChannelId", isA(String.class)))
                 .andExpect(jsonPath("$.isPaused", isA(Boolean.class)))
@@ -79,7 +81,7 @@ public class GuildPlayerControllerTest extends BaseTest {
         patchGuildPlayer.put("activeTextChannelId", Long.MAX_VALUE);
         patchGuildPlayer.put("isPaused", false);
         patchGuildPlayer.put("volume", 3);
-        patchGuildPlayer.put("repeatMode", "all");
+        patchGuildPlayer.put("repeatMode", RepeatMode.ALL);
 
         DiscordSnowflake guildId = generateUniqueGuildId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
@@ -89,20 +91,15 @@ public class GuildPlayerControllerTest extends BaseTest {
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.guildId", isA(String.class)))
-                .andExpect(jsonPath("$.guildId", is(guildId.getSnowflakeId())))
-                .andExpect(jsonPath("$.voiceChannelId", isA(String.class)))
-                .andExpect(jsonPath("$.voiceChannelId", is("42")))
-                .andExpect(jsonPath("$.activeTextChannelId", isA(String.class)))
-                .andExpect(jsonPath("$.activeTextChannelId", is(Long.toString(Long.MAX_VALUE))))
-                .andExpect(jsonPath("$.isPaused", isA(Boolean.class)))
-                .andExpect(jsonPath("$.isPaused", is(false)))
-                .andExpect(jsonPath("$.volume", isA(Integer.class)))
-                .andExpect(jsonPath("$.volume", is(3)))
-                .andExpect(jsonPath("$.repeatMode", isA(String.class)))
-                .andExpect(jsonPath("$.repeatMode", is("ALL")))
-                .andExpect(jsonPath("$.isShuffled", isA(Boolean.class)))
-                .andExpect(jsonPath("$.isShuffled", is(false)))
+                .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
+                .andExpect(jsonPath("$.voiceChannelId", both(isA(String.class)).and(is("42"))))
+                .andExpect(jsonPath("$.activeTextChannelId", both(isA(String.class))
+                        .and(is(Long.toString(Long.MAX_VALUE)))))
+                .andExpect(jsonPath("$.isPaused", both(isA(Boolean.class)).and(is(false))))
+                .andExpect(jsonPath("$.volume", both(isA(Integer.class)).and(is(3))))
+                .andExpect(jsonPath("$.repeatMode", both(isA(String.class))
+                        .and(is(equalToIgnoringCase(RepeatMode.ALL.name())))))
+                .andExpect(jsonPath("$.isShuffled", both(isA(Boolean.class)).and(is(false))))
                 .andDo(document("guild/player/patch"));
     }
 
