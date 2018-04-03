@@ -33,6 +33,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -75,6 +76,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, response, headers, status, request);
     }
 
+    private static final String METHOD_NOT_SUPPORTED = " is not supported by this endpoint. Check the headers for the supported methods.";
     //just like the super method, just without the unnecessary warn level logging and a better message
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
@@ -85,10 +87,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             headers.setAllow(supportedMethods);
         }
 
-        String message = ex.getMethod() + " is not supported by this endpoint. Check the headers for the supported methods.";
+        String message = ex.getMethod() + METHOD_NOT_SUPPORTED;
         return handleExceptionInternal(ex, buildErrorMessage(status, message, request), headers, status, request);
     }
 
+    private static final String TYPE_MISMATCH = "The parameter '%s' needs to be of type '%s', which your provided value '%s' is not.";
     //show a better message for borked path variables
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status,
@@ -96,13 +99,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         if (ex instanceof MethodArgumentTypeMismatchException) {
             MethodArgumentTypeMismatchException e = (MethodArgumentTypeMismatchException) ex;
             String requiredType = e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "unknown";
-            String message = String.format("The parameter '%s' needs to be of type '%s', which your provided value '%s' is not.",
-                    e.getName(), requiredType, e.getValue());
+            String message = String.format(TYPE_MISMATCH, e.getName(), requiredType, e.getValue());
             return super.handleExceptionInternal(ex, buildErrorMessage(status, message, request), headers, status, request);
         }
         return super.handleTypeMismatch(ex, headers, status, request);
     }
 
+    private static final String NOT_READABLE = "Your http message / request body could not be read / parsed. "
+            + "Are you sending your request in the documented format?";
+
+    //show a better message for borked request bodies
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
+        return super.handleExceptionInternal(ex, buildErrorMessage(status, NOT_READABLE, request), headers, status, request);
+    }
 
     // ################################################################################
     // ##                        Handling our own Exceptions
