@@ -45,11 +45,11 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/" + EntityController.VERSION_PATH + "guilds/{guild_id}/config")
-public class V1GuildConfigController {
+public class GuildConfigController {
 
     private final GuildConfigRepo guildConfigRepo;
 
-    public V1GuildConfigController(GuildConfigRepo guildConfigRepo) {
+    public GuildConfigController(GuildConfigRepo guildConfigRepo) {
         this.guildConfigRepo = guildConfigRepo;
     }
 

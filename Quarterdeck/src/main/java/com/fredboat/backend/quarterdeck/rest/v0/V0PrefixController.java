@@ -37,19 +37,20 @@ import javax.annotation.Nullable;
 
 /**
  * Created by napster on 17.02.18.
+ *
+ * @deprecated move to v1 asap pl0x
  */
 @Deprecated
 @RestController
 @RequestMapping("/" + EntityController.VERSION_PATH + "prefix/")
-public class PrefixController {
+public class V0PrefixController {
 
     protected final PrefixRepo repo;
 
-    public PrefixController(PrefixRepo repo) {
+    public V0PrefixController(PrefixRepo repo) {
         this.repo = repo;
     }
 
-    @Deprecated
     @Nullable
     @PostMapping("/getraw")
     public String getPrefix(@RequestBody Prefix.GuildBotId id) {

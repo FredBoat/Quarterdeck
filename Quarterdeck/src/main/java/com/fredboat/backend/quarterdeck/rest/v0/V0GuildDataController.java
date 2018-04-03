@@ -25,8 +25,19 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0;
 
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildData;
+import com.fredboat.backend.quarterdeck.db.repositories.api.GuildDataRepo;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 /**
- * Created by napster on 28.03.18.
+ * Created by napster on 17.02.18.
  */
-public class GuildPlayerController {
+@RestController
+@RequestMapping("/" + EntityController.VERSION_PATH + "guilddata/")
+public class V0GuildDataController extends EntityController<Long, GuildData> {
+
+    public V0GuildDataController(GuildDataRepo repo) {
+        super(repo);
+    }
 }

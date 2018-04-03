@@ -35,9 +35,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/" + EntityController.VERSION_PATH + "guildconfig/")
-public class GuildConfigController extends EntityController<String, GuildConfig> {
+public class V0GuildConfigController extends EntityController<String, GuildConfig> {
 
-    public GuildConfigController(GuildConfigRepo repo) {
+    public V0GuildConfigController(GuildConfigRepo repo) {
         super(repo);
     }
 }
