@@ -35,9 +35,9 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -49,14 +49,17 @@ import java.util.Set;
 @Table(name = "prefixes")
 public class Prefix extends SaucedEntity<GuildBotId, Prefix> {
 
+    public static final Set<String> DEFAULT_PREFIXES = Set.of(";;", "!");
+
     @SuppressWarnings("NullableProblems")
     @EmbeddedId
     private GuildBotId id;
 
 
     @Type(type = "hash-set-string")
-    @Column(name = "pvalues") //values is a semi-reserved keyword
-    private HashSet<String> values = new HashSet<>(Set.of(";;", "!"));
+    @Column(name = "pvalues") //values is a semi-reserved keyword in postgres
+    //internally always access this field through the getValues() to ensure it is properly populated
+    private HashSet<String> values = new HashSet<>();
 
     //for jpa & the database wrapper
     Prefix() {
@@ -76,6 +79,14 @@ public class Prefix extends SaucedEntity<GuildBotId, Prefix> {
     @Override
     public Class<Prefix> getClazz() {
         return Prefix.class;
+    }
+
+    //reason: no prefixes are a bad idea. it is also not a great idea to hard save the defaults for every guild
+    private Set<String> getValues() {
+        if (this.values.isEmpty()) {
+            return DEFAULT_PREFIXES;
+        }
+        return this.values;
     }
 
     /**
@@ -105,15 +116,23 @@ public class Prefix extends SaucedEntity<GuildBotId, Prefix> {
         return result;
     }
 
+    public Set<String> getPrefixes() {
+        return Collections.unmodifiableSet(getValues());
+    }
+
     @CheckReturnValue
-    public Prefix addPrefix(@Nullable String prefix) {
-        this.values.add(prefix);
+    public Prefix addPrefixes(Collection<String> prefixes) {
+        HashSet<String> values = new HashSet<>(getValues());
+        values.addAll(prefixes);
+        this.values = values;
         return this;
     }
 
     @CheckReturnValue
-    public Prefix removePrefix(@Nullable String prefix) {
-        this.values.remove(prefix);
+    public Prefix removePrefixes(Collection<String> prefixes) {
+        HashSet<String> values = new HashSet<>(this.getValues());
+        values.removeAll(prefixes);
+        this.values = values;
         return this;
     }
 }
