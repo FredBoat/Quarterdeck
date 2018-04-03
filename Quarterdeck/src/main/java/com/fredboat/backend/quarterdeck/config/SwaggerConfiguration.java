@@ -104,11 +104,15 @@ public class SwaggerConfiguration {
                 .produces(Set.of(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .consumes(Set.of(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .directModelSubstitute(DiscordSnowflake.class, String.class)
-                .protocols(Set.of("https"))
                 .useDefaultResponseMessages(false);
+
         String host = this.docsConfig.getHost();
         if (!host.isEmpty()) {
             baseDocket.host(host);
+            baseDocket.protocols(Set.of("https"));
+        } else {
+            //probably hosted on localhost, allow to use http for test queries
+            baseDocket.protocols(Set.of("https", "http"));
         }
         String basePath = this.docsConfig.getBasePath();
         if (!basePath.isEmpty()) {
