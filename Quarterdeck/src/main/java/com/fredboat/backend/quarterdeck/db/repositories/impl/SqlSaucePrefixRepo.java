@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildBotId;
 import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
 import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ import space.npstr.sqlsauce.DatabaseWrapper;
  * Created by napster on 05.02.18.
  */
 @Component
-public class SqlSaucePrefixRepo extends SqlSauceRepo<Prefix.GuildBotId, Prefix> implements PrefixRepo {
+public class SqlSaucePrefixRepo extends SqlSauceRepo<GuildBotId, Prefix> implements PrefixRepo {
 
     public SqlSaucePrefixRepo(DatabaseWrapper dbWrapper) {
         super(dbWrapper, Prefix.class);

@@ -47,7 +47,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "prefixes")
-public class Prefix extends SaucedEntity<Prefix.GuildBotId, Prefix> {
+public class Prefix extends SaucedEntity<GuildBotId, Prefix> {
 
     @SuppressWarnings("NullableProblems")
     @EmbeddedId
@@ -116,59 +116,4 @@ public class Prefix extends SaucedEntity<Prefix.GuildBotId, Prefix> {
         this.values.remove(prefix);
         return this;
     }
-
-    public static class GuildBotId implements Serializable {
-        private static final long serialVersionUID = 2057084374531313455L;
-
-        @Column(name = "guild_id", nullable = false)
-        private long guildId;
-
-        @Column(name = "bot_id", nullable = false)
-        private long botId;
-
-        //for jpa & the database wrapper
-        GuildBotId() {
-        }
-
-        public GuildBotId(long guildId, long botId) {
-            this.guildId = guildId;
-            this.botId = botId;
-        }
-
-        public long getGuildId() {
-            return this.guildId;
-        }
-
-        public void setGuildId(long guildId) {
-            this.guildId = guildId;
-        }
-
-        public long getBotId() {
-            return this.botId;
-        }
-
-        public void setBotId(long botId) {
-            this.botId = botId;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(this.guildId, this.botId);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof GuildBotId)) return false;
-            GuildBotId other = (GuildBotId) o;
-            return this.guildId == other.guildId && this.botId == other.botId;
-        }
-
-
-        @Override
-        public String toString() {
-            return GuildBotId.class.getSimpleName() + String.format("(G %s, B %s)", this.guildId, this.botId);
-        }
-    }
-
 }

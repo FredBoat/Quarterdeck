@@ -25,11 +25,12 @@
 
 package com.fredboat.backend.quarterdeck.db.repositories.api;
 
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildBotId;
 import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
 
 /**
  * Created by napster on 05.02.18.
  */
-public interface PrefixRepo extends Repo<Prefix.GuildBotId, Prefix> {
+public interface PrefixRepo extends Repo<GuildBotId, Prefix> {
 
 }

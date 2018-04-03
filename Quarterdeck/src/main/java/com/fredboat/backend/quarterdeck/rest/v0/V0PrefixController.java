@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0;
 
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildBotId;
 import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
 import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
 import com.fredboat.backend.quarterdeck.rest.v0.transfer.PrefixTransfer;
@@ -53,7 +54,7 @@ public class V0PrefixController {
 
     @Nullable
     @PostMapping("/getraw")
-    public String getPrefix(@RequestBody Prefix.GuildBotId id) {
+    public String getPrefix(@RequestBody GuildBotId id) {
         return this.repo.fetch(id).getPrefix();
     }
 
@@ -63,12 +64,12 @@ public class V0PrefixController {
     }
 
     @PostMapping("/delete")
-    public void delete(@RequestBody Prefix.GuildBotId id) {
+    public void delete(@RequestBody GuildBotId id) {
         this.repo.delete(id);
     }
 
     @PostMapping("/fetch")
-    public PrefixTransfer fetch(@RequestBody Prefix.GuildBotId id) {
+    public PrefixTransfer fetch(@RequestBody GuildBotId id) {
         return PrefixTransfer.of(this.repo.fetch(id));
     }
 }

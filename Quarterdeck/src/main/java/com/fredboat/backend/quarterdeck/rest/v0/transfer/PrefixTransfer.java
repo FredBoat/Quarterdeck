@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0.transfer;
 
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildBotId;
 import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
 
 import javax.annotation.CheckReturnValue;
@@ -36,11 +37,11 @@ import javax.annotation.Nullable;
 @Deprecated
 public class PrefixTransfer {
 
-    private Prefix.GuildBotId id;
+    private GuildBotId id;
     @Nullable
     private String prefix;
 
-    PrefixTransfer(Prefix.GuildBotId id, @Nullable String prefix) {
+    PrefixTransfer(GuildBotId id, @Nullable String prefix) {
         this.id = id;
         this.prefix = prefix;
     }
@@ -49,11 +50,11 @@ public class PrefixTransfer {
         return new PrefixTransfer(entity.getId(), entity.getPrefix());
     }
 
-    public void setId(Prefix.GuildBotId id) {
+    public void setId(GuildBotId id) {
         this.id = id;
     }
 
-    public Prefix.GuildBotId getId() {
+    public GuildBotId getId() {
         return this.id;
     }
 
