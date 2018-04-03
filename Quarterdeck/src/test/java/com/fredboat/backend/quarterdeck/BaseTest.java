@@ -81,7 +81,7 @@ public class BaseTest {
      * @return A guild id that is unique for this test run. This is useful to ensure eventual parallel tests don't
      * overwrite entities of the same guild.
      */
-    protected DiscordSnowflake generateUniqueGuildId() {
+    protected DiscordSnowflake generateUniqueSnowflakeId() {
         return new DiscordSnowflake(longs.decrementAndGet());
     }
 }

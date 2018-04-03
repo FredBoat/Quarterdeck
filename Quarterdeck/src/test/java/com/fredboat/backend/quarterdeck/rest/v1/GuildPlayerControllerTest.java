@@ -59,7 +59,7 @@ public class GuildPlayerControllerTest extends BaseTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testGet() throws Exception {
-        DiscordSnowflake guildId = generateUniqueGuildId();
+        DiscordSnowflake guildId = generateUniqueSnowflakeId();
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -83,7 +83,7 @@ public class GuildPlayerControllerTest extends BaseTest {
         patchGuildPlayer.put("volume", 3);
         patchGuildPlayer.put("repeatMode", RepeatMode.ALL);
 
-        DiscordSnowflake guildId = generateUniqueGuildId();
+        DiscordSnowflake guildId = generateUniqueSnowflakeId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
                 .content(this.gson.toJson(patchGuildPlayer))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
@@ -106,7 +106,7 @@ public class GuildPlayerControllerTest extends BaseTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testDelete() throws Exception {
-        DiscordSnowflake guildId = generateUniqueGuildId();
+        DiscordSnowflake guildId = generateUniqueSnowflakeId();
 
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.volume", is(GuildPlayer.DEFAULT_VOLUME)));

@@ -57,7 +57,7 @@ public class GuildDataControllerTest extends BaseTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testGet() throws Exception {
-        DiscordSnowflake guildId = generateUniqueGuildId();
+        DiscordSnowflake guildId = generateUniqueSnowflakeId();
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -73,7 +73,7 @@ public class GuildDataControllerTest extends BaseTest {
         long now = System.currentTimeMillis();
         patchGuildData.put("helloSent", now);
 
-        DiscordSnowflake guildId = generateUniqueGuildId();
+        DiscordSnowflake guildId = generateUniqueSnowflakeId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
                 .content(this.gson.toJson(patchGuildData))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
@@ -89,7 +89,7 @@ public class GuildDataControllerTest extends BaseTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testDelete() throws Exception {
-        DiscordSnowflake guildId = generateUniqueGuildId();
+        DiscordSnowflake guildId = generateUniqueSnowflakeId();
 
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(GuildData.DEFAULT_HELLO_SENT_TIMESTAMP))));

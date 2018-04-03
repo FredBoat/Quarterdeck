@@ -59,7 +59,7 @@ public class GuildConfigControllerTest extends BaseTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testGet() throws Exception {
-        DiscordSnowflake guildId = generateUniqueGuildId();
+        DiscordSnowflake guildId = generateUniqueSnowflakeId();
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -78,7 +78,7 @@ public class GuildConfigControllerTest extends BaseTest {
         patchGuildConfig.put("autoResume", true);
         patchGuildConfig.put("language", Language.DE_DE.getCode());
 
-        DiscordSnowflake guildId = generateUniqueGuildId();
+        DiscordSnowflake guildId = generateUniqueSnowflakeId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
                 .content(this.gson.toJson(patchGuildConfig))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
@@ -97,7 +97,7 @@ public class GuildConfigControllerTest extends BaseTest {
     @WithMockUser(roles = "ADMIN")
     @Test
     public void testDelete() throws Exception {
-        DiscordSnowflake guildId = generateUniqueGuildId();
+        DiscordSnowflake guildId = generateUniqueSnowflakeId();
 
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE.getCode()))));

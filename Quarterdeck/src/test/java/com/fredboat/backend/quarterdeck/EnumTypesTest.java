@@ -50,7 +50,7 @@ public class EnumTypesTest extends BaseTest {
     @Test
     public void testRepeatModeEnumAllAccepted() throws Exception {
         Map<String, Object> patch = new HashMap<>();
-        MockHttpServletRequestBuilder request = patch("/v1/guilds/{guild_id}/player", generateUniqueGuildId())
+        MockHttpServletRequestBuilder request = patch("/v1/guilds/{guild_id}/player", generateUniqueSnowflakeId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         for (RepeatMode repeatMode : RepeatMode.values()) {
             patch.put("repeatMode", repeatMode);
@@ -62,7 +62,7 @@ public class EnumTypesTest extends BaseTest {
     @Test
     public void testLanguageEnumAllAccepted() throws Exception {
         Map<String, Object> patch = new HashMap<>();
-        MockHttpServletRequestBuilder request = patch("/v1/guilds/{guild_id}/config", generateUniqueGuildId())
+        MockHttpServletRequestBuilder request = patch("/v1/guilds/{guild_id}/config", generateUniqueSnowflakeId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         for (Language language : Language.values()) {
             patch.put("language", language);
