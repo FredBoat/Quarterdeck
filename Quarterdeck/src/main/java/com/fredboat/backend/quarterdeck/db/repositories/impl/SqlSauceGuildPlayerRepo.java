@@ -29,6 +29,7 @@ import com.fredboat.backend.quarterdeck.db.entities.main.GuildPlayer;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPlayerRepo;
 import com.fredboat.backend.quarterdeck.parsing.PatchParseUtil;
 import com.fredboat.backend.quarterdeck.parsing.RepeatModeParseException;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import fredboat.definitions.RepeatMode;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
@@ -54,14 +55,14 @@ public class SqlSauceGuildPlayerRepo extends SqlSauceRepo<Long, GuildPlayer> imp
 
         //voice channel id
         if (partialUpdate.containsKey("voiceChannelId")) {
-            long voiceChannelId = PatchParseUtil.parseLong("voiceChannelId", partialUpdate);
-            update = update.andThen(guildPlayer -> guildPlayer.setVoiceChannelId(voiceChannelId));
+            DiscordSnowflake voiceChannelId = PatchParseUtil.parseDiscordSnowflake("voiceChannelId", partialUpdate);
+            update = update.andThen(guildPlayer -> guildPlayer.setVoiceChannelId(voiceChannelId.longValue()));
         }
 
         //active text channel id
         if (partialUpdate.containsKey("activeTextChannelId")) {
-            long activeTextChannelId = PatchParseUtil.parseLong("activeTextChannelId", partialUpdate);
-            update = update.andThen(guildPlayer -> guildPlayer.setActiveTextChannelId(activeTextChannelId));
+            DiscordSnowflake activeTextChannelId = PatchParseUtil.parseDiscordSnowflake("activeTextChannelId", partialUpdate);
+            update = update.andThen(guildPlayer -> guildPlayer.setActiveTextChannelId(activeTextChannelId.longValue()));
         }
 
         //is paused
