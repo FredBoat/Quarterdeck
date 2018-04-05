@@ -41,7 +41,7 @@
         <persistence strategy="none"/>
     </defaultCache>
 
-    <cache name="search_results"
+    <cache name="track_search_results"
            maxEntriesLocalHeap="1000"
            maxEntriesLocalDisk="100000"
            eternal="true">

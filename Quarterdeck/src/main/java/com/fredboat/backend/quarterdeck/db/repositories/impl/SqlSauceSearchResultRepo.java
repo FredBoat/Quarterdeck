@@ -27,7 +27,7 @@ package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
 import com.fredboat.backend.quarterdeck.config.DatabaseConfiguration;
 import com.fredboat.backend.quarterdeck.db.DatabaseManager;
-import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResult;
+import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
 import com.fredboat.backend.quarterdeck.db.repositories.api.SearchResultRepo;
 import org.springframework.stereotype.Component;
 
@@ -40,23 +40,23 @@ import java.util.Map;
  * Created by napster on 05.02.18.
  */
 @Component
-public class SqlSauceSearchResultRepo extends SqlSauceRepo<SearchResult.SearchResultId, SearchResult>
+public class SqlSauceSearchResultRepo extends SqlSauceRepo<TrackSearchResult.SearchResultId, TrackSearchResult>
         implements SearchResultRepo {
 
     public SqlSauceSearchResultRepo(DatabaseConfiguration dbConfiguration, DatabaseManager databaseManager) {
-        super(dbConfiguration.cacheDbWrapper(databaseManager), SearchResult.class); //todo noop / reloading
+        super(dbConfiguration.cacheDbWrapper(databaseManager), TrackSearchResult.class); //todo noop / reloading
     }
 
     @Nullable
     @Override
-    public SearchResult getMaxAged(SearchResult.SearchResultId id, long maxAgeMillis) {
+    public TrackSearchResult getMaxAged(TrackSearchResult.SearchResultId id, long maxAgeMillis) {
         //language=JPAQL
-        String query = "SELECT sr FROM SearchResult sr WHERE sr.searchResultId = :id AND sr.timestamp > :oldest";
+        String query = "SELECT sr FROM TrackSearchResult sr WHERE sr.searchResultId = :id AND sr.lookedUp > :oldest";
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         params.put("oldest", maxAgeMillis < 0 ? 0 : System.currentTimeMillis() - maxAgeMillis);
 
-        List<SearchResult> queryResult = this.dbWrapper.selectJpqlQuery(query, params, SearchResult.class, 1);
+        List<TrackSearchResult> queryResult = this.dbWrapper.selectJpqlQuery(query, params, TrackSearchResult.class, 1);
 
         if (queryResult.isEmpty()) {
             return null;

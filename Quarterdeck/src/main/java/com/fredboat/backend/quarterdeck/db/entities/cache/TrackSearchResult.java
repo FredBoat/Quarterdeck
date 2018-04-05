@@ -28,6 +28,7 @@ package com.fredboat.backend.quarterdeck.db.entities.cache;
 import fredboat.definitions.SearchProvider;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 import space.npstr.sqlsauce.entities.SaucedEntity;
 import space.npstr.sqlsauce.fp.types.EntityKey;
 
@@ -36,7 +37,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
@@ -47,36 +49,33 @@ import java.util.Objects;
  * Caches a search result
  */
 @Entity
-@Table(name = "search_results")
+@Table(name = "track_search_results")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "search_results")
-public class SearchResult extends SaucedEntity<SearchResult.SearchResultId, SearchResult> {
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "track_search_results")
+public class TrackSearchResult extends SaucedEntity<TrackSearchResult.SearchResultId, TrackSearchResult> {
 
+    @SuppressWarnings("NullableProblems") //populated by the orm
     @EmbeddedId
     private SearchResultId searchResultId;
 
-    @Column(name = "timestamp")
-    private long timestamp;
+    @Column(name = "looked_up")
+    private long lookedUp;
 
-    @Lob
-    @Column(name = "search_result")
-    private byte[] serializedSearchResult;
+    @SuppressWarnings("NullableProblems") //populated by the orm
+    @Column(name = "serialized_result")
+    //serialization format: lavaplayer
+    private byte[] serializedResult;
 
     //for jpa / db wrapper
-    SearchResult() {
+    public TrackSearchResult() {
     }
 
-    public static EntityKey<SearchResultId, SearchResult> key(SearchResultId id) {
-        return EntityKey.of(id, SearchResult.class);
-    }
-
-    @Override
-    public SearchResult save() {
-        throw new UnsupportedOperationException("Use the repository of this entity instead");
+    public static EntityKey<SearchResultId, TrackSearchResult> key(SearchResultId id) {
+        return EntityKey.of(id, TrackSearchResult.class);
     }
 
     @Override
-    public SearchResult setId(SearchResultId id) {
+    public TrackSearchResult setId(SearchResultId id) {
         this.searchResultId = id;
         return this;
     }
@@ -90,24 +89,36 @@ public class SearchResult extends SaucedEntity<SearchResult.SearchResultId, Sear
         return this.searchResultId.getProvider();
     }
 
-    public void setProvider(SearchProvider provider) {
-        this.searchResultId.provider = provider.name();
+    public TrackSearchResult setProvider(SearchProvider provider) {
+        this.searchResultId.provider = provider;
+        return this;
     }
 
     public String getSearchTerm() {
         return this.searchResultId.searchTerm;
     }
 
-    public void setSearchTerm(String searchTerm) {
+    public TrackSearchResult setSearchTerm(String searchTerm) {
         this.searchResultId.searchTerm = searchTerm;
+        return this;
     }
 
-    public long getTimestamp() {
-        return this.timestamp;
+    public byte[] getSerializedResult() {
+        return this.serializedResult;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public TrackSearchResult setSerializedResult(byte[] serializedResult) {
+        this.serializedResult = serializedResult;
+        return this;
+    }
+
+    public long getLookedUp() {
+        return this.lookedUp;
+    }
+
+    public TrackSearchResult setLookedUp(long lookedUp) {
+        this.lookedUp = lookedUp;
+        return this;
     }
 
     /**
@@ -118,27 +129,31 @@ public class SearchResult extends SaucedEntity<SearchResult.SearchResultId, Sear
 
         private static final long serialVersionUID = 8969973651938173208L;
 
+        @SuppressWarnings("NullableProblems") //populated by the orm
+        @Enumerated(EnumType.STRING)
+        @Type(type = "pgsql_enum")
         @Column(name = "provider", nullable = false)
-        private String provider;
+        private SearchProvider provider;
 
+        @SuppressWarnings("NullableProblems") //populated by the orm
         @Column(name = "search_term", nullable = false, columnDefinition = "text")
         private String searchTerm;
 
         //for jpa / db wrapper
-        public SearchResultId() {
+        SearchResultId() {
         }
 
         public SearchResultId(SearchProvider provider, String searchTerm) {
-            this.provider = provider.name();
+            this.provider = provider;
             this.searchTerm = searchTerm;
         }
 
         public SearchProvider getProvider() {
-            return SearchProvider.valueOf(this.provider);
+            return this.provider;
         }
 
         public void setProvider(SearchProvider provider) {
-            this.provider = provider.name();
+            this.provider = provider;
         }
 
         public String getSearchTerm() {
@@ -164,7 +179,7 @@ public class SearchResult extends SaucedEntity<SearchResult.SearchResultId, Sear
 
         @Override
         public String toString() {
-            return "Search: Provider " + this.provider + " Term " + this.searchTerm;
+            return "Search: Provider " + this.provider + " Search term " + this.searchTerm;
         }
     }
 }

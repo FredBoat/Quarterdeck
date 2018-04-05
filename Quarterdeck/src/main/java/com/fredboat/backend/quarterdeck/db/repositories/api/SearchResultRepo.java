@@ -25,14 +25,14 @@
 
 package com.fredboat.backend.quarterdeck.db.repositories.api;
 
-import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResult;
+import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
 
 import javax.annotation.Nullable;
 
 /**
  * Created by napster on 05.02.18.
  */
-public interface SearchResultRepo extends Repo<SearchResult.SearchResultId, SearchResult> {
+public interface SearchResultRepo extends Repo<TrackSearchResult.SearchResultId, TrackSearchResult> {
 
     /**
      * @param id
@@ -44,5 +44,5 @@ public interface SearchResultRepo extends Repo<SearchResult.SearchResultId, Sear
      * search result for the provided is, or only an older than the requested maximum age one.
      */
     @Nullable
-    SearchResult getMaxAged(SearchResult.SearchResultId id, long maxAgeMillis);
+    TrackSearchResult getMaxAged(TrackSearchResult.SearchResultId id, long maxAgeMillis);
 }

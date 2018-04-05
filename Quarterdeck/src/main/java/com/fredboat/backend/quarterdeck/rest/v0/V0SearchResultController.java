@@ -25,8 +25,9 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0;
 
-import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResult;
+import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
 import com.fredboat.backend.quarterdeck.db.repositories.api.SearchResultRepo;
+import com.fredboat.backend.quarterdeck.rest.v0.transfer.SearchResultTransfer;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,21 +38,29 @@ import javax.annotation.Nullable;
 
 /**
  * Created by napster on 17.02.18.
+ *
+ * @deprecated only bugfixes allowed. add new stuff to the v1 implementation.
  */
+@Deprecated
 @RestController
 @RequestMapping("/" + EntityController.VERSION_PATH + "searchresult/")
-public class SearchResultController extends EntityController<SearchResult.SearchResultId, SearchResult> {
+public class V0SearchResultController {
 
-    protected final SearchResultRepo searchResultRepo;
+    protected final SearchResultRepo repo;
 
-    public SearchResultController(SearchResultRepo repo) {
-        super(repo);
-        this.searchResultRepo = repo;
+    public V0SearchResultController(SearchResultRepo repo) {
+        this.repo = repo;
     }
 
     @Nullable
     @PostMapping("/getmaxaged")
-    public SearchResult getMaxAged(@RequestBody SearchResult.SearchResultId id, @RequestParam("millis") long maxAgeMillis) {
-        return this.searchResultRepo.getMaxAged(id, maxAgeMillis);
+    public SearchResultTransfer getMaxAged(@RequestBody TrackSearchResult.SearchResultId id, @RequestParam("millis") long maxAgeMillis) {
+        TrackSearchResult result = this.repo.getMaxAged(id, maxAgeMillis);
+        return result == null ? null : SearchResultTransfer.of(result);
+    }
+
+    @PostMapping("/merge")
+    public SearchResultTransfer merge(@RequestBody SearchResultTransfer transfer) {
+        return SearchResultTransfer.of(this.repo.merge(transfer.toEntity()));
     }
 }
