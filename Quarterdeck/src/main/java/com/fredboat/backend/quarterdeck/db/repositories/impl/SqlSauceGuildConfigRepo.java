@@ -67,12 +67,12 @@ public class SqlSauceGuildConfigRepo extends SqlSauceRepo<String, GuildConfig> i
         if (partialUpdate.containsKey("language")) {
             String langRaw = PatchParseUtil.cast("language", partialUpdate, String.class);
             Optional<Language> parse = Language.parse(langRaw);
-                if (parse.isPresent()) {
-                    String language = parse.get().getCode();
-                    update = update.andThen(guildConfig -> guildConfig.setLang(language));
-                } else {
-                    throw new LanguageParseException(langRaw);
-                }
+            if (parse.isPresent()) {
+                String language = parse.get().getCode();
+                update = update.andThen(guildConfig -> guildConfig.setLang(language));
+            } else {
+                throw new LanguageParseException(langRaw);
+            }
         }
 
         return this.dbWrapper.findApplyAndMerge(GuildConfig.key(id), update);
