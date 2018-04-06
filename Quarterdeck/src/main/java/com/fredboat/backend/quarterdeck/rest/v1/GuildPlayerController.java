@@ -70,8 +70,8 @@ public class GuildPlayerController {
             @ApiImplicitParam(name = "partialGuildPlayer", dataType = "GuildPlayer", required = true)
     })
     @PatchMapping
-    public GuildPlayer getGuildPlayer(@PathVariable("guild_id") DiscordSnowflake guildId,
-                                      @RequestBody Map<String, Object> partialGuildPlayer) {
+    public GuildPlayer patchGuildPlayer(@PathVariable("guild_id") DiscordSnowflake guildId,
+                                        @RequestBody Map<String, Object> partialGuildPlayer) {
         return GuildPlayer.of(this.guildPlayerRepo.patch(guildId.longValue(), partialGuildPlayer));
     }
 
