@@ -60,3 +60,21 @@ leading to precision loss for higher long values.
 - **camelCase for attributes.** camelCase is a Java and JavaScript convention.
 It does clash with postgres' case insensitive and therefore snake_case tables and columns,
 so if we are going to use changefeeds a function will have to be added to convert those.
+- **Do not send null values. In some cases you might send null values to delete/reset an attribute/entity**
+Avoid sending null values, unless explicitly allowed for an attribute / entity (see concrete docs below).
+The API allows null values only in a few cases, and only to restore default values of an attribute/entity
+(similar behaviour to firing a DELETE request for that entity).
+
+## Limitations of these docs and gotchas
+
+This documentation is based on springfox, which only supports swagger 2 for now. OpenAPI 3 support has been announced
+for soon™. OpenAPI 3 allows for a bit more detailed definitions of models and attributes. Besides that, there are a few
+other issues:
+- When providing a position, for example to have the `guildId` attribute be shown at the top of a model for better
+readability, the documentation will automatically mark it as `allowEmptyValue: false`. This is not the case. You are not
+required to pass the `guildId` or similar ids in your RequestBody, if they can be determined from the path and query.
+- When giving example values for snowflakes, which are handled as a string, but the current Discord implementation are
+actually longs, the docs will render the value as a number, even though the type is string. To avoid confusion and
+possibly wrong client implementations, no example values for snowflakes are provided. If you really have never seen
+a Discord snowflake, here is an example guild id: `"214539058028740609"`. You can learn more about Discord snowflakes
+[here](https://i.imgur.com/UxWvdYD.png)
