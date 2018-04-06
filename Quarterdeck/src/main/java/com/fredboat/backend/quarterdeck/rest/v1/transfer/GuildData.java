@@ -25,6 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by napster on 31.03.18.
  *
@@ -45,6 +47,7 @@ public class GuildData {
     }
 
     // the getters are picked up by springfox for the documentation
+    @ApiModelProperty(position = -1)
     public DiscordSnowflake getGuildId() {
         return this.guildId;
     }

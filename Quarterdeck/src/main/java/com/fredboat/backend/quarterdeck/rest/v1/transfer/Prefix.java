@@ -25,6 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Set;
 
 /**
@@ -49,10 +51,12 @@ public class Prefix {
     }
 
     // the getters are picked up by springfox for the documentation
+    @ApiModelProperty(position = -2)
     public DiscordSnowflake getGuildId() {
         return this.guildId;
     }
 
+    @ApiModelProperty(position = -1)
     public DiscordSnowflake getBotId() {
         return this.botId;
     }

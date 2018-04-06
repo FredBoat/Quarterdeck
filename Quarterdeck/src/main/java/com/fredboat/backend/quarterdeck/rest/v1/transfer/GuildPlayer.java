@@ -58,6 +58,7 @@ public class GuildPlayer {
 
 
     // the getters are picked up by springfox for the documentation
+    @ApiModelProperty(position = -1)
     public DiscordSnowflake getGuildId() {
         return this.guildId;
     }
