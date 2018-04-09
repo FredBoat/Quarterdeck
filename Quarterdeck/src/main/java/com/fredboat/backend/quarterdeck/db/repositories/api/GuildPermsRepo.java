@@ -26,9 +26,12 @@
 package com.fredboat.backend.quarterdeck.db.repositories.api;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
+import com.fredboat.backend.quarterdeck.exceptions.PermissionNotSupportedException;
+import fredboat.definitions.PermissionLevel;
 
 /**
  * Created by napster on 05.02.18.
  */
 public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
+    GuildPermissions delete(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException;
 }

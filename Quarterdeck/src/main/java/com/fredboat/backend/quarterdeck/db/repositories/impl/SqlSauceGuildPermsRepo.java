@@ -25,10 +25,20 @@
 
 package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
+import com.fredboat.backend.quarterdeck.db.entities.main.GuildData;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPermsRepo;
+import com.fredboat.backend.quarterdeck.exceptions.PermissionNotSupportedException;
+import fredboat.definitions.PermissionLevel;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Created by napster on 05.02.18.
@@ -40,4 +50,53 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
         super(dbWrapper, GuildPermissions.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GuildPermissions delete(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException {
+        GuildPermissions guildPermissions = super.fetch(id);
+        Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
+
+        List<String> permissionList = null;
+        boolean isSuccessful = false;
+
+        // get the list of permissions.
+        switch (permissionLevel) {
+            case DJ:
+                permissionList = new LinkedList<>(guildPermissions.getDjList());
+                break;
+
+            case USER:
+                permissionList = new LinkedList<>(guildPermissions.getUserList());
+                break;
+
+            case ADMIN:
+                permissionList = new LinkedList<>(guildPermissions.getAdminList());
+                break;
+        }
+
+        // Not supported permission level.. yet?
+        if (permissionList == null) {
+            throw new PermissionNotSupportedException("Permission not supported.");
+        }
+
+        isSuccessful = permissionList.removeIf(listId -> listId.equals(id));
+        if (isSuccessful) {
+            if (permissionList.isEmpty()) {
+                permissionList.add(""); // Cannot be empty list..
+            }
+            List<String> finalPermissionList = permissionList;
+            update = update.andThen(test -> test.setFromEnum(permissionLevel, finalPermissionList));
+        } else {
+            return guildPermissions;
+        }
+
+        return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(id), update);
+    }
+
+    @Override
+    public GuildPermissions patch(String id, Map<String, Object> partialUpdate) {
+        return super.patch(id, partialUpdate);
+    }
 }

@@ -29,6 +29,7 @@ import fredboat.definitions.PermissionLevel;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import space.npstr.sqlsauce.entities.SaucedEntity;
+import space.npstr.sqlsauce.fp.types.EntityKey;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -44,22 +45,30 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "guild_permissions")
 public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
 
+    public static final String ADMIN_LIST_COLUMN = "list_admin";
+    public static final String DJ_LIST_COLUMN = "list_dj";
+    public static final String USER_LIST_COLUMN = "list_user";
+
     // Guild ID
     @Id
     @Column(name = "id")
     private String id;
 
-    @Column(name = "list_admin", nullable = false, columnDefinition = "text")
+    @Column(name = ADMIN_LIST_COLUMN, nullable = false, columnDefinition = "text")
     private String adminList = "";
 
-    @Column(name = "list_dj", nullable = false, columnDefinition = "text")
+    @Column(name = DJ_LIST_COLUMN, nullable = false, columnDefinition = "text")
     private String djList = "";
 
-    @Column(name = "list_user", nullable = false, columnDefinition = "text")
+    @Column(name = USER_LIST_COLUMN, nullable = false, columnDefinition = "text")
     private String userList = "";
 
     //for jpa / db wrapper
     GuildPermissions() {
+    }
+
+    public static EntityKey<String, GuildPermissions> key(String guildId) {
+        return EntityKey.of(guildId, GuildPermissions.class);
     }
 
     @Override
