@@ -23,17 +23,21 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.db.repositories.api;
+package com.fredboat.backend.quarterdeck.rest.v0;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildModules;
-import fredboat.definitions.Module;
+import com.fredboat.backend.quarterdeck.db.repositories.api.GuildModulesRepo;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created by napster on 05.02.18.
+ * Created by napster on 17.02.18.
  */
-public interface GuildModulesRepo extends Repo<Long, GuildModules> {
+@RestController
+@RequestMapping("/" + EntityController.VERSION_PATH + "guildmodules/")
+public class V0GuildModulesController extends EntityController<Long, GuildModules> {
 
-    GuildModules setModule(Long id, Module module, boolean enabled);
-
-    GuildModules resetModule(Long id, Module module);
+    public V0GuildModulesController(GuildModulesRepo repo) {
+        super(repo);
+    }
 }

@@ -23,17 +23,31 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.db.repositories.api;
+package com.fredboat.backend.quarterdeck.parsing;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.GuildModules;
 import fredboat.definitions.Module;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
- * Created by napster on 05.02.18.
+ * Created by napster on 06.04.18.
  */
-public interface GuildModulesRepo extends Repo<Long, GuildModules> {
+public class ModuleParseException extends ParseException {
 
-    GuildModules setModule(Long id, Module module, boolean enabled);
+    private static final String KNOWN_MODULES = String.join(", ", Arrays.stream(Module.values())
+            .map(Enum::name)
+            .collect(Collectors.toList()));
 
-    GuildModules resetModule(Long id, Module module);
+    private final String unknown;
+
+    public ModuleParseException(String unknown) {
+        super();
+        this.unknown = unknown;
+    }
+
+    @Override
+    public String getMessage() {
+        return this.unknown + " is not a recognized module. Known modules are: " + KNOWN_MODULES;
+    }
 }

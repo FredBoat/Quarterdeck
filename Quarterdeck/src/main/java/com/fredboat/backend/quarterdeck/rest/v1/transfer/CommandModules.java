@@ -23,17 +23,48 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.db.repositories.api;
+package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildModules;
 import fredboat.definitions.Module;
+import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
- * Created by napster on 05.02.18.
+ * Created by napster on 04.04.18.
  */
-public interface GuildModulesRepo extends Repo<Long, GuildModules> {
+public class CommandModules {
 
-    GuildModules setModule(Long id, Module module, boolean enabled);
+    private DiscordSnowflake guildId;
+    private List<CommandModule> modules;
 
-    GuildModules resetModule(Long id, Module module);
+
+    public static CommandModules of(GuildModules guildModules) {
+        return new CommandModules(guildModules);
+    }
+
+    private CommandModules(GuildModules guildModules) {
+        this.guildId = new DiscordSnowflake(guildModules.getId());
+        this.modules = List.of(
+                CommandModule.of(guildModules, Module.ADMIN),
+                CommandModule.of(guildModules, Module.INFO),
+                CommandModule.of(guildModules, Module.CONFIG),
+                CommandModule.of(guildModules, Module.MUSIC),
+                CommandModule.of(guildModules, Module.MOD),
+                CommandModule.of(guildModules, Module.UTIL),
+                CommandModule.of(guildModules, Module.FUN)
+        );
+    }
+
+
+    // the getters are picked up by springfox for the documentation
+    @ApiModelProperty(position = -1)
+    public DiscordSnowflake getGuildId() {
+        return this.guildId;
+    }
+
+    public List<CommandModule> getModules() {
+        return this.modules;
+    }
 }

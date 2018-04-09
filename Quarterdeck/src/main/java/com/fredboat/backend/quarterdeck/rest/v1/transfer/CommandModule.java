@@ -23,21 +23,36 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
+package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildModules;
-import com.fredboat.backend.quarterdeck.db.repositories.api.GuildModulesRepo;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import fredboat.definitions.Module;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 09.04.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "guildmodules/")
-public class GuildModulesController extends EntityController<Long, GuildModules> {
+public class CommandModule {
 
-    public GuildModulesController(GuildModulesRepo repo) {
-        super(repo);
+    private final fredboat.definitions.Module moduleId;
+    private final boolean enabled;
+
+    public static CommandModule of(GuildModules guildModules, Module module) {
+        return new CommandModule(module, guildModules.isModuleEnabledOrDefault(module));
+    }
+
+    public CommandModule(fredboat.definitions.Module moduleId, boolean enabled) {
+        this.moduleId = moduleId;
+        this.enabled = enabled;
+    }
+
+    // the getters are picked up by springfox for the documentation
+    @ApiModelProperty(position = -1)
+    public fredboat.definitions.Module getModuleId() {
+        return this.moduleId;
+    }
+
+    public boolean isEnabled() {
+        return this.enabled;
     }
 }
