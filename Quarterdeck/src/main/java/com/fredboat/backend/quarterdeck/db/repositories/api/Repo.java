@@ -26,7 +26,6 @@
 package com.fredboat.backend.quarterdeck.db.repositories.api;
 
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * Created by napster on 05.02.18.
@@ -70,14 +69,4 @@ public interface Repo<I, E> {
      */
     E patch(I id, Map<String, Object> partialUpdate);
 
-    /**
-     * A generic way to change an entity. This method will fetch an existing entity or create a default one, apply it
-     * on the provided transformation, and merge the result of that into the database.
-     * <p>
-     * Prefer to use one of the other specialized methods of this class over this one. Using this method makes it hard
-     * to reason about the exact type of transformation happening and pollutes the caller with Entity details.
-     *
-     * @return the full entity with the transformation applied
-     */
-    E transform(I id, Function<E, E> transformation);
 }
