@@ -77,4 +77,4 @@ required to pass the `guildId` or similar ids in your RequestBody, if they can b
 actually longs, the docs will render the value as a number, even though the type is string. To avoid confusion and
 possibly wrong client implementations, no example values for snowflakes are provided. If you really have never seen
 a Discord snowflake, here is an example guild id: `"214539058028740609"`. You can learn more about Discord snowflakes
-[here](https://i.imgur.com/UxWvdYD.png)
+[here](https://i.imgur.com/UxWvdYD.png).
