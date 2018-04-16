@@ -69,6 +69,7 @@ bootJar {
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
+    systemProperty("keepPostgresContainer", System.getProperty("keepPostgresContainer"))
 }
 
 asciidoctor {

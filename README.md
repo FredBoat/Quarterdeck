@@ -66,9 +66,32 @@ Authentication happens via [Basic access authentication](https://en.wikipedia.or
 No kind of authorization is existent, you either have access, or you don't. In terms of security, treat this the same way you would treat a redis instance.  
 
 
-## Building Quarterdeck
-To run tests against our postgres database, quarterdeck requires docker and docker-compose installed, as well an 
-unoccupied port 5433.
+## Building And Testing Quarterdeck
+
+To make a build, including running tests, do:
+```
+./gradlew build
+```
+
+To run tests against our postgres database, Quarterdeck requires docker and docker-compose installed, as well an 
+unoccupied port `5433`.
+
+When running tests repeatedly on a development machine you can shave off some time by passing a property 
+to keep the postgres container alive between tests:
+
+```
+./gradlew test -DkeepPostgresContainer=true
+```
+
+or setting it via IntelliJ IDEA's run/debug config as a VM option:
+[![Setting the keep postgres container property with IntelliJ IDEA's run/debug config](https://fred.moe/rBL.png)] 
+
+Keep in mind that in that case you will have to manually shut down the container to get rid of it:
+
+```
+docker stop quarterdecktest_db_1
+docker rm quarterdecktest_db_1
+```
 
 
 ## Contributing
