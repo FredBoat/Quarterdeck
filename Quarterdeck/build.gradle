@@ -77,20 +77,20 @@ dependencies {
 
     compile group: 'com.google.code.gson', name: 'gson', version: gsonVersion
 
-    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion") {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVersion
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion) {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
-    compile "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-security:$springBootVersion"
-    optional "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: springBootVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: springBootVersion
+    optional group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: springBootVersion
 
     compile group: 'io.springfox', name: 'springfox-swagger2', version: springfoxVersion
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: springfoxVersion
 
     //testing
     //includes mockito, hamcrest and jayway
-    testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion") {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion) {
         exclude group: 'junit', module: 'junit' //don't drag in junit 4
         exclude group: 'com.vaadin.external.google', module: 'android-json' //don't drag in weird conflicting JSONObject
     }
