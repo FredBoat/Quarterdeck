@@ -39,6 +39,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by napster on 30.03.18.
+ *
+ * This extension will create a fredboat postgres database before the first test that is using this extension is run,
+ * and will clean up the docker container during shutdown. The database will be reused between all tests using this
+ * extension, with setup run only once.
+ * Do not kill the test execution via SIGKILL (this happens when running with IntelliJ's debug mode and clicking the
+ * stop button), or else you might end up with orphaned docker containers on your machine.
  */
 public class PostgresDockerExtension implements BeforeAllCallback {
 
@@ -49,6 +55,9 @@ public class PostgresDockerExtension implements BeforeAllCallback {
             .waitingForService("db", PostgresDockerExtension::postgresHealthCheck)
             .build();
 
+    private static boolean hasSetup = false;
+
+
     public PostgresDockerExtension() {
         //cant use AfterAllCallback#afterAll because thats too early (spring context is still alive) and leads to exception spam
         Runtime.getRuntime().addShutdownHook(new Thread(() -> docker.after(), "Docker container shutdown hook"));
@@ -56,7 +65,10 @@ public class PostgresDockerExtension implements BeforeAllCallback {
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
-        docker.before();
+        if (!hasSetup) {
+            docker.before();
+            hasSetup = true;
+        }
     }
 
 
