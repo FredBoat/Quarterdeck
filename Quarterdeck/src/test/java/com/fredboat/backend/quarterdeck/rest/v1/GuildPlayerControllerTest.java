@@ -41,7 +41,6 @@ import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -69,8 +68,7 @@ public class GuildPlayerControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.isPaused", isA(Boolean.class)))
                 .andExpect(jsonPath("$.volume", isA(Integer.class)))
                 .andExpect(jsonPath("$.repeatMode", isA(String.class)))
-                .andExpect(jsonPath("$.isShuffled", isA(Boolean.class)))
-                .andDo(document("guild/player/get"));
+                .andExpect(jsonPath("$.isShuffled", isA(Boolean.class)));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -99,8 +97,7 @@ public class GuildPlayerControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.volume", both(isA(Integer.class)).and(is(3))))
                 .andExpect(jsonPath("$.repeatMode", both(isA(String.class))
                         .and(is(equalToIgnoringCase(RepeatMode.ALL.name())))))
-                .andExpect(jsonPath("$.isShuffled", both(isA(Boolean.class)).and(is(false))))
-                .andDo(document("guild/player/patch"));
+                .andExpect(jsonPath("$.isShuffled", both(isA(Boolean.class)).and(is(false))));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -123,8 +120,7 @@ public class GuildPlayerControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.volume", is(69)));
 
         this.mockMvc.perform(delete(urlTemplate, guildId))
-                .andExpect(status().isOk())
-                .andDo(document("guild/player/delete"));
+                .andExpect(status().isOk());
 
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.volume", is(GuildPlayer.DEFAULT_VOLUME)));

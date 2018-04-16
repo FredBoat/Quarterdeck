@@ -21,8 +21,11 @@ The plans for v1 and future versions include:
 
 ### v1 [WIP]
 
-The v1 docs can be found [here](https://koakuma.fredboat.com/qd/docs/index.html) and [here](https://koakuma.fredboat.com/qd/swagger-ui.html)
-(one of these is going away in the future).
+The v1 Quarterdeck docs can be found [here](https://koakuma.fredboat.com/qd/swagger-ui.html).  
+It includes running test queries in the browser against a live testing deployment of Quarterdeck. 
+If you are a developer who wants to build apps based on FredBoat's backend, please read the document 
+[linked below](#contributing) to learn how to join our community, where you can request credentials to access
+our testing environment.
 
 ### v0
 

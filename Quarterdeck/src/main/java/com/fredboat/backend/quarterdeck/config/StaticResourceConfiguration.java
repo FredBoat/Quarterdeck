@@ -27,7 +27,6 @@ package com.fredboat.backend.quarterdeck.config;
 
 import com.fredboat.backend.quarterdeck.config.property.DocsConfig;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -43,20 +42,6 @@ public class StaticResourceConfiguration implements WebMvcConfigurer {
 
     public StaticResourceConfiguration(DocsConfig docsConfig) {
         this.docsConfig = docsConfig;
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // spring rest docs
-        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/");
-
-        // springfox swagger - only necessary due to the above one, if spring rest docs is deleted,
-        // this whole class can be deleted
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     @Override

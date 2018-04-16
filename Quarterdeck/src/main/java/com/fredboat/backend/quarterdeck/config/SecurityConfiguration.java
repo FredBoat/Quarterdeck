@@ -58,9 +58,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         antMatchers.add("/metrics"); // these should rather be handled by nginx whitelisting (or other proxy choices)
 
         if (this.docsConfig.isOpen()) {
-            // spring rest docs
-            antMatchers.add("/docs/**");
-
             // swagger ui
             antMatchers.addAll(Arrays.asList(
                     "/swagger-resources/**",
