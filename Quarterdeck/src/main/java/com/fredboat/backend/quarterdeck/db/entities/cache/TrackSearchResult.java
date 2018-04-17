@@ -49,7 +49,7 @@ import java.util.Objects;
  * Caches a search result
  */
 @Entity
-@Table(name = "track_search_results")
+@Table(name = "search_results")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "track_search_results")
 public class TrackSearchResult extends SaucedEntity<TrackSearchResult.SearchResultId, TrackSearchResult> {

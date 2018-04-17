@@ -31,53 +31,37 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 /**
- * Created by napster on 05.04.18.
+ * Created by napster on 17.04.18.
  */
-public class V2__ByteaResults implements JdbcMigration {
-
-    private static final String DROP_TYPE_SEARCH_PROVIDER
-            = "DROP TYPE IF EXISTS SearchProvider;";
-    /**
-     * See {@link fredboat.definitions.SearchProvider} for the Java enum of this
-     */
-    private static final String CREATE_TYPE_SEARCH_PROVIDER
-            = "CREATE TYPE SearchProvider AS ENUM "
-            + "( "
-            + "    'YOUTUBE', "
-            + "    'SOUNDCLOUD' "
-            + ");";
+public class V3__ChangeCompositeIndexColumnOrder implements JdbcMigration {
 
     //this is not the actual old table, just a precaution
-    private static final String DROP_TABLE_TRACK_SEARCH_RESULTS
-            = "DROP TABLE IF EXISTS public.track_search_results;";
+    private static final String DROP_TABLE_SEARCH_RESULTS
+            = "DROP TABLE IF EXISTS public.search_results;";
 
-    private static final String CREATE_TABLE_TRACK_SEARCH_RESULTS
-            = "CREATE TABLE public.track_search_results "
+    private static final String CREATE_TABLE_SEARCH_RESULTS
+            = "CREATE TABLE public.search_results "
             + "( "
-            + "    provider             SearchProvider NOT NULL, "
             + "    search_term          TEXT COLLATE pg_catalog.\"default\" NOT NULL, "
+            + "    provider             SearchProvider NOT NULL, "
             + "    looked_up            BIGINT, "
             + "    serialized_result    BYTEA NOT NULL, "
-            + "    CONSTRAINT track_search_results_pkey PRIMARY KEY (provider, search_term) "
+            + "    CONSTRAINT search_results_pkey PRIMARY KEY (search_term, provider) "
             + ");";
 
+
+    //todo in some follow up migration: drop V2 table
 
     @Override
     public void migrate(Connection connection) throws Exception {
+
         try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(DROP_TYPE_SEARCH_PROVIDER);
+            createSearchResults.execute(DROP_TABLE_SEARCH_RESULTS);
         }
 
         try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(CREATE_TYPE_SEARCH_PROVIDER);
-        }
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(DROP_TABLE_TRACK_SEARCH_RESULTS);
-        }
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(CREATE_TABLE_TRACK_SEARCH_RESULTS);
+            createSearchResults.execute(CREATE_TABLE_SEARCH_RESULTS);
         }
     }
+
 }
