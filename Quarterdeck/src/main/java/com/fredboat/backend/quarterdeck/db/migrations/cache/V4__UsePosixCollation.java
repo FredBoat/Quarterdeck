@@ -33,33 +33,19 @@ import java.sql.Statement;
 /**
  * Created by napster on 17.04.18.
  */
-public class V3__ChangeCompositeIndexColumnOrder implements JdbcMigration {
+public class V4__UsePosixCollation implements JdbcMigration {
 
-    //this is not the actual old table, just a precaution
-    private static final String DROP_TABLE_SEARCH_RESULTS
-            = "DROP TABLE IF EXISTS public.search_results;";
+    private static final String ALTER_COLLATION
+            = "ALTER TABLE public.track_search_results ALTER search_term TYPE text COLLATE pg_catalog.\"POSIX\";";
 
-    private static final String CREATE_TABLE_SEARCH_RESULTS
-            = "CREATE TABLE public.search_results "
-            + "( "
-            + "    search_term          TEXT COLLATE pg_catalog.\"default\" NOT NULL, "
-            + "    provider             SearchProvider NOT NULL, "
-            + "    looked_up            BIGINT, "
-            + "    serialized_result    BYTEA NOT NULL, "
-            + "    CONSTRAINT search_results_pkey PRIMARY KEY (search_term, provider) "
-            + ");";
 
+    //todo drop the obsolete v1 / v3 search_results table in the future
 
     @Override
     public void migrate(Connection connection) throws Exception {
 
         try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(DROP_TABLE_SEARCH_RESULTS);
-        }
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(CREATE_TABLE_SEARCH_RESULTS);
+            createSearchResults.execute(ALTER_COLLATION);
         }
     }
-
 }
