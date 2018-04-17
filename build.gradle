@@ -53,7 +53,6 @@ subprojects {
         fredBoatRootVersion         = '0392c55abf2d4238ddb1221d082bed698149a1b0'
         springBootVersion           = "${springBootVersion}"
 
-        gsonVersion                 = '2.8.2'
         sqlsauceVersion             = '0.0.14'
         hibernateVersion            = '5.2.14.Final'
         flywayVersion               = '5.0.7'

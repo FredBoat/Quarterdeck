@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import fredboat.definitions.Module;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -61,6 +62,7 @@ import java.util.Optional;
  * round: Explicitly enabling/disabling a module tells us something about the preferences of our users. If we were to preset
  * these values, we would lose this information, and could not switch enabled/disabled modules by default reliably for existing guilds.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "guild_modules")
 @Cacheable
@@ -243,5 +245,78 @@ public class GuildModules extends SaucedEntity<Long, GuildModules> {
      */
     public boolean isModuleEnabledOrDefault(Module module) {
         return isModuleEnabled(module).orElse(module.isEnabledByDefault());
+    }
+
+    //the boilerplate below is for v0 jackson
+
+    public long getGuildId() {
+        return this.guildId;
+    }
+
+    public void setGuildId(long guildId) {
+        this.guildId = guildId;
+    }
+
+    @Nullable
+    public Boolean getAdminModule() {
+        return this.adminModule;
+    }
+
+    public void setAdminModule(@Nullable Boolean adminModule) {
+        this.adminModule = adminModule;
+    }
+
+    @Nullable
+    public Boolean getInfoModule() {
+        return this.infoModule;
+    }
+
+    public void setInfoModule(@Nullable Boolean infoModule) {
+        this.infoModule = infoModule;
+    }
+
+    @Nullable
+    public Boolean getConfigModule() {
+        return this.configModule;
+    }
+
+    public void setConfigModule(@Nullable Boolean configModule) {
+        this.configModule = configModule;
+    }
+
+    @Nullable
+    public Boolean getMusicModule() {
+        return this.musicModule;
+    }
+
+    public void setMusicModule(@Nullable Boolean musicModule) {
+        this.musicModule = musicModule;
+    }
+
+    @Nullable
+    public Boolean getModModule() {
+        return this.modModule;
+    }
+
+    public void setModModule(@Nullable Boolean modModule) {
+        this.modModule = modModule;
+    }
+
+    @Nullable
+    public Boolean getUtilModule() {
+        return this.utilModule;
+    }
+
+    public void setUtilModule(@Nullable Boolean utilModule) {
+        this.utilModule = utilModule;
+    }
+
+    @Nullable
+    public Boolean getFunModule() {
+        return this.funModule;
+    }
+
+    public void setFunModule(@Nullable Boolean funModule) {
+        this.funModule = funModule;
     }
 }

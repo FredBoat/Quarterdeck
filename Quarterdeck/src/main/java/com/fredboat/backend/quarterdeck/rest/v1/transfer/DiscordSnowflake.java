@@ -25,6 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * Created by napster on 01.04.18.
  */
@@ -44,6 +46,7 @@ public class DiscordSnowflake {
         this.snowflakeId = Long.parseUnsignedLong(snowflakeId);
     }
 
+    @JsonValue
     public String getSnowflakeId() {
         return Long.toString(this.snowflakeId);
     }

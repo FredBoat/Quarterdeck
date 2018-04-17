@@ -23,16 +23,28 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.db.repositories.api;
+package com.fredboat.backend.quarterdeck.config;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
-
-import java.util.Optional;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 /**
- * Created by napster on 05.02.18.
+ * Created by napster on 17.04.18.
  */
-public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
+@Configuration
+public class JacksonConfiguration {
 
-    Optional<GuildPermissions> get(String id);
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper()
+                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter(ObjectMapper objectMapper) {
+        return new MappingJackson2HttpMessageConverter(objectMapper);
+    }
 }

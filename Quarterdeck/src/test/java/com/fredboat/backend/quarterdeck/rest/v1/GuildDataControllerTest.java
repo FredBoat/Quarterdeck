@@ -73,7 +73,7 @@ public class GuildDataControllerTest extends BaseTest {
 
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
-                .content(this.gson.toJson(patchGuildData))
+                .content(this.mapper.writeValueAsString(patchGuildData))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 
         this.mockMvc.perform(request)
@@ -95,7 +95,7 @@ public class GuildDataControllerTest extends BaseTest {
         long now = System.currentTimeMillis();
         patchGuildData.put("helloSent", now);
         MockHttpServletRequestBuilder patch = patch(urlTemplate, guildId)
-                .content(this.gson.toJson(patchGuildData))
+                .content(this.mapper.writeValueAsString(patchGuildData))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));

@@ -64,7 +64,6 @@ GET http[s]://backend.url[:port]/v0/blacklist/loadall
 There is an additional endpoint, that will return the supported versions of the API:
 - GET /info/api/versions
 
-Entities and ids are marshalled via [Gson](https://github.com/google/gson) on both sides.  
 Authentication happens via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).  
 No kind of authorization is existent, you either have access, or you don't. In terms of security, treat this the same way you would treat a redis instance.  
 

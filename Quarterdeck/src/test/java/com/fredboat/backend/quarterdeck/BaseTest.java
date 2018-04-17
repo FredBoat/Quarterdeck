@@ -25,8 +25,8 @@
 
 package com.fredboat.backend.quarterdeck;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
-import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +64,7 @@ public class BaseTest {
 
     @SuppressWarnings("NullableProblems")
     @Autowired
-    protected Gson gson;
+    protected ObjectMapper mapper;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext) {

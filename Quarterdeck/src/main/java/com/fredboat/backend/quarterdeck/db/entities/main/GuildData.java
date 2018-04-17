@@ -80,8 +80,20 @@ public class GuildData extends SaucedEntity<Long, GuildData> {
         return this.guildId;
     }
 
+    public long getGuildId() {
+        return this.guildId;
+    }
+
+    public void setGuildId(long guildId) {
+        this.guildId = guildId;
+    }
+
     public long getTimestampHelloSent() {
         return this.timestampHelloSent;
+    }
+
+    public void setTimestampHelloSent(long timestampHelloSent) {
+        this.timestampHelloSent = timestampHelloSent;
     }
 
     @CheckReturnValue

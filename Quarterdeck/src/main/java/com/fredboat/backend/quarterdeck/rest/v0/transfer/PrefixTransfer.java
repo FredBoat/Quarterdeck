@@ -50,6 +50,9 @@ public class PrefixTransfer {
         return new PrefixTransfer(entity.getId(), entity.getPrefix());
     }
 
+    private PrefixTransfer() {
+    }
+
     public void setId(GuildBotId id) {
         this.id = id;
     }

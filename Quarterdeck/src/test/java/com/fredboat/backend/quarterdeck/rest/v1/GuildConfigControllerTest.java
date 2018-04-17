@@ -78,7 +78,7 @@ public class GuildConfigControllerTest extends BaseTest {
 
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
-                .content(this.gson.toJson(patchGuildConfig))
+                .content(this.mapper.writeValueAsString(patchGuildConfig))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 
         this.mockMvc.perform(request)
@@ -102,7 +102,7 @@ public class GuildConfigControllerTest extends BaseTest {
         Map<String, Object> patchGuildConfig = new HashMap<>();
         patchGuildConfig.put("language", Language.DE_DE.getCode());
         MockHttpServletRequestBuilder patch = patch(urlTemplate, guildId)
-                .content(this.gson.toJson(patchGuildConfig))
+                .content(this.mapper.writeValueAsString(patchGuildConfig))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))));

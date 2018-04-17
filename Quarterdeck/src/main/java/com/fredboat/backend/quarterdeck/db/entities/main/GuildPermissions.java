@@ -25,10 +25,12 @@
 
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import fredboat.definitions.PermissionLevel;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import space.npstr.sqlsauce.entities.SaucedEntity;
+import space.npstr.sqlsauce.fp.types.EntityKey;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -62,18 +64,25 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
     GuildPermissions() {
     }
 
+    public GuildPermissions(String id) {
+        String sanitizedId = setId(id).getId();
+
+        //init other default values
+        this.djList = sanitizedId;
+        this.userList = sanitizedId;
+    }
+
     @Override
     public GuildPermissions setId(String id) {
-        this.id = id;
-
-        //Set up default permissions. Note that the @everyone role of a guild is of the same snowflake as the guild
-        // This code works because setId() is only ever called when creating a new instance of this entity after failing
-        // not finding it in the database, and never else. There is no need to ever set the id on this object outside of
-        // that case.
-        this.djList = id;
-        this.userList = id;
-
+        //soft check
+        DiscordSnowflake snowflake = new DiscordSnowflake(id.replaceAll("\"", "")); //jackson plz
+        this.id = snowflake.getSnowflakeId();
         return this;
+    }
+
+    public static EntityKey<String, GuildPermissions> key(String id) {
+        DiscordSnowflake snowflake = new DiscordSnowflake(id.replaceAll("\"", "")); //jackson plz
+        return EntityKey.of(snowflake.getSnowflakeId(), GuildPermissions.class);
     }
 
     @Override
@@ -81,7 +90,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         return this.id;
     }
 
-    public List<String> getAdminList() {
+    public List<String> splitAdminList() {
         return Arrays.asList(this.adminList.split(" "));
     }
 
@@ -95,7 +104,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         return this;
     }
 
-    public List<String> getDjList() {
+    public List<String> splitDjList() {
         return Arrays.asList(this.djList.split(" "));
     }
 
@@ -109,7 +118,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         return this;
     }
 
-    public List<String> getUserList() {
+    public List<String> splitUserList() {
         return Arrays.asList(this.userList.split(" "));
     }
 
@@ -126,11 +135,11 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
     public List<String> getFromEnum(PermissionLevel level) {
         switch (level) {
             case ADMIN:
-                return getAdminList();
+                return splitAdminList();
             case DJ:
-                return getDjList();
+                return splitDjList();
             case USER:
-                return getUserList();
+                return splitUserList();
             default:
                 throw new IllegalArgumentException("Unexpected enum " + level);
         }
@@ -149,4 +158,30 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         }
     }
 
+    //the boilerplate below is for v0 jackson
+
+
+    public String getAdminList() {
+        return this.adminList;
+    }
+
+    public String getDjList() {
+        return this.djList;
+    }
+
+    public String getUserList() {
+        return this.userList;
+    }
+
+    public void setAdminList(String adminList) {
+        this.adminList = adminList;
+    }
+
+    public void setDjList(String djList) {
+        this.djList = djList;
+    }
+
+    public void setUserList(String userList) {
+        this.userList = userList;
+    }
 }

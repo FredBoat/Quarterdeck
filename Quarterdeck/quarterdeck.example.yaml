@@ -52,9 +52,6 @@ security:
       pass: ""
 
 spring:
-  http:
-    converters:
-      preferred-json-mapper: gson    # dont touch this
   output:
     ansi:
       enabled: detect                # for developers: setting this to "always" will force colored logs in your console

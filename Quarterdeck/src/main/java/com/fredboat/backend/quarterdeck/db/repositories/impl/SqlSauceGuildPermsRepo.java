@@ -30,6 +30,8 @@ import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPermsRepo;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
 
+import java.util.Optional;
+
 /**
  * Created by napster on 05.02.18.
  */
@@ -40,4 +42,8 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
         super(dbWrapper, GuildPermissions.class);
     }
 
+    @Override
+    public Optional<GuildPermissions> get(String id) {
+        return Optional.ofNullable(this.dbWrapper.getEntity(GuildPermissions.key(id)));
+    }
 }

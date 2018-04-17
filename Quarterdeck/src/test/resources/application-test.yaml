@@ -4,9 +4,6 @@ security:
       pass: 123
 
 spring:
-  http:
-    converters:
-      preferred-json-mapper: gson
   output:
     ansi:
       enabled: always

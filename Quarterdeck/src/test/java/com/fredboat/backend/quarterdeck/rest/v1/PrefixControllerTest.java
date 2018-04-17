@@ -91,7 +91,7 @@ public class PrefixControllerTest extends BaseTest {
         String[] addPrefix = {"this_is_a_prefix_in_an_array"};
         this.mockMvc.perform(
                 post(urlTemplate, guildId, botId)
-                        .content(this.gson.toJson(addPrefix))
+                        .content(this.mapper.writeValueAsString(addPrefix))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -111,7 +111,7 @@ public class PrefixControllerTest extends BaseTest {
         String[] removePrefix = {";;"};
         this.mockMvc.perform(
                 delete(urlTemplate, guildId, botId)
-                        .content(this.gson.toJson(removePrefix))
+                        .content(this.mapper.writeValueAsString(removePrefix))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -130,7 +130,7 @@ public class PrefixControllerTest extends BaseTest {
         String[] addPrefixes = {"this_is_a_prefix", "this_is_another_one"};
         this.mockMvc.perform(
                 post(urlTemplate, guildId, botId)
-                        .content(this.gson.toJson(addPrefixes))
+                        .content(this.mapper.writeValueAsString(addPrefixes))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -151,7 +151,7 @@ public class PrefixControllerTest extends BaseTest {
         String[] addPrefixes = {"1", "2", "3", "4"};
         this.mockMvc.perform(
                 post(urlTemplate, guildId, botId)
-                        .content(this.gson.toJson(addPrefixes))
+                        .content(this.mapper.writeValueAsString(addPrefixes))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -163,7 +163,7 @@ public class PrefixControllerTest extends BaseTest {
 
         this.mockMvc.perform(
                 delete(urlTemplate, guildId, botId)
-                        .content(this.gson.toJson(addPrefixes))
+                        .content(this.mapper.writeValueAsString(addPrefixes))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -180,14 +180,14 @@ public class PrefixControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         DiscordSnowflake botId = generateUniqueSnowflakeId();
 
-        String[] current = this.gson.fromJson(this.mockMvc.perform(get(urlTemplate, guildId, botId))
+        String[] current = this.mapper.readValue(this.mockMvc.perform(get(urlTemplate, guildId, botId))
                 .andReturn()
                 .getResponse().getContentAsString(), com.fredboat.backend.quarterdeck.rest.v1.transfer.Prefix.class)
                 .getPrefixes();
 
         this.mockMvc.perform(
                 delete(urlTemplate, guildId, botId)
-                        .content(this.gson.toJson(current))
+                        .content(this.mapper.writeValueAsString(current))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))

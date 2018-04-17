@@ -25,8 +25,14 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0.transfer;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
 import fredboat.definitions.SearchProvider;
+
+import java.io.IOException;
 
 /**
  * Created by napster on 05.04.18.
@@ -57,6 +63,34 @@ public class SearchResultTransfer {
         this.serializedSearchResult = trackSearchResult.getSerializedResult();
     }
 
+    private SearchResultTransfer() {
+    }
+
+    public Id getSearchResultId() {
+        return this.searchResultId;
+    }
+
+    public void setSearchResultId(Id searchResultId) {
+        this.searchResultId = searchResultId;
+    }
+
+    public long getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @JsonSerialize(using = ByteArraySerializer.class)
+    public byte[] getSerializedSearchResult() {
+        return this.serializedSearchResult;
+    }
+
+    public void setSerializedSearchResult(byte[] serializedSearchResult) {
+        this.serializedSearchResult = serializedSearchResult;
+    }
+
     private static class Id {
         private String provider;
         private String searchTerm;
@@ -64,6 +98,37 @@ public class SearchResultTransfer {
         public Id(String provider, String searchTerm) {
             this.provider = provider;
             this.searchTerm = searchTerm;
+        }
+
+        private Id() {
+        }
+
+        public String getProvider() {
+            return this.provider;
+        }
+
+        public void setProvider(String provider) {
+            this.provider = provider;
+        }
+
+        public String getSearchTerm() {
+            return this.searchTerm;
+        }
+
+        public void setSearchTerm(String searchTerm) {
+            this.searchTerm = searchTerm;
+        }
+    }
+
+    private static class ByteArraySerializer extends JsonSerializer<byte[]> {
+
+        @Override
+        public void serialize(byte[] bytes, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            gen.writeStartArray();
+            for (byte b : bytes) {
+                gen.writeNumber(b);
+            }
+            gen.writeEndArray();
         }
     }
 }

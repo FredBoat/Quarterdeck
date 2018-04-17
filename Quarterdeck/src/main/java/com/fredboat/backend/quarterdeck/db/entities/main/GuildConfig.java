@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import fredboat.definitions.Language;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -63,7 +64,8 @@ public class GuildConfig extends SaucedEntity<String, GuildConfig> {
     }
 
     public static EntityKey<String, GuildConfig> key(String guildId) {
-        return EntityKey.of(guildId, GuildConfig.class);
+        DiscordSnowflake snowflake = new DiscordSnowflake(guildId.replaceAll("\"", "")); //jackson plz
+        return EntityKey.of(snowflake.getSnowflakeId(), GuildConfig.class);
     }
 
     public static EntityKey<String, GuildConfig> key(long guildId) {
@@ -72,13 +74,23 @@ public class GuildConfig extends SaucedEntity<String, GuildConfig> {
 
     @Override
     public GuildConfig setId(String id) {
-        this.guildId = id;
+        //soft check
+        DiscordSnowflake snowflake = new DiscordSnowflake(id.replaceAll("\"", ""));//jackson plz
+        this.guildId = snowflake.getSnowflakeId();
         return this;
     }
 
     @Override
     public String getId() {
         return this.guildId;
+    }
+
+    public String getGuildId() {
+        return this.guildId;
+    }
+
+    public GuildConfig setGuildId(String guildId) {
+        return this.setId(guildId);
     }
 
     public boolean isTrackAnnounce() {

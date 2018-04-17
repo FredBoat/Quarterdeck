@@ -102,7 +102,7 @@ public class GuildModulesControllerTest extends BaseTest {
         Map<String, Object> patchGuildModule = new HashMap<>();
         patchGuildModule.put("enabled", !module.isEnabledByDefault()); //no fun allowed :[
         MockHttpServletRequestBuilder patch = patch(urlTemplateModule, guildId, module.name())
-                .content(this.gson.toJson(patchGuildModule))
+                .content(this.mapper.writeValueAsString(patchGuildModule))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.modules[6].moduleId", is(equalToIgnoringCase(module.name()))))
@@ -137,7 +137,7 @@ public class GuildModulesControllerTest extends BaseTest {
         patchGuildModule.put("enabled", enabled);
         this.mockMvc.perform(
                 patch(urlTemplateModule, guildId, module.name())
-                        .content(this.gson.toJson(patchGuildModule))
+                        .content(this.mapper.writeValueAsString(patchGuildModule))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -165,7 +165,7 @@ public class GuildModulesControllerTest extends BaseTest {
         Map<String, Object> patchGuildModule = new HashMap<>();
         patchGuildModule.put("enabled", !module.isEnabledByDefault());
         MockHttpServletRequestBuilder patch = patch(urlTemplateModule, guildId, module.name())
-                .content(this.gson.toJson(patchGuildModule))
+                .content(this.mapper.writeValueAsString(patchGuildModule))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.modules[?(@.moduleId =~ /^" + module.name() + "$/i)].enabled",
