@@ -74,4 +74,9 @@ public class Metrics {
             .help("Total api calls served")
             .labelNames("path") // like /stats, /metrics, etc
             .register();
+
+    public static final Counter apiRequestsNotInstrumented = Counter.build()
+            .name("fredboat_quarterdeck_api_requests_not_instrumented_total")
+            .help("Api calls that we did not instrument") //meaning the regexes for instrumenting them need a fix. this number should be 0.
+            .register();
 }
