@@ -114,21 +114,21 @@ public class RequestLoggerConfiguration {
 
             for (String ok : this.ACCEPTED_ROOT_PATHS) {
                 if (servletPath.equalsIgnoreCase(ok)) {
-                    Metrics.apiRequests.labels(servletPath).inc();
+                    countIt(servletPath, request);
                     return;
                 }
             }
 
 
             if (this.V0_ALL_PATHS_REGEX.matcher(servletPath).matches()) {
-                Metrics.apiRequests.labels(servletPath).inc();
+                countIt(servletPath, request);
                 return;
             }
 
             Matcher v1GuildsMatcher = this.V1_GUILDS_PATHS_REGEX.matcher(servletPath);
             if (v1GuildsMatcher.matches()) {
                 String invariantPath = v1GuildsMatcher.group(1) + v1GuildsMatcher.group(2);
-                Metrics.apiRequests.labels(invariantPath).inc();
+                countIt(invariantPath, request);
                 return;
             }
 
@@ -136,6 +136,10 @@ public class RequestLoggerConfiguration {
 
             log.debug("Did not instrument unknown path: " + servletPath);
             Metrics.apiRequestsNotInstrumented.inc();
+        }
+
+        private void countIt(String sanitizedPath, HttpServletRequest request) {
+            Metrics.apiRequests.labels(sanitizedPath, request.getMethod()).inc();
         }
     }
 }

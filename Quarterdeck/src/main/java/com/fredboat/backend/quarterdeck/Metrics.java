@@ -72,7 +72,10 @@ public class Metrics {
     public static final Counter apiRequests = Counter.build()
             .name("fredboat_quarterdeck_api_requests_total")
             .help("Total api calls served")
-            .labelNames("path") // like /stats, /metrics, etc
+            .labelNames(
+                    "path",   // like /stats, /metrics, etc
+                    "method"  // GET, POST, etc
+            )
             .register();
 
     public static final Counter apiRequestsNotInstrumented = Counter.build()
