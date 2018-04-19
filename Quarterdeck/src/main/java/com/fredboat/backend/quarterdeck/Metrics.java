@@ -29,6 +29,7 @@ import ch.qos.logback.classic.LoggerContext;
 import com.fredboat.backend.quarterdeck.config.DatabaseConfiguration;
 import com.fredboat.backend.quarterdeck.db.DatabaseManager;
 import io.prometheus.client.Counter;
+import io.prometheus.client.Summary;
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
 import io.prometheus.client.hotspot.DefaultExports;
 import io.prometheus.client.logback.InstrumentedAppender;
@@ -69,9 +70,9 @@ public class Metrics {
 
 
     //incoming
-    public static final Counter apiRequests = Counter.build()
-            .name("fredboat_quarterdeck_api_requests_total")
-            .help("Total api calls served")
+    public static final Summary apiRequestsExecutionTime = Summary.build()
+            .name("fredboat_quarterdeck_api_request_duration_seconds")
+            .help("How long a request takes to be executed")
             .labelNames(
                     "path",   // like /stats, /metrics, etc
                     "method"  // GET, POST, etc
