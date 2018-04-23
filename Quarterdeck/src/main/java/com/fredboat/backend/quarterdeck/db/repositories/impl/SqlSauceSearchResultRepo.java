@@ -64,4 +64,11 @@ public class SqlSauceSearchResultRepo extends SqlSauceRepo<TrackSearchResult.Sea
             return queryResult.get(0);
         }
     }
+
+    @Override
+    public long getSize() {
+        //language=JPAQL
+        String query = "SELECT COUNT(sr) FROM TrackSearchResult sr";
+        return this.dbWrapper.selectJpqlQuerySingleResult(query, null, Long.class);
+    }
 }

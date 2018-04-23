@@ -28,7 +28,9 @@ package com.fredboat.backend.quarterdeck;
 import ch.qos.logback.classic.LoggerContext;
 import com.fredboat.backend.quarterdeck.config.DatabaseConfiguration;
 import com.fredboat.backend.quarterdeck.db.DatabaseManager;
+import com.fredboat.backend.quarterdeck.db.repositories.api.SearchResultRepo;
 import io.prometheus.client.Counter;
+import io.prometheus.client.Gauge;
 import io.prometheus.client.Summary;
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
 import io.prometheus.client.hotspot.DefaultExports;
@@ -38,6 +40,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by napster on 18.03.18.
  */
@@ -46,8 +52,14 @@ public class Metrics {
 
     private static final Logger log = LoggerFactory.getLogger(Metrics.class);
 
+    //use to schedule "expensive" jobs for collecting metrics that we want decoupled from scrapes.
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(
+            r -> new Thread(r, "metrics scheduler")
+    );
+
     public Metrics(InstrumentedAppender prometheusAppender, HibernateStatisticsCollector hibernateStats,
-                   DatabaseWrapper mainDbWrapper, DatabaseConfiguration dbConfig, DatabaseManager databaseManager) {
+                   DatabaseWrapper mainDbWrapper, DatabaseConfiguration dbConfig, DatabaseManager databaseManager,
+                   SearchResultRepo searchResultRepo) {
         //log metrics
         final LoggerContext factory = (LoggerContext) LoggerFactory.getILoggerFactory();
         final ch.qos.logback.classic.Logger root = factory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -64,6 +76,16 @@ public class Metrics {
         dbConfig.cacheDbConn(databaseManager);
         // 2. register the metrics
         hibernateStats.register();
+
+        //start jobs to collect "expensive" metrics
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                searchResultCacheSize.set(searchResultRepo.getSize());
+            } catch (Exception e) {
+                log.error("Failed to gauge track search results size", e);
+            }
+
+        }, 0, 5, TimeUnit.MINUTES);
 
         log.info("Metrics set up");
     }
@@ -82,5 +104,10 @@ public class Metrics {
     public static final Counter apiRequestsNotInstrumented = Counter.build()
             .name("fredboat_quarterdeck_api_requests_not_instrumented_total")
             .help("Api calls that we did not instrument") //meaning the regexes for instrumenting them need a fix. this number should be 0.
+            .register();
+
+    public static Gauge searchResultCacheSize = Gauge.build()
+            .name("fredboat_quarterdeck_search_result_cache_size")
+            .help("Size of the search result cache")
             .register();
 }

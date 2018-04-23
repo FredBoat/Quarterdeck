@@ -45,4 +45,9 @@ public interface SearchResultRepo extends Repo<TrackSearchResult.SearchResultId,
      */
     @Nullable
     TrackSearchResult getMaxAged(TrackSearchResult.SearchResultId id, long maxAgeMillis);
+
+    /**
+     * @return size of the table containing the search results
+     */
+    long getSize();
 }
