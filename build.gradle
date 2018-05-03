@@ -18,7 +18,7 @@ subprojects {
             //@formatter:off
 
             //plugin versions
-            gradleGitVersion        = '1.4.21'          //do not upgrade to 1.4.20, it fails builds randomly
+            gradleGitVersion        = '1.4.21'
             springBootVersion       = '2.0.1.RELEASE'
             propDepsVersion         = '0.0.9.RELEASE'
 
@@ -53,14 +53,14 @@ subprojects {
         fredBoatRootVersion         = '0392c55abf2d4238ddb1221d082bed698149a1b0'
         springBootVersion           = "${springBootVersion}"
 
-        hibernateVersion            = '5.2.14.Final'
         sqlsauceVersion             = '0.2.2'
+        hibernateVersion            = '5.2.17.Final'
         flywayVersion               = '5.0.7'
-        dsProxyVersion              = '1.4.8'
+        dsProxyVersion              = '1.4.9'
         jaxbApiVersion              = '2.3.0'
         springfoxVersion            = '2.8.0'
 
-        jUnitVersion                = '5.1.1'
+        jUnitVersion                = '5.2.0'
         apiGuardianVersion          = '1.0.0'
         springSecurityTestVersion   = '5.0.4.RELEASE'
         dockerComposeRuleVersion    = '0.33.0'
