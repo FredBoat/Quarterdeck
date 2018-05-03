@@ -37,8 +37,8 @@ subprojects {
     }
     apply plugin: 'java'
 
-    sourceCompatibility = 9
-    targetCompatibility = 9
+    sourceCompatibility = 10
+    targetCompatibility = 10
 
     compileJava.dependsOn 'clean'
     compileJava.options.encoding = 'UTF-8'
