@@ -159,6 +159,9 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
 
     private void instrumentAfterApiRequest(HttpServletRequest request) {
         Object requestNumber = request.getAttribute(REQUEST_NUMBER_ATTRIBUTE_KEY);
+        if (requestNumber == null) {
+            return; //not an instrumented request
+        }
         Optional.ofNullable(this.timers.getIfPresent(requestNumber)).ifPresent(Summary.Timer::observeDuration);
         this.timers.invalidate(requestNumber);
     }
