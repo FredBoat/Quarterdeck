@@ -23,64 +23,52 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.config;
+package com.fredboat.backend.quarterdeck.config.property;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by napster on 16.02.18.
- *
- * Mirrors the fredboat tree of the application.yaml
+ * Created by napster on 18.05.18.
  */
-@ConfigurationProperties
-@Configuration
-@EnableConfigurationProperties
-public class AppConfiguration {
+@Component
+@ConfigurationProperties(prefix = "security")
+public class SecurityConfigProperties implements SecurityConfig {
 
-    private final Security security = new Security();
+    private List<Admin> admins = new ArrayList<>();
 
-    @Bean
-    public Security getSecurity() {
-        return this.security;
+    @Override
+    public List<Admin> getAdmins() {
+        return this.admins;
     }
 
-    public static class Security {
+    public void setAdmins(List<Admin> admins) {
+        this.admins = admins;
+    }
 
-        private List<Admin> admins = new ArrayList<>();
+    public static class Admin implements SecurityConfig.Admin {
+        private String name = "";
+        private String pass = "";
 
-        public List<Admin> getAdmins() {
-            return this.admins;
+        @Override
+        public String getName() {
+            return this.name;
         }
 
-        public void setAdmins(List<Admin> admins) {
-            this.admins = admins;
+        public void setName(String name) {
+            this.name = name;
         }
 
-        public static class Admin {
-            private String name = "";
-            private String pass = "";
+        @Override
+        public String getPass() {
+            return this.pass;
+        }
 
-            public String getName() {
-                return this.name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-
-            public String getPass() {
-                return this.pass;
-            }
-
-            public void setPass(String pass) {
-                this.pass = pass;
-            }
+        public void setPass(String pass) {
+            this.pass = pass;
         }
     }
 }
