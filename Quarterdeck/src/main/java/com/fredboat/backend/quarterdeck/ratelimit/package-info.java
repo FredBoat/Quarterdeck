@@ -23,30 +23,11 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.config;
+@FieldsAreNonNullByDefault
+@ParametersAreNonnullByDefault
+@ReturnTypesAreNonNullByDefault
+package com.fredboat.backend.quarterdeck.ratelimit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-
-/**
- * Created by napster on 17.04.18.
- */
-@Configuration
-public class JacksonConfiguration {
-
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .registerModule(new Jdk8Module()) //teach jackson how to handle Optionals
-                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-    }
-
-    @Bean
-    public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter(ObjectMapper objectMapper) {
-        return new MappingJackson2HttpMessageConverter(objectMapper);
-    }
-}
+import space.npstr.annotations.FieldsAreNonNullByDefault;
+import space.npstr.annotations.ParametersAreNonnullByDefault;
+import space.npstr.annotations.ReturnTypesAreNonNullByDefault;

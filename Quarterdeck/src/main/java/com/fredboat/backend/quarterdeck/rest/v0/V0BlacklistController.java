@@ -23,30 +23,32 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.config;
+package com.fredboat.backend.quarterdeck.rest.v0;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import com.fredboat.backend.quarterdeck.db.entities.main.BlacklistEntry;
+import com.fredboat.backend.quarterdeck.db.repositories.api.BlacklistRepo;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
- * Created by napster on 17.04.18.
+ * Created by napster on 17.02.18.
  */
-@Configuration
-public class JacksonConfiguration {
+@RestController
+@RequestMapping("/" + EntityController.VERSION_PATH + "blacklist/")
+public class V0BlacklistController extends EntityController<Long, BlacklistEntry> {
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .registerModule(new Jdk8Module()) //teach jackson how to handle Optionals
-                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+    protected final BlacklistRepo blacklistRepo;
+
+    public V0BlacklistController(BlacklistRepo repo) {
+        super(repo);
+        this.blacklistRepo = repo;
     }
 
-    @Bean
-    public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter(ObjectMapper objectMapper) {
-        return new MappingJackson2HttpMessageConverter(objectMapper);
+    @GetMapping("/loadall")
+    public List<BlacklistEntry> loadBlacklist() {
+        return this.blacklistRepo.loadBlacklist();
     }
 }

@@ -23,30 +23,30 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.config;
+package com.fredboat.backend.quarterdeck.config.property;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Created by napster on 17.04.18.
+ * Created by napster on 13.04.18.
  */
-@Configuration
-public class JacksonConfiguration {
+@Component
+@ConfigurationProperties(prefix = "whitelist")
+public class WhitelistConfigProperties implements WhitelistConfig {
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .registerModule(new Jdk8Module()) //teach jackson how to handle Optionals
-                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+    private Set<Long> userIds = Collections.emptySet();
+
+    public void setUserIds(Set<Long> userIds) {
+        this.userIds = userIds;
     }
 
-    @Bean
-    public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter(ObjectMapper objectMapper) {
-        return new MappingJackson2HttpMessageConverter(objectMapper);
+    @Override
+    public Set<Long> getWhitelist() {
+        return new HashSet<>(this.userIds);
     }
 }

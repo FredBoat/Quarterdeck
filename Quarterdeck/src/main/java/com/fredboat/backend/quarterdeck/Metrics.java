@@ -110,4 +110,11 @@ public class Metrics {
             .name("fredboat_quarterdeck_search_result_cache_size")
             .help("Size of the search result cache")
             .register();
+
+
+    public static final Counter autoBlacklistsIssued = Counter.build()
+            .name("fredboat_quarterdeck_autoblacklists_issued_total")
+            .help("How many users were blacklisted on a particular level")
+            .labelNames("level") //blacklist level
+            .register();
 }

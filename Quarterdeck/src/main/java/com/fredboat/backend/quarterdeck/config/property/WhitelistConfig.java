@@ -23,32 +23,17 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
+package com.fredboat.backend.quarterdeck.config.property;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.BlacklistEntry;
-import com.fredboat.backend.quarterdeck.db.repositories.api.BlacklistRepo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import java.util.Set;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 13.04.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "blacklist/")
-public class BlacklistController extends EntityController<Long, BlacklistEntry> {
+public interface WhitelistConfig {
 
-    protected final BlacklistRepo blacklistRepo;
-
-    public BlacklistController(BlacklistRepo repo) {
-        super(repo);
-        this.blacklistRepo = repo;
-    }
-
-    @GetMapping("/loadall")
-    public List<BlacklistEntry> loadBlacklist() {
-        return this.blacklistRepo.loadBlacklist();
-    }
+    /**
+     * A list of user ids that shall never be ratelimited or blacklisted.
+     */
+    Set<Long> getWhitelist();
 }

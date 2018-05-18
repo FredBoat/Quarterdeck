@@ -86,6 +86,8 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger2', version: springfoxVersion
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: springfoxVersion
 
+    compile group: 'it.unimi.dsi', name: 'fastutil', version: fastUtilVersion
+
     //testing
     //includes mockito, hamcrest and jayway
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion) {

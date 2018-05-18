@@ -51,6 +51,11 @@ security:
     - name: ""
       pass: ""
 
+whitelist:
+  userIds:                   # a list of discord user ids that shall never be ratelimited or blacklisted
+    - 81011298891993088
+    - 166604053629894657
+
 spring:
   output:
     ansi:
