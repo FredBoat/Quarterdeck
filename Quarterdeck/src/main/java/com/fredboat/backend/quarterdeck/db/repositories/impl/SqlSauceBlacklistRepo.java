@@ -29,8 +29,10 @@ import com.fredboat.backend.quarterdeck.db.entities.main.BlacklistEntry;
 import com.fredboat.backend.quarterdeck.db.repositories.api.BlacklistRepo;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
+import space.npstr.sqlsauce.fp.types.EntityKey;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by napster on 05.02.18.
@@ -47,4 +49,9 @@ public class SqlSauceBlacklistRepo extends SqlSauceRepo<Long, BlacklistEntry> im
         return this.dbWrapper.loadAll(BlacklistEntry.class);
     }
 
+    @Override
+    public BlacklistEntry transform(long id, Function<BlacklistEntry, BlacklistEntry> transformation) {
+        EntityKey<Long, BlacklistEntry> key = EntityKey.of(id, BlacklistEntry.class);
+        return this.dbWrapper.findApplyAndMerge(key, transformation);
+    }
 }

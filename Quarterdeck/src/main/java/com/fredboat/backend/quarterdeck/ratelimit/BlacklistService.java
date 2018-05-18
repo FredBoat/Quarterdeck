@@ -34,6 +34,8 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 /**
  * Created by napster on 17.04.17.
@@ -77,11 +79,14 @@ public class BlacklistService {
     public long blacklistedUntil(long id) {
 
         //first of all, ppl that can never get blacklisted no matter what
-        if (this.userWhiteList.contains(id)) return 0;
+        if (this.userWhiteList.contains(id)) {
+            return 0;
+        }
 
         BlacklistEntry blEntry = this.blacklistRepo.fetch(id);
-        if (blEntry.getLevel() < 0) return 0; //blacklist entry exists, but id hasn't actually been blacklisted yet
-
+        if (blEntry.getLevel() < 0) {
+            return 0; //blacklist entry exists, but id hasn't actually been blacklisted yet
+        }
 
         return blEntry.getBlacklistedTimestamp() + (getBlacklistTimeLength(blEntry.getLevel()));
     }
@@ -93,16 +98,8 @@ public class BlacklistService {
         if (this.userWhiteList.contains(id)) {
             return 0;
         }
-
-        //update blacklist entry of this id
-        long blacklistingLength = 0;
-        BlacklistEntry blEntry = this.blacklistRepo.fetch(id);
-
-        //synchronize on the individual blacklist entries since we are about to change and save them
-        // we can use these to synchronize because they are backed by a cache, subsequent calls to fetch them
-        // will return the same object
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
-        synchronized (blEntry) {
+        AtomicLong blacklistingLength = new AtomicLong(0);
+        Function<BlacklistEntry, BlacklistEntry> hitRatelimit = blEntry -> {
             long now = System.currentTimeMillis();
 
             //is the last ratelimit hit a long time away (1 hour)? then reset the ratelimit hits
@@ -119,13 +116,14 @@ public class BlacklistService {
                 blEntry.setBlacklistedTimestamp(now);
                 blEntry.setRateLimitReached(0); //reset these for the next time
 
-                blacklistingLength = getBlacklistTimeLength(blEntry.getLevel());
+                blacklistingLength.set(getBlacklistTimeLength(blEntry.getLevel()));
             }
-            //persist it
-            //if this turns up to be a performance bottleneck, have an agent run that persists the blacklist occasionally
-            this.blacklistRepo.merge(blEntry);
-            return blacklistingLength;
-        }
+
+            return blEntry;
+        };
+
+        this.blacklistRepo.transform(id, hitRatelimit);
+        return blacklistingLength.get();
     }
 
     /**
@@ -147,6 +145,8 @@ public class BlacklistService {
      */
     public static long getBlacklistTimeLength(int blacklistLevel) {
         if (blacklistLevel < 0) return 0;
-        return blacklistLevel >= BLACKLIST_LEVELS.size() ? BLACKLIST_LEVELS.get(BLACKLIST_LEVELS.size() - 1) : BLACKLIST_LEVELS.get(blacklistLevel);
+        return blacklistLevel >= BLACKLIST_LEVELS.size()
+                ? BLACKLIST_LEVELS.get(BLACKLIST_LEVELS.size() - 1)
+                : BLACKLIST_LEVELS.get(blacklistLevel);
     }
 }

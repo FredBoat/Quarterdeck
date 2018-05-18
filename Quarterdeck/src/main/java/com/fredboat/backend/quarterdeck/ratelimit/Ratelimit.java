@@ -139,7 +139,7 @@ public class Ratelimit {
     /**
      * completely resets a limit for an id (user or guild for example)
      */
-    public synchronized void liftLimit(long id) {
+    public void liftLimit(long id) {
         this.rates.invalidate(id);
     }
 

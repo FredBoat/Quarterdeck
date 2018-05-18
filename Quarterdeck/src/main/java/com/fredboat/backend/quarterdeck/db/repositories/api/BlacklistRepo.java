@@ -28,6 +28,7 @@ package com.fredboat.backend.quarterdeck.db.repositories.api;
 import com.fredboat.backend.quarterdeck.db.entities.main.BlacklistEntry;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by napster on 05.02.18.
@@ -43,4 +44,18 @@ public interface BlacklistRepo extends Repo<Long, BlacklistEntry> {
      */
     @Deprecated
     List<BlacklistEntry> loadBlacklist();
+
+
+    /**
+     * General purpose change to the blacklist entry in a single transaction.
+     *
+     * @param id
+     *         the id of the blacklist entry to be changed
+     * @param transformation
+     *         this function will have the blacklist entry that is loaded from the database / newly constructed applied,
+     *         the result will be merged back into the database.
+     *
+     * @return the merged blacklist entry
+     */
+    BlacklistEntry transform(long id, Function<BlacklistEntry, BlacklistEntry> transformation);
 }
