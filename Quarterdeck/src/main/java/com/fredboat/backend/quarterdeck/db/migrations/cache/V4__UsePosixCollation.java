@@ -35,6 +35,7 @@ import java.sql.Statement;
  */
 public class V4__UsePosixCollation implements JdbcMigration {
 
+    //language=PostgreSQL
     private static final String ALTER_COLLATION
             = "ALTER TABLE public.track_search_results ALTER search_term TYPE text COLLATE pg_catalog.\"POSIX\";";
 

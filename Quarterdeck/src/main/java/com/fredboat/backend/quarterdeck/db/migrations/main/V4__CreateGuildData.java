@@ -35,9 +35,11 @@ import java.sql.Statement;
  */
 public class V4__CreateGuildData implements JdbcMigration {
 
+    //language=PostgreSQL
     private static final String DROP
             = "DROP TABLE IF EXISTS public.guild_data;";
 
+    //language=PostgreSQL
     private static final String CREATE
             = "CREATE TABLE public.guild_data "
             + "( "

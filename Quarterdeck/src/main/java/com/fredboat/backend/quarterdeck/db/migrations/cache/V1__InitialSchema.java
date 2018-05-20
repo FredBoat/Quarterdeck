@@ -38,6 +38,7 @@ public class V1__InitialSchema implements JdbcMigration {
     public void migrate(Connection connection) throws Exception {
 
         //SearchResult
+        //language=PostgreSQL
         String createSearchResultsSql
                 = "CREATE TABLE IF NOT EXISTS public.search_results "
                 + "( "
@@ -52,6 +53,7 @@ public class V1__InitialSchema implements JdbcMigration {
         }
 
         //HStorex (from sqlsauce, requires hstore extension to be enabled)
+        //language=PostgreSQL
         String createHstorexSql
                 = "CREATE TABLE IF NOT EXISTS public.hstorex "
                 + "( "

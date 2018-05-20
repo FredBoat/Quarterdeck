@@ -48,10 +48,13 @@ public class V6__MultiplePrefixes implements JdbcMigration {
 
     // nulls are those rows where a prefix was reset via ;;prefix reset (or similar). we can safely drop those
     // so we dont have to worry about accidently adding null values to the array in the MIGRATE step
+    //language=PostgreSQL
     private static final String DELETE_NULLS
             = "DELETE FROM public.prefixes WHERE prefixes.prefix IS NULL;";
+    //language=PostgreSQL
     private static final String ADD_COLUMN
             = "ALTER TABLE public.prefixes ADD COLUMN pvalues TEXT[] COLLATE pg_catalog.\"default\" NOT NULL DEFAULT '{}';";
+    //language=PostgreSQL
     private static final String MIGRATE
             = "UPDATE public.prefixes SET pvalues = pvalues || prefixes.prefix;";
 

@@ -35,11 +35,13 @@ import java.sql.Statement;
  */
 public class V2__ByteaResults implements JdbcMigration {
 
+    //language=PostgreSQL
     private static final String DROP_TYPE_SEARCH_PROVIDER
             = "DROP TYPE IF EXISTS SearchProvider;";
     /**
      * See {@link fredboat.definitions.SearchProvider} for the Java enum of this
      */
+    //language=PostgreSQL
     private static final String CREATE_TYPE_SEARCH_PROVIDER
             = "CREATE TYPE SearchProvider AS ENUM "
             + "( "
@@ -48,9 +50,11 @@ public class V2__ByteaResults implements JdbcMigration {
             + ");";
 
     //this is not the actual old table, just a precaution
+    //language=PostgreSQL
     private static final String DROP_TABLE_TRACK_SEARCH_RESULTS
             = "DROP TABLE IF EXISTS public.track_search_results;";
 
+    //language=PostgreSQL
     private static final String CREATE_TABLE_TRACK_SEARCH_RESULTS
             = "CREATE TABLE public.track_search_results "
             + "( "
