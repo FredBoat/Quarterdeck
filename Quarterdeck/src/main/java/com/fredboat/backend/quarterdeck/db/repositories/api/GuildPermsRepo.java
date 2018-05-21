@@ -33,5 +33,23 @@ import fredboat.definitions.PermissionLevel;
  * Created by napster on 05.02.18.
  */
 public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
+    /**
+     * Delete permission based on id.
+     *
+     * @param id              Id to delete the permission.
+     * @param permissionLevel Permission level to delete from.
+     * @return Updated guild permission.
+     * @throws PermissionNotSupportedException If passed a permission level not supported by this function.
+     */
     GuildPermissions delete(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException;
+
+    /***
+     * Update permission based on id and permission level
+     *
+     * @param id              Id to update the permission.
+     * @param permissionLevel Permission level to update.
+     * @return Updated guild permission.
+     * @throws PermissionNotSupportedException If passed a permission level not supported by this function.
+     */
+    GuildPermissions put(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException;
 }

@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public enum GuildPermissionLevels {
 
-    Admin("admin"),
+    ADMIN("admin"),
     DJ("dj"),
     USER("user");
 

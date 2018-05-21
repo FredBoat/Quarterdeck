@@ -12,7 +12,6 @@ public class GuildPermissions {
     private final List<String> djIds;
     private final List<String> userIds;
 
-
     public static GuildPermissions of(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
         return new GuildPermissions(guildPermissions);
     }

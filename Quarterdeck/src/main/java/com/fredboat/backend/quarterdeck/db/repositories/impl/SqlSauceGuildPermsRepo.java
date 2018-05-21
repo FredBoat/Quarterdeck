@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Created by napster on 05.02.18.
@@ -57,37 +58,33 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
     public GuildPermissions delete(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException {
         GuildPermissions guildPermissions = super.fetch(id);
         Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
+        LinkedList<String> permissionList = this.resolvePermissionList(guildPermissions, permissionLevel);
 
-        List<String> permissionList = null;
-        boolean isSuccessful = false;
-
-        // get the list of permissions.
-        switch (permissionLevel) {
-            case DJ:
-                permissionList = new LinkedList<>(guildPermissions.getDjList());
-                break;
-
-            case USER:
-                permissionList = new LinkedList<>(guildPermissions.getUserList());
-                break;
-
-            case ADMIN:
-                permissionList = new LinkedList<>(guildPermissions.getAdminList());
-                break;
-        }
-
-        // Not supported permission level.. yet?
-        if (permissionList == null) {
-            throw new PermissionNotSupportedException("Permission not supported.");
-        }
-
-        isSuccessful = permissionList.removeIf(listId -> listId.equals(id));
+        boolean isSuccessful = permissionList.removeIf(listId -> listId.equals(id));
         if (isSuccessful) {
             if (permissionList.isEmpty()) {
                 permissionList.add(""); // Cannot be empty list..
             }
-            List<String> finalPermissionList = permissionList;
-            update = update.andThen(test -> test.setFromEnum(permissionLevel, finalPermissionList));
+            update = update.andThen(guildPerm -> guildPerm.setFromEnum(permissionLevel, permissionList));
+        } else {
+            return guildPermissions;
+        }
+
+        return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(id), update);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GuildPermissions put(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException {
+        GuildPermissions guildPermissions = super.fetch(id);
+        Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
+        LinkedList<String> permissionList = this.resolvePermissionList(guildPermissions, permissionLevel);
+
+        if (!permissionList.contains(id)) {
+            permissionList.add(id);
+            update = update.andThen(guildPerm -> guildPerm.setFromEnum(permissionLevel, permissionList));
         } else {
             return guildPermissions;
         }
@@ -98,5 +95,30 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
     @Override
     public GuildPermissions patch(String id, Map<String, Object> partialUpdate) {
         return super.patch(id, partialUpdate);
+    }
+
+    /**
+     * Resolve permissions list based on level.
+     *
+     * @param guildPermissions Permission object.
+     * @param permissionLevel  Permission level.
+     * @return List of guild ids with permission according to the level.
+     * @throws PermissionNotSupportedException If passed a level not yet supported.
+     */
+    private LinkedList<String> resolvePermissionList(GuildPermissions guildPermissions, PermissionLevel permissionLevel)
+            throws PermissionNotSupportedException {
+        switch (permissionLevel) {
+            case DJ:
+                return new LinkedList<>(guildPermissions.getDjList());
+
+            case USER:
+                return new LinkedList<>(guildPermissions.getUserList());
+
+            case ADMIN:
+                return new LinkedList<>(guildPermissions.getAdminList());
+
+            default:
+                throw new PermissionNotSupportedException("Permission not supported.");
+        }
     }
 }

@@ -16,7 +16,7 @@ public class GuildPermissionsUtil {
                 return PermissionLevel.DJ;
             case USER:
                 return PermissionLevel.USER;
-            case Admin:
+            case ADMIN:
                 return PermissionLevel.ADMIN;
 
             default:
