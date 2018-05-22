@@ -31,20 +31,33 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 /**
- * Created by napster on 17.04.18.
+ * Created by napster on 18.05.18.
  */
-public class V4__UsePosixCollation implements JdbcMigration {
+public class V5__ImplementV1ApiSearchResult implements JdbcMigration {
 
     //language=PostgreSQL
-    private static final String ALTER_COLLATION
-            = "ALTER TABLE public.track_search_results ALTER search_term TYPE text COLLATE pg_catalog.\"POSIX\";";
+    private static final String DROP
+            = "DROP TABLE IF EXISTS public.search_results;";
+
+    //language=PostgreSQL
+    private static final String CREATE
+            = "CREATE TABLE public.search_results "
+            + "( "
+            + "    provider         SearchProvider NOT NULL, "
+            + "    search_term      TEXT COLLATE pg_catalog.\"POSIX\" NOT NULL, "
+            + "    looked_up        BIGINT NOT NULL, "
+            + "    track            TEXT COLLATE pg_catalog.\"POSIX\" NOT NULL, "
+            + "    CONSTRAINT search_results_pkey PRIMARY KEY (provider, search_term) "
+            + ");";
 
 
     @Override
     public void migrate(Connection connection) throws Exception {
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(ALTER_COLLATION);
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(DROP);
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(CREATE);
         }
     }
 }

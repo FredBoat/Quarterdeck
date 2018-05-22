@@ -57,6 +57,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.base.Predicates.or;
 import static springfox.documentation.builders.PathSelectors.ant;
 
 /**
@@ -80,7 +81,8 @@ public class SwaggerConfiguration {
                 .groupName("v1")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.fredboat.backend.quarterdeck.rest.v1"))
-                .paths(ant("/v1/guilds/**"))
+                .paths(or(ant("/v1/guilds/**"),
+                        ant("/v1/tracks/**")))
                 .build()
                 .additionalModels(this.typeResolver.resolve(Language.class), this.typeResolver.resolve(RepeatMode.class))
                 .securitySchemes(List.of(new BasicAuth("test")))
