@@ -30,11 +30,31 @@ import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import javax.annotation.CheckReturnValue;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Created by napster on 28.03.18.
  */
 public class PatchParseUtil {
+
+    //source: https://stackoverflow.com/a/8571649
+    private static final Pattern BASE64
+            = Pattern.compile("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$");
+
+    /**
+     * @return the base 64 string parsed from the provided map of attributes and provided key
+     *
+     * @throws ParseException
+     *         If the input did not fit our high quality stack overflow sourced base64 regex.
+     */
+    @CheckReturnValue
+    public static String parseBase64String(String key, Map<String, Object> attributes) {
+        String value = parseString(key, attributes);
+        if (!BASE64.matcher(value).matches()) {
+            throw new NotBase64StringException(key, value);
+        }
+        return value;
+    }
 
     /**
      * @return the DiscordSnowflake parsed from the provided map of attributes and provided key
@@ -117,6 +137,17 @@ public class PatchParseUtil {
     @CheckReturnValue
     public static boolean parseBoolean(String key, Map<String, Object> attributes) throws ParseCastException {
         return cast(key, attributes, Boolean.class);
+    }
+
+    /**
+     * @return the String parsed from the provided map of attributes and provided key
+     *
+     * @throws ParseException
+     *         If anything went wrong.
+     */
+    @CheckReturnValue
+    public static String parseString(String key, Map<String, Object> attributes) throws ParseCastException {
+        return cast(key, attributes, String.class);
     }
 
     /**
