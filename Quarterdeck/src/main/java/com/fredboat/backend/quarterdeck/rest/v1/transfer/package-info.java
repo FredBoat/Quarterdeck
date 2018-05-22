@@ -27,7 +27,11 @@
  * This package contains transfer objects. These objects are expected to be serialized and conform to our public
  * documentation of the API.
  */
-@space.npstr.annotations.FieldsAreNonNullByDefault
-@space.npstr.annotations.ParametersAreNonnullByDefault
-@space.npstr.annotations.ReturnTypesAreNonNullByDefault
+@FieldsAreNonNullByDefault
+@ParametersAreNonnullByDefault
+@ReturnTypesAreNonNullByDefault
 package com.fredboat.backend.quarterdeck.rest.v1.transfer;
+
+import space.npstr.annotations.FieldsAreNonNullByDefault;
+import space.npstr.annotations.ParametersAreNonnullByDefault;
+import space.npstr.annotations.ReturnTypesAreNonNullByDefault;

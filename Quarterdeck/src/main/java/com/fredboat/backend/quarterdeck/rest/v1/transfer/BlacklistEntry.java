@@ -33,6 +33,8 @@ import com.fredboat.backend.quarterdeck.ratelimit.BlacklistService;
  * Created by napster on 09.04.18.
  * <p>
  * Answers a request
+ *
+ * @see com.fredboat.backend.quarterdeck.rest.v1.transfer (package-info.java)
  */
 public class BlacklistEntry {
 

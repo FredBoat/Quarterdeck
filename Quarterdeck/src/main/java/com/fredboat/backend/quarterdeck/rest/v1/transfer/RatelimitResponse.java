@@ -41,6 +41,8 @@ import java.util.Optional;
  * - The request is not granted (= the user is ratelimited)
  * - The user is already blacklisted
  * - The request caused the user to be blacklisted
+ *
+ * @see com.fredboat.backend.quarterdeck.rest.v1.transfer (package-info.java)
  */
 public class RatelimitResponse {
 

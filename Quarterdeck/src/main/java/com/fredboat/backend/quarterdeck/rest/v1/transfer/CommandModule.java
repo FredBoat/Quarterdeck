@@ -31,6 +31,8 @@ import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by napster on 09.04.18.
+ *
+ * @see com.fredboat.backend.quarterdeck.rest.v1.transfer (package-info.java)
  */
 public class CommandModule {
 
