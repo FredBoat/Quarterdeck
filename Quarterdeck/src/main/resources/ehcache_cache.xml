@@ -44,7 +44,9 @@
     <cache name="track_search_results"
            maxEntriesLocalHeap="1000"
            maxEntriesLocalDisk="100000"
-           eternal="true">
+           eternal="false"
+           timeToIdleSeconds="60"
+           timeToLiveSeconds="120">
         <persistence strategy="none"/>
     </cache>
 
