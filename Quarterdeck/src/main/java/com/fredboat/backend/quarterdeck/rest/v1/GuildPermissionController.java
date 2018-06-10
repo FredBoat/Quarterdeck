@@ -38,8 +38,7 @@ public class GuildPermissionController {
     public GuildPermissions getPermissions(@PathVariable(GUILD_ID_PATH_VARIABLE) DiscordSnowflake guildId) {
         return GuildPermissions.of(this.guildPermsRepo.fetch(guildId.getSnowflakeId()));
     }
-
-
+    
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = GUILD_ID_PATH_VARIABLE, dataTypeClass = DiscordSnowflake.class, example = "174820236481134592",
                     required = true, paramType = "path", type = "string", format = "Discord snowflake",
