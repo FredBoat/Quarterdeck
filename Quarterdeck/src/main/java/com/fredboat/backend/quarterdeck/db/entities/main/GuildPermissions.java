@@ -37,6 +37,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -94,7 +95,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
     }
 
     public List<String> splitAdminList() {
-        return Arrays.asList(this.adminList.split(" "));
+        return new ArrayList<String>(Arrays.asList(this.adminList.split(" ")));
     }
 
     public GuildPermissions setAdminList(List<String> list) {
@@ -108,7 +109,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
     }
 
     public List<String> splitDjList() {
-        return Arrays.asList(this.djList.split(" "));
+        return new ArrayList<String>(Arrays.asList(this.djList.split(" ")));
     }
 
     public GuildPermissions setDjList(List<String> list) {
@@ -122,7 +123,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
     }
 
     public List<String> splitUserList() {
-        return Arrays.asList(this.userList.split(" "));
+        return new ArrayList<String>(Arrays.asList(this.userList.split(" ")));
     }
 
     public GuildPermissions setUserList(List<String> list) {

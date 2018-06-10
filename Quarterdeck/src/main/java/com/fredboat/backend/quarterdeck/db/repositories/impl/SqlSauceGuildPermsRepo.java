@@ -51,8 +51,8 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
      * {@inheritDoc}
      */
     @Override
-    public GuildPermissions delete(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException {
-        GuildPermissions guildPermissions = super.fetch(id);
+    public GuildPermissions delete(String guildId, PermissionLevel permissionLevel, String id) throws PermissionNotSupportedException {
+        GuildPermissions guildPermissions = super.fetch(guildId);
         Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
         List<String> permissionList = this.resolvePermissionList(guildPermissions, permissionLevel);
 
@@ -66,15 +66,16 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
             return guildPermissions;
         }
 
-        return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(id), update);
+        return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(guildId), update);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public GuildPermissions put(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException {
-        GuildPermissions guildPermissions = super.fetch(id);
+    public GuildPermissions put(String guildId, PermissionLevel permissionLevel, String id) throws PermissionNotSupportedException {
+
+        GuildPermissions guildPermissions = super.fetch(guildId);
         Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
         List<String> permissionList = this.resolvePermissionList(guildPermissions, permissionLevel);
 
@@ -85,7 +86,7 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
             return guildPermissions;
         }
 
-        return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(id), update);
+        return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(guildId), update);
     }
 
     @Override
