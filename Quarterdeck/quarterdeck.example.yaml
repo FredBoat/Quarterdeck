@@ -51,10 +51,12 @@ security:
     - name: ""
       pass: ""
 
+whitelist:
+  userIds:                   # a list of discord user ids that shall never be ratelimited or blacklisted
+    - 81011298891993088
+    - 166604053629894657
+
 spring:
-  http:
-    converters:
-      preferred-json-mapper: gson    # dont touch this
   output:
     ansi:
       enabled: detect                # for developers: setting this to "always" will force colored logs in your console

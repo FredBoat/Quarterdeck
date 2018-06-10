@@ -66,8 +66,8 @@ public class SqlSauceGuildPlayerRepo extends SqlSauceRepo<Long, GuildPlayer> imp
         }
 
         //is paused
-        if (partialUpdate.containsKey("isPaused")) {
-            boolean isPaused = PatchParseUtil.parseBoolean("isPaused", partialUpdate);
+        if (partialUpdate.containsKey("paused")) {
+            boolean isPaused = PatchParseUtil.parseBoolean("paused", partialUpdate);
             update = update.andThen(guildPlayer -> guildPlayer.setPaused(isPaused));
         }
 
@@ -89,7 +89,7 @@ public class SqlSauceGuildPlayerRepo extends SqlSauceRepo<Long, GuildPlayer> imp
         }
 
         //is shuffled
-        if (partialUpdate.containsKey("isShuffled")) {
+        if (partialUpdate.containsKey("shuffled")) {
             boolean isShuffled = PatchParseUtil.parseBoolean("isShuffled", partialUpdate);
             update = update.andThen(guildPlayer -> guildPlayer.setShuffled(isShuffled));
         }

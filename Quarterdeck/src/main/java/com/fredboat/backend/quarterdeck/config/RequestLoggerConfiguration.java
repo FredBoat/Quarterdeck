@@ -25,14 +25,11 @@
 
 package com.fredboat.backend.quarterdeck.config;
 
-import com.fredboat.backend.quarterdeck.Metrics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fredboat.backend.quarterdeck.RequestLoggerAndStats;
+import io.prometheus.client.guava.cache.CacheMetricsCollector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by napster on 17.02.18.
@@ -40,9 +37,15 @@ import javax.servlet.http.HttpServletRequest;
 @Configuration
 public class RequestLoggerConfiguration {
 
+    private final CacheMetricsCollector cacheMetrics;
+
+    public RequestLoggerConfiguration(CacheMetricsCollector cacheMetrics) {
+        this.cacheMetrics = cacheMetrics;
+    }
+
     @Bean
     public AbstractRequestLoggingFilter logFilter() {
-        RequestLogger filter = new RequestLogger();
+        RequestLoggerAndStats filter = new RequestLoggerAndStats(this.cacheMetrics);
         filter.setIncludeQueryString(true);
         filter.setIncludePayload(true);
         filter.setMaxPayloadLength(10000);
@@ -51,18 +54,4 @@ public class RequestLoggerConfiguration {
         return filter;
     }
 
-    private static class RequestLogger extends AbstractRequestLoggingFilter {
-        private static final Logger log = LoggerFactory.getLogger(RequestLogger.class);
-
-        @Override
-        protected void beforeRequest(HttpServletRequest request, String message) {
-            log.debug(message);
-            Metrics.apiRequests.labels(request.getServletPath()).inc();
-        }
-
-        @Override
-        protected void afterRequest(HttpServletRequest request, String message) {
-            log.debug(message);
-        }
-    }
 }

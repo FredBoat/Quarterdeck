@@ -31,6 +31,8 @@ import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
 
+import java.util.Collection;
+
 /**
  * Created by napster on 05.02.18.
  */
@@ -41,4 +43,13 @@ public class SqlSaucePrefixRepo extends SqlSauceRepo<GuildBotId, Prefix> impleme
         super(dbWrapper, Prefix.class);
     }
 
+    @Override
+    public Prefix addPrefixes(GuildBotId id, Collection<String> prefixes) {
+        return this.dbWrapper.findApplyAndMerge(Prefix.key(id), prefix -> prefix.addPrefixes(prefixes));
+    }
+
+    @Override
+    public Prefix removePrefixes(GuildBotId id, Collection<String> prefixes) {
+        return this.dbWrapper.findApplyAndMerge(Prefix.key(id), prefix -> prefix.removePrefixes(prefixes));
+    }
 }

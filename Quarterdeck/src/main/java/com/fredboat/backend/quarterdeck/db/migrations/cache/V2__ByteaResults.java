@@ -62,8 +62,6 @@ public class V2__ByteaResults implements JdbcMigration {
             + ");";
 
 
-    //todo in follow up migration: drop old table, initiate vaccuming of large objects
-
     @Override
     public void migrate(Connection connection) throws Exception {
         try (Statement createSearchResults = connection.createStatement()) {

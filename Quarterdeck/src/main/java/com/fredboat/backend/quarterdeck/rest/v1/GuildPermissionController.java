@@ -45,11 +45,15 @@ public class GuildPermissionController {
                     required = true, paramType = "path", type = "string", format = "Discord snowflake",
                     value = "Discord snowflake"),
             @ApiImplicitParam(name = PERMISSION_PATH_VARIABLE, dataTypeClass = GuildPermissionLevels.class, example = "dj",
-                    required = true, paramType = "path", type = "enum", format = "Discord snowflake")
+                    required = true, paramType = "path", type = "enum", format = "Discord snowflake"),
+            @ApiImplicitParam(name = GUILD_ID_PATH_VARIABLE, dataTypeClass = DiscordSnowflake.class, example = "12318933124592",
+                    required = true, paramType = "path", type = "string", format = "Discord snowflake",
+                    value = "Discord snowflake"),
     })
     @PutMapping("{" + PERMISSION_PATH_VARIABLE + "}")
     public ResponseEntity<GuildPermissions> putPermission(@PathVariable(GUILD_ID_PATH_VARIABLE) DiscordSnowflake guildId,
-                                                          @PathVariable(PERMISSION_PATH_VARIABLE) GuildPermissionLevels level) {
+                                                          @PathVariable(PERMISSION_PATH_VARIABLE) GuildPermissionLevels level,
+                                                          @PathVariable(USER_ID_PATH_VARIABLE) DiscordSnowflake userId) {
         try {
             ResponseEntity<GuildPermissions> result = new ResponseEntity<>(
                     GuildPermissions.of(this.guildPermsRepo.put(guildId.getSnowflakeId(),

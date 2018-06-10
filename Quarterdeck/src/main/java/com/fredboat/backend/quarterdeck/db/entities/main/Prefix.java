@@ -28,6 +28,8 @@ package com.fredboat.backend.quarterdeck.db.entities.main;
 import com.fredboat.backend.quarterdeck.rest.v0.transfer.PrefixTransfer;
 import org.hibernate.annotations.Type;
 import space.npstr.sqlsauce.entities.SaucedEntity;
+import space.npstr.sqlsauce.fp.types.EntityKey;
+import space.npstr.sqlsauce.hibernate.types.BasicType;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -56,13 +58,18 @@ public class Prefix extends SaucedEntity<GuildBotId, Prefix> {
     private GuildBotId id;
 
 
-    @Type(type = "hash-set-string")
+    @Type(type = "hash-set-basic")
+    @BasicType(String.class)
     @Column(name = "pvalues") //values is a semi-reserved keyword in postgres
     //internally always access this field through the getValues() to ensure it is properly populated
     private HashSet<String> values = new HashSet<>();
 
     //for jpa & the database wrapper
     Prefix() {
+    }
+
+    public static EntityKey<GuildBotId, Prefix> key(GuildBotId id) {
+        return EntityKey.of(id, Prefix.class);
     }
 
     @Override

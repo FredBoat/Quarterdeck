@@ -27,6 +27,9 @@ package com.fredboat.backend.quarterdeck.rest.v0;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildConfigRepo;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,5 +42,19 @@ public class V0GuildConfigController extends EntityController<String, GuildConfi
 
     public V0GuildConfigController(GuildConfigRepo repo) {
         super(repo);
+    }
+
+    @Override
+    @PostMapping("/delete")
+    public void delete(@RequestBody String id) {
+        String sanitizedId = id.replaceAll("\"", ""); //jackson plz
+        super.delete(new DiscordSnowflake(sanitizedId).getSnowflakeId());
+    }
+
+    @Override
+    @PostMapping("/fetch")
+    public GuildConfig fetch(@RequestBody String id) {
+        String sanitizedId = id.replaceAll("\"", ""); //jackson plz
+        return super.fetch(new DiscordSnowflake(sanitizedId).getSnowflakeId());
     }
 }

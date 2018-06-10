@@ -25,7 +25,6 @@
 
 package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.GuildData;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPermsRepo;
 import com.fredboat.backend.quarterdeck.exceptions.PermissionNotSupportedException;
@@ -33,13 +32,10 @@ import fredboat.definitions.PermissionLevel;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 /**
  * Created by napster on 05.02.18.
@@ -58,7 +54,7 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
     public GuildPermissions delete(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException {
         GuildPermissions guildPermissions = super.fetch(id);
         Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
-        LinkedList<String> permissionList = this.resolvePermissionList(guildPermissions, permissionLevel);
+        List<String> permissionList = this.resolvePermissionList(guildPermissions, permissionLevel);
 
         boolean isSuccessful = permissionList.removeIf(listId -> listId.equals(id));
         if (isSuccessful) {
@@ -80,7 +76,7 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
     public GuildPermissions put(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException {
         GuildPermissions guildPermissions = super.fetch(id);
         Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
-        LinkedList<String> permissionList = this.resolvePermissionList(guildPermissions, permissionLevel);
+        List<String> permissionList = this.resolvePermissionList(guildPermissions, permissionLevel);
 
         if (!permissionList.contains(id)) {
             permissionList.add(id);
@@ -97,6 +93,11 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
         return super.patch(id, partialUpdate);
     }
 
+    @Override
+    public Optional<GuildPermissions> get(String id) {
+        return Optional.ofNullable(this.dbWrapper.getEntity(GuildPermissions.key(id)));
+    }
+
     /**
      * Resolve permissions list based on level.
      *
@@ -105,17 +106,17 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
      * @return List of guild ids with permission according to the level.
      * @throws PermissionNotSupportedException If passed a level not yet supported.
      */
-    private LinkedList<String> resolvePermissionList(GuildPermissions guildPermissions, PermissionLevel permissionLevel)
+    private List<String> resolvePermissionList(GuildPermissions guildPermissions, PermissionLevel permissionLevel)
             throws PermissionNotSupportedException {
         switch (permissionLevel) {
             case DJ:
-                return new LinkedList<>(guildPermissions.getDjList());
+                return guildPermissions.splitDjList();
 
             case USER:
-                return new LinkedList<>(guildPermissions.getUserList());
+                return guildPermissions.splitUserList();
 
             case ADMIN:
-                return new LinkedList<>(guildPermissions.getAdminList());
+                return guildPermissions.splitAdminList();
 
             default:
                 throw new PermissionNotSupportedException("Permission not supported.");

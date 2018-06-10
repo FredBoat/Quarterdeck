@@ -29,10 +29,8 @@ import com.fredboat.backend.quarterdeck.db.repositories.api.RepoAdapter;
 import space.npstr.sqlsauce.DatabaseWrapper;
 import space.npstr.sqlsauce.entities.SaucedEntity;
 import space.npstr.sqlsauce.fp.types.EntityKey;
-import space.npstr.sqlsauce.fp.types.Transfiguration;
 
 import java.io.Serializable;
-import java.util.function.Function;
 
 /**
  * Created by napster on 05.02.18.
@@ -70,8 +68,4 @@ public abstract class SqlSauceRepo<I extends Serializable, E extends SaucedEntit
         return this.dbWrapper.merge(entity);
     }
 
-    @Override
-    public E transform(I id, Function<E, E> transformation) {
-        return this.dbWrapper.findApplyAndMerge(Transfiguration.of(EntityKey.of(id, this.entityClass), transformation));
-    }
 }

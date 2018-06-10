@@ -83,11 +83,11 @@ public class PrefixController {
                     value = "Array of prefixes. A prefix can be any string."),
     })
     @PostMapping
-    public Prefix addPrefix(@PathVariable("guild_id") DiscordSnowflake guildId,
-                            @RequestParam("bot_id") DiscordSnowflake botId,
-                            @RequestBody String[] prefixes) {
+    public Prefix addPrefixes(@PathVariable("guild_id") DiscordSnowflake guildId,
+                              @RequestParam("bot_id") DiscordSnowflake botId,
+                              @RequestBody String[] prefixes) {
         GuildBotId id = new GuildBotId(guildId.longValue(), botId.longValue());
-        return Prefix.of(this.prefixRepo.transform(id, entity -> entity.addPrefixes(Arrays.asList(prefixes))));
+        return Prefix.of(this.prefixRepo.addPrefixes(id, Arrays.asList(prefixes)));
     }
 
     @ApiImplicitParams({
@@ -112,7 +112,7 @@ public class PrefixController {
             this.prefixRepo.delete(id);
             return Prefix.of(this.prefixRepo.fetch(id));
         } else {
-            return Prefix.of(this.prefixRepo.transform(id, entity -> entity.removePrefixes(Arrays.asList(prefixes))));
+            return Prefix.of(this.prefixRepo.removePrefixes(id, Arrays.asList(prefixes)));
         }
     }
 }

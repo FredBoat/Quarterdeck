@@ -26,7 +26,6 @@
 package com.fredboat.backend.quarterdeck.db.repositories.api;
 
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * Created by napster on 21.03.18.
@@ -50,10 +49,5 @@ public class RepoAdapter<I, E> implements Repo<I, E> {
     @Override
     public E patch(I id, Map<String, Object> partialUpdate) {
         throw new UnsupportedOperationException("Patching not implemented by this repo");
-    }
-
-    @Override
-    public E transform(I id, Function<E, E> transformation) {
-        throw new UnsupportedOperationException("Transformation not implemented by this repo");
     }
 }

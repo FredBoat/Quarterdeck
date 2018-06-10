@@ -26,6 +26,7 @@
 package com.fredboat.backend.quarterdeck.config;
 
 import com.fredboat.backend.quarterdeck.config.property.DocsConfig;
+import com.fredboat.backend.quarterdeck.config.property.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -58,9 +59,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         antMatchers.add("/metrics"); // these should rather be handled by nginx whitelisting (or other proxy choices)
 
         if (this.docsConfig.isOpen()) {
-            // spring rest docs
-            antMatchers.add("/docs/**");
-
             // swagger ui
             antMatchers.addAll(Arrays.asList(
                     "/swagger-resources/**",
@@ -83,9 +81,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth, AppConfiguration.Security security) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth, SecurityConfig securityConfig) throws Exception {
         InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuth = auth.inMemoryAuthentication();
-        for (AppConfiguration.Security.Admin admin : security.getAdmins()) {
+        for (SecurityConfig.Admin admin : securityConfig.getAdmins()) {
             if (admin.getPass().isEmpty()) {
                 throw new RuntimeException("Admin " + admin.getName() + " configured with empty pass.");
             }

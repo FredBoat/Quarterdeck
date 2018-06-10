@@ -88,7 +88,6 @@ public class SwaggerConfiguration {
                 ;
     }
 
-    // todo this seems not getting picked up, investigate. possible gson issue.
     @Bean
     public UiConfiguration uiConfig() {
         return UiConfigurationBuilder.builder()

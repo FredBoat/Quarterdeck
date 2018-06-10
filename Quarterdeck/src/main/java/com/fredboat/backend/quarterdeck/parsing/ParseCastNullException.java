@@ -23,21 +23,27 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v0;
-
-import com.fredboat.backend.quarterdeck.db.entities.main.GuildModules;
-import com.fredboat.backend.quarterdeck.db.repositories.api.GuildModulesRepo;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+package com.fredboat.backend.quarterdeck.parsing;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 30.03.18.
  */
-@RestController
-@RequestMapping("/" + EntityController.VERSION_PATH + "guildmodules/")
-public class GuildModulesController extends EntityController<Long, GuildModules> {
+public class ParseCastNullException extends ParseException {
 
-    public GuildModulesController(GuildModulesRepo repo) {
-        super(repo);
+    private final String key;
+    private final Class expected;
+
+    public ParseCastNullException(String key, Class expected) {
+        super();
+        this.key = key;
+        this.expected = expected;
+    }
+
+    private static final String messageTemplate = "Failed to cast the value for key %s: value is null but should be of class %s";
+
+    @Override
+    public String getMessage() {
+        return String.format(messageTemplate,
+                this.key, this.expected.getSimpleName());
     }
 }

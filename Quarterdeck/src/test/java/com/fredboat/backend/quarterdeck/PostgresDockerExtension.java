@@ -26,11 +26,15 @@
 package com.fredboat.backend.quarterdeck;
 
 import com.palantir.docker.compose.DockerComposeRule;
+import com.palantir.docker.compose.configuration.ProjectName;
+import com.palantir.docker.compose.configuration.ShutdownStrategy;
 import com.palantir.docker.compose.connection.Container;
 import com.palantir.docker.compose.connection.waiting.HealthChecks;
 import com.palantir.docker.compose.connection.waiting.SuccessOrFailure;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -39,15 +43,38 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by napster on 30.03.18.
+ *
+ * This extension will create a fredboat postgres database before the first test that is using this extension is run,
+ * and will clean up the docker container during shutdown. The database will be reused between all tests using this
+ * extension, with setup run only once.
+ * Do not kill the test execution via SIGKILL (this happens when running with IntelliJ's debug mode and clicking the
+ * stop button), or else you might end up with orphaned docker containers on your machine.
  */
 public class PostgresDockerExtension implements BeforeAllCallback {
+
+    private static final Logger log = LoggerFactory.getLogger(PostgresDockerExtension.class);
 
     private static DockerComposeRule docker = DockerComposeRule.builder()
             .pullOnStartup(true)
             .file("src/test/resources/docker-compose.yaml")
+            .projectName(ProjectName.fromString("quarterdecktest"))
+            .shutdownStrategy(identifyShutdownStrategy())
             .waitingForService("db", HealthChecks.toHaveAllPortsOpen())
             .waitingForService("db", PostgresDockerExtension::postgresHealthCheck)
             .build();
+
+    private static boolean hasSetup = false;
+
+    private static ShutdownStrategy identifyShutdownStrategy() {
+        String keepPostgresContainer = System.getProperty("keepPostgresContainer", "false");
+        if ("true".equalsIgnoreCase(keepPostgresContainer)) {
+            log.warn("Keeping the postgres container after the tests. Do NOT use this option in a CI environment, this "
+                    + "is meant to speed up repeatedly running tests in development only.");
+            return ShutdownStrategy.SKIP;
+        }
+
+        return ShutdownStrategy.GRACEFUL;
+    }
 
     public PostgresDockerExtension() {
         //cant use AfterAllCallback#afterAll because thats too early (spring context is still alive) and leads to exception spam
@@ -56,7 +83,10 @@ public class PostgresDockerExtension implements BeforeAllCallback {
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
-        docker.before();
+        if (!hasSetup) {
+            docker.before();
+            hasSetup = true;
+        }
     }
 
 

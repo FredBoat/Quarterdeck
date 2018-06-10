@@ -41,7 +41,6 @@ import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -66,8 +65,7 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
-                .andExpect(jsonPath("$.language", isA(String.class)))
-                .andDo(document("guild/config/get"));
+                .andExpect(jsonPath("$.language", isA(String.class)));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -80,7 +78,7 @@ public class GuildConfigControllerTest extends BaseTest {
 
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
-                .content(this.gson.toJson(patchGuildConfig))
+                .content(this.mapper.writeValueAsString(patchGuildConfig))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 
         this.mockMvc.perform(request)
@@ -90,8 +88,7 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.trackAnnounce", both(isA(Boolean.class)).and(is(false))))
                 .andExpect(jsonPath("$.autoResume", both(isA(Boolean.class)).and(is(true))))
                 .andExpect(jsonPath("$.language", both(isA(String.class))
-                        .and(is(equalToIgnoringCase(Language.DE_DE.getCode())))))
-                .andDo(document("guild/config/patch"));
+                        .and(is(equalToIgnoringCase(Language.DE_DE.getCode())))));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -105,7 +102,7 @@ public class GuildConfigControllerTest extends BaseTest {
         Map<String, Object> patchGuildConfig = new HashMap<>();
         patchGuildConfig.put("language", Language.DE_DE.getCode());
         MockHttpServletRequestBuilder patch = patch(urlTemplate, guildId)
-                .content(this.gson.toJson(patchGuildConfig))
+                .content(this.mapper.writeValueAsString(patchGuildConfig))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))));
@@ -114,8 +111,7 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))));
 
         this.mockMvc.perform(delete(urlTemplate, guildId))
-                .andExpect(status().isOk())
-                .andDo(document("guild/config/delete"));
+                .andExpect(status().isOk());
 
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(GuildConfig.DEFAULT_LANGAUGE.getCode()))));

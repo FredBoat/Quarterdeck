@@ -21,8 +21,11 @@ The plans for v1 and future versions include:
 
 ### v1 [WIP]
 
-The v1 docs can be found [here](https://koakuma.fredboat.com/qd/docs/index.html) and [here](https://koakuma.fredboat.com/qd/swagger-ui.html)
-(one of these is going away in the future).
+The v1 Quarterdeck docs can be found [here](https://koakuma.fredboat.com/qd/swagger-ui.html).  
+It includes running test queries in the browser against a live testing deployment of Quarterdeck. 
+If you are a developer who wants to build apps based on FredBoat's backend, please read the document 
+[linked below](#contributing) to learn how to join our community, where you can request credentials to access
+our testing environment.
 
 ### v0
 
@@ -61,14 +64,36 @@ GET http[s]://backend.url[:port]/v0/blacklist/loadall
 There is an additional endpoint, that will return the supported versions of the API:
 - GET /info/api/versions
 
-Entities and ids are marshalled via [Gson](https://github.com/google/gson) on both sides.  
 Authentication happens via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).  
 No kind of authorization is existent, you either have access, or you don't. In terms of security, treat this the same way you would treat a redis instance.  
 
 
-## Building Quarterdeck
-To run tests against our postgres database, quarterdeck requires docker and docker-compose installed, as well an 
-unoccupied port 5433.
+## Building And Testing Quarterdeck
+
+To make a build, including running tests, do:
+```
+./gradlew build
+```
+
+To run tests against our postgres database, Quarterdeck requires docker and docker-compose installed, as well an 
+unoccupied port `5433`.
+
+When running tests repeatedly on a development machine you can shave off some time by passing a property 
+to keep the postgres container alive between tests:
+
+```
+./gradlew test -DkeepPostgresContainer=true
+```
+
+or setting it via IntelliJ IDEA's run/debug config as a VM option:
+[![Setting the keep postgres container property with IntelliJ IDEA's run/debug config](https://fred.moe/rBL.png)] 
+
+Keep in mind that in that case you will have to manually shut down the container to get rid of it:
+
+```
+docker stop quarterdecktest_db_1
+docker rm quarterdecktest_db_1
+```
 
 
 ## Contributing

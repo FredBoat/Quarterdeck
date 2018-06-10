@@ -3,14 +3,12 @@ package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
-
 public class GuildPermissions {
 
     private final DiscordSnowflake guildId;
-    private final List<String> adminIds;
-    private final List<String> djIds;
-    private final List<String> userIds;
+    private final String adminIds;
+    private final String djIds;
+    private final String userIds;
 
     public static GuildPermissions of(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
         return new GuildPermissions(guildPermissions);
@@ -29,15 +27,15 @@ public class GuildPermissions {
         return guildId;
     }
 
-    public List<String> getAdminIds() {
+    public String getAdminIds() {
         return this.adminIds;
     }
 
-    public List<String> getDjIds() {
+    public String getDjIds() {
         return this.djIds;
     }
 
-    public List<String> getUserIds() {
+    public String getUserIds() {
         return this.userIds;
     }
 }

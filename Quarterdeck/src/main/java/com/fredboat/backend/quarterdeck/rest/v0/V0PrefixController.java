@@ -25,6 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildBotId;
 import com.fredboat.backend.quarterdeck.db.entities.main.Prefix;
 import com.fredboat.backend.quarterdeck.db.repositories.api.PrefixRepo;
@@ -47,15 +49,17 @@ import javax.annotation.Nullable;
 public class V0PrefixController {
 
     protected final PrefixRepo repo;
+    private final ObjectMapper mapper;
 
-    public V0PrefixController(PrefixRepo repo) {
+    public V0PrefixController(PrefixRepo repo, ObjectMapper mapper) {
         this.repo = repo;
+        this.mapper = mapper;
     }
 
     @Nullable
     @PostMapping("/getraw")
-    public String getPrefix(@RequestBody GuildBotId id) {
-        return this.repo.fetch(id).getPrefix();
+    public String getPrefix(@RequestBody GuildBotId id) throws JsonProcessingException {
+        return this.mapper.writeValueAsString(this.repo.fetch(id).getPrefix());
     }
 
     @PostMapping("/merge")

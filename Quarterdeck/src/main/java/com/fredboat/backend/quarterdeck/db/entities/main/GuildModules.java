@@ -25,10 +25,12 @@
 
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import fredboat.definitions.Module;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import space.npstr.sqlsauce.entities.SaucedEntity;
+import space.npstr.sqlsauce.fp.types.EntityKey;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -37,9 +39,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created by napster on 29.12.17.
@@ -61,6 +62,7 @@ import java.util.Objects;
  * round: Explicitly enabling/disabling a module tells us something about the preferences of our users. If we were to preset
  * these values, we would lose this information, and could not switch enabled/disabled modules by default reliably for existing guilds.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "guild_modules")
 @Cacheable
@@ -131,6 +133,10 @@ public class GuildModules extends SaucedEntity<Long, GuildModules> {
         return this;
     }
 
+    public static EntityKey<Long, GuildModules> key(long guildId) {
+        return EntityKey.of(guildId, GuildModules.class);
+    }
+
     @Override
     public Long getId() {
         return this.guildId;
@@ -162,7 +168,7 @@ public class GuildModules extends SaucedEntity<Long, GuildModules> {
     }
 
     @CheckReturnValue
-    private GuildModules setModule(Module module, @Nullable Boolean enabled) {
+    public GuildModules setModule(Module module, @Nullable Boolean enabled) {
         switch (module) {
             case ADMIN:
                 this.adminModule = enabled;
@@ -194,48 +200,123 @@ public class GuildModules extends SaucedEntity<Long, GuildModules> {
     /**
      * @return true if the provided module is enabled, false if not, or null if no preference has been set.
      */
-    @Nullable
-    public Boolean isModuleEnabled(Module module) {
+    public Optional<Boolean> isModuleEnabled(Module module) {
+        Boolean result;
         switch (module) {
             case ADMIN:
-                return this.adminModule;
+                result = this.adminModule;
+                break;
             case INFO:
-                return this.infoModule;
+                result = this.infoModule;
+                break;
             case CONFIG:
-                return this.configModule;
+                result = this.configModule;
+                break;
             case MUSIC:
-                return this.musicModule;
+                result = this.musicModule;
+                break;
             case MOD:
-                return this.modModule;
+                result = this.modModule;
+                break;
             case UTIL:
-                return this.utilModule;
+                result = this.utilModule;
+                break;
             case FUN:
-                return this.funModule;
+                result = this.funModule;
+                break;
             default:
                 throw new RuntimeException("Unknown Module " + module.name());
         }
+
+        return Optional.ofNullable(result);
     }
 
     /**
-     * @return true if the provided module is enabled, false if not. If no value has been specified, return the provide
+     * @return true if the provided module is enabled, false if not. If no value has been specified, return the provided
      * default value.
      */
     public boolean isModuleEnabled(Module module, boolean def) {
-        Boolean enabled = isModuleEnabled(module);
-        if (enabled != null) {
-            return enabled;
-        } else {
-            return def;
-        }
+        return isModuleEnabled(module).orElse(def);
     }
 
-    public List<Module> getEnabledModules() {
-        List<Module> enabledModules = new ArrayList<>();
-        for (Module module : Module.values()) {
-            if (isModuleEnabled(module, module.enabledByDefault)) {
-                enabledModules.add(module);
-            }
-        }
-        return enabledModules;
+    /**
+     * @return true if the provided module is enabled, false if not. If no value has been specified, return the default
+     * value of the module.
+     */
+    public boolean isModuleEnabledOrDefault(Module module) {
+        return isModuleEnabled(module).orElse(module.isEnabledByDefault());
+    }
+
+    //the boilerplate below is for v0 jackson
+
+    public long getGuildId() {
+        return this.guildId;
+    }
+
+    public void setGuildId(long guildId) {
+        this.guildId = guildId;
+    }
+
+    @Nullable
+    public Boolean getAdminModule() {
+        return this.adminModule;
+    }
+
+    public void setAdminModule(@Nullable Boolean adminModule) {
+        this.adminModule = adminModule;
+    }
+
+    @Nullable
+    public Boolean getInfoModule() {
+        return this.infoModule;
+    }
+
+    public void setInfoModule(@Nullable Boolean infoModule) {
+        this.infoModule = infoModule;
+    }
+
+    @Nullable
+    public Boolean getConfigModule() {
+        return this.configModule;
+    }
+
+    public void setConfigModule(@Nullable Boolean configModule) {
+        this.configModule = configModule;
+    }
+
+    @Nullable
+    public Boolean getMusicModule() {
+        return this.musicModule;
+    }
+
+    public void setMusicModule(@Nullable Boolean musicModule) {
+        this.musicModule = musicModule;
+    }
+
+    @Nullable
+    public Boolean getModModule() {
+        return this.modModule;
+    }
+
+    public void setModModule(@Nullable Boolean modModule) {
+        this.modModule = modModule;
+    }
+
+    @Nullable
+    public Boolean getUtilModule() {
+        return this.utilModule;
+    }
+
+    public void setUtilModule(@Nullable Boolean utilModule) {
+        this.utilModule = utilModule;
+    }
+
+    @Nullable
+    public Boolean getFunModule() {
+        return this.funModule;
+    }
+
+    public void setFunModule(@Nullable Boolean funModule) {
+        this.funModule = funModule;
     }
 }

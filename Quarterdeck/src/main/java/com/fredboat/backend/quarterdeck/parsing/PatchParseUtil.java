@@ -27,7 +27,9 @@ package com.fredboat.backend.quarterdeck.parsing;
 
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 
+import javax.annotation.CheckReturnValue;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by napster on 28.03.18.
@@ -37,9 +39,10 @@ public class PatchParseUtil {
     /**
      * @return the DiscordSnowflake parsed from the provided map of attributes and provided key
      *
-     * @throws DiscordSnowflakeParseException
+     * @throws ParseException
      *         If we were not able to parse the input into a {@link DiscordSnowflake}.
      */
+    @CheckReturnValue
     public static DiscordSnowflake parseDiscordSnowflake(String key, Map<String, Object> attributes) {
         Object value = attributes.get(key);
         if (value instanceof Long) { // be lenient
@@ -58,9 +61,10 @@ public class PatchParseUtil {
     /**
      * @return the integer parsed from the provided map of attributes and provided key
      *
-     * @throws NumberParseException
+     * @throws ParseException
      *         If we were not able to parse the input into an integer.
      */
+    @CheckReturnValue
     public static int parseInt(String key, Map<String, Object> attributes) {
         Object value = attributes.get(key);
         if (value instanceof Integer) {
@@ -82,9 +86,10 @@ public class PatchParseUtil {
     /**
      * @return the long parsed from the provided map of attributes and provided key
      *
-     * @throws NumberParseException
+     * @throws ParseException
      *         If we were not able to parse the input into a long.
      */
+    @CheckReturnValue
     public static long parseLong(String key, Map<String, Object> attributes) {
         Object value = attributes.get(key);
         if (value instanceof Long) {
@@ -106,18 +111,41 @@ public class PatchParseUtil {
     /**
      * @return the boolean parsed from the provided map of attributes and provided key
      *
-     * @throws ParseCastException
+     * @throws ParseException
      *         If anything went wrong.
      */
+    @CheckReturnValue
     public static boolean parseBoolean(String key, Map<String, Object> attributes) throws ParseCastException {
         return cast(key, attributes, Boolean.class);
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * @return The nonnull value behind the provided key casted to the provided class.
+     *
+     * @throws ParseException
+     *         If the cast went wrong, or the value is null. Use {@link PatchParseUtil#castNullable(String, Map, Class)}
+     *         if you want to allow nullable values.
+     */
+    @CheckReturnValue
     public static <T> T cast(String key, Map<String, Object> attributes, Class<T> clazz) {
+        return castNullable(key, attributes, clazz).orElseThrow(
+                () -> new ParseCastNullException(key, clazz)
+        );
+    }
+
+    /**
+     * @return The value behind the provided key casted to the provided class. May return an empty optional if the input
+     * value found behind hte provided key in the provided map of attributes was null.
+     *
+     * @throws ParseException
+     *         If the cast went wrong.
+     */
+    @SuppressWarnings("unchecked")
+    @CheckReturnValue
+    public static <T> Optional<T> castNullable(String key, Map<String, Object> attributes, Class<T> clazz) {
         Object value = attributes.get(key);
         try {
-            return (T) value;
+            return Optional.ofNullable((T) value);
         } catch (Exception e) {
             throw new ParseCastException(key, value, clazz, e);
         }

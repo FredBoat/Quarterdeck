@@ -39,7 +39,6 @@ import java.util.Map;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -62,8 +61,7 @@ public class GuildDataControllerTest extends BaseTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
-                .andExpect(jsonPath("$.helloSent", isA(String.class)))
-                .andDo(document("guild/data/get"));
+                .andExpect(jsonPath("$.helloSent", isA(String.class)));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -75,15 +73,14 @@ public class GuildDataControllerTest extends BaseTest {
 
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
-                .content(this.gson.toJson(patchGuildData))
+                .content(this.mapper.writeValueAsString(patchGuildData))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
-                .andExpect(jsonPath("$.helloSent", both(isA(String.class)).and(is(Long.toString(now)))))
-                .andDo(document("guild/data/patch"));
+                .andExpect(jsonPath("$.helloSent", both(isA(String.class)).and(is(Long.toString(now)))));
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -98,7 +95,7 @@ public class GuildDataControllerTest extends BaseTest {
         long now = System.currentTimeMillis();
         patchGuildData.put("helloSent", now);
         MockHttpServletRequestBuilder patch = patch(urlTemplate, guildId)
-                .content(this.gson.toJson(patchGuildData))
+                .content(this.mapper.writeValueAsString(patchGuildData))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));
@@ -107,8 +104,7 @@ public class GuildDataControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));
 
         this.mockMvc.perform(delete(urlTemplate, guildId))
-                .andExpect(status().isOk())
-                .andDo(document("guild/data/delete"));
+                .andExpect(status().isOk());
 
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(GuildData.DEFAULT_HELLO_SENT_TIMESTAMP))));

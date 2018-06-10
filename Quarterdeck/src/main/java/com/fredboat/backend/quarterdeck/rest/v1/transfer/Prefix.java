@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Set;
@@ -41,13 +42,18 @@ public class Prefix {
     private final Set<String> prefixes;
 
     public static Prefix of(com.fredboat.backend.quarterdeck.db.entities.main.Prefix prefix) {
-        return new Prefix(prefix);
+        return new Prefix(
+                new DiscordSnowflake(prefix.getId().getGuildId()),
+                new DiscordSnowflake(prefix.getId().getBotId()),
+                prefix.getPrefixes()
+        );
     }
 
-    private Prefix(com.fredboat.backend.quarterdeck.db.entities.main.Prefix prefix) {
-        this.guildId = new DiscordSnowflake(prefix.getId().getGuildId());
-        this.botId = new DiscordSnowflake(prefix.getId().getBotId());
-        this.prefixes = prefix.getPrefixes();
+    private Prefix(@JsonProperty("guildId") DiscordSnowflake guildId, @JsonProperty("botId") DiscordSnowflake botId,
+                   @JsonProperty("prefixes") Set<String> prefixes) {
+        this.guildId = guildId;
+        this.botId = botId;
+        this.prefixes = prefixes;
     }
 
     // the getters are picked up by springfox for the documentation

@@ -27,6 +27,9 @@ package com.fredboat.backend.quarterdeck.rest.v0;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPermsRepo;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +40,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/" + EntityController.VERSION_PATH + "guildperms/")
 public class GuildPermsController extends EntityController<String, GuildPermissions> {
 
+    private final GuildPermsRepo guildPermsRepo;
+
     public GuildPermsController(GuildPermsRepo repo) {
         super(repo);
+        this.guildPermsRepo = repo;
+    }
+
+    @Override
+    @PostMapping("/fetch")
+    public GuildPermissions fetch(@RequestBody String id) {
+        String sanitizedId = id.replaceAll("\"", ""); //jackson plz
+        return this.guildPermsRepo.get(sanitizedId).orElse(new GuildPermissions(sanitizedId));
+    }
+
+    @Override
+    @PostMapping("/delete")
+    public void delete(@RequestBody String id) {
+        String sanitizedId = id.replaceAll("\"", ""); //jackson plz
+        super.delete(new DiscordSnowflake(sanitizedId).getSnowflakeId());
     }
 }

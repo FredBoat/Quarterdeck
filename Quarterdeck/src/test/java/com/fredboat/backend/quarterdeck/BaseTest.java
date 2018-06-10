@@ -25,15 +25,13 @@
 
 package com.fredboat.backend.quarterdeck;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
-import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,7 +41,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 /**
@@ -52,7 +49,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ExtendWith({
         LogExceptionExtension.class,
         PostgresDockerExtension.class,
-        RestDocumentationExtension.class,
         SpringExtension.class,
 })
 @SpringBootTest
@@ -68,13 +64,11 @@ public class BaseTest {
 
     @SuppressWarnings("NullableProblems")
     @Autowired
-    protected Gson gson;
+    protected ObjectMapper mapper;
 
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext,
-                      RestDocumentationContextProvider restDocumentation) {
+    public void setUp(WebApplicationContext webApplicationContext) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .apply(documentationConfiguration(restDocumentation))
                 .alwaysDo(print()) //prints the response, great for debugging broken tests
                 .build();
     }

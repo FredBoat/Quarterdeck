@@ -54,7 +54,7 @@ public class EnumTypesTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         for (RepeatMode repeatMode : RepeatMode.values()) {
             patch.put("repeatMode", repeatMode);
-            this.mockMvc.perform(request.content(this.gson.toJson(patch)))
+            this.mockMvc.perform(request.content(this.mapper.writeValueAsString(patch)))
                     .andExpect(jsonPath("$.repeatMode", is(equalToIgnoringCase(repeatMode.name()))));
         }
     }
@@ -66,7 +66,7 @@ public class EnumTypesTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         for (Language language : Language.values()) {
             patch.put("language", language);
-            this.mockMvc.perform(request.content(this.gson.toJson(patch)))
+            this.mockMvc.perform(request.content(this.mapper.writeValueAsString(patch)))
                     .andExpect(jsonPath("$.language", is(equalToIgnoringCase(language.name()))));
         }
     }

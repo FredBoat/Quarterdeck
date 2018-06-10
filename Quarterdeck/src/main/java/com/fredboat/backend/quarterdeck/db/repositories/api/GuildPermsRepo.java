@@ -29,6 +29,8 @@ import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
 import com.fredboat.backend.quarterdeck.exceptions.PermissionNotSupportedException;
 import fredboat.definitions.PermissionLevel;
 
+import java.util.Optional;
+
 /**
  * Created by napster on 05.02.18.
  */
@@ -52,4 +54,6 @@ public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
      * @throws PermissionNotSupportedException If passed a permission level not supported by this function.
      */
     GuildPermissions put(String id, PermissionLevel permissionLevel) throws PermissionNotSupportedException;
+
+    Optional<GuildPermissions> get(String id);
 }
