@@ -27,18 +27,18 @@ package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class GuildPermissions {
+public class GuildPermission {
 
     private final DiscordSnowflake guildId;
     private final String adminIds;
     private final String djIds;
     private final String userIds;
 
-    public static GuildPermissions of(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
-        return new GuildPermissions(guildPermissions);
+    public static GuildPermission of(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
+        return new GuildPermission(guildPermissions);
     }
 
-    private GuildPermissions(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
+    private GuildPermission(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
         this.guildId = new DiscordSnowflake(guildPermissions.getId());
         this.adminIds = guildPermissions.getAdminList();
         this.djIds = guildPermissions.getDjList();

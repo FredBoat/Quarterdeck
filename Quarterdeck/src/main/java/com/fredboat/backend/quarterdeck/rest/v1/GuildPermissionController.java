@@ -52,27 +52,27 @@ public class GuildPermissionController {
                     value = "Discord snowflake")
     })
     @GetMapping
-    public GuildPermissions getPermissions(@PathVariable("guild_id") DiscordSnowflake guildId) {
-        return GuildPermissions.of(this.guildPermsRepo.fetch(guildId.getSnowflakeId()));
+    public GuildPermission getPermissions(@PathVariable("guild_id") DiscordSnowflake guildId) {
+        return GuildPermission.of(this.guildPermsRepo.fetch(guildId.getSnowflakeId()));
     }
 
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "guild_id", dataTypeClass = DiscordSnowflake.class, example = "174820236481134592",
                     required = true, paramType = "path", type = "string", format = "Discord snowflake",
                     value = "Discord snowflake"),
-            @ApiImplicitParam(name = "permission_level", dataTypeClass = GuildPermissionLevels.class, example = "dj",
+            @ApiImplicitParam(name = "permission_level", dataTypeClass = GuildPermissionLevel.class, example = "dj",
                     required = true, paramType = "path", type = "enum", format = "Discord snowflake"),
             @ApiImplicitParam(name = "id", dataTypeClass = DiscordSnowflake.class, example = "174820236481134599",
                     required = true, paramType = "path", type = "string", format = "Discord snowflake",
                     value = "Discord snowflake"),
     })
     @PutMapping("{permission_level}/{id}")
-    public ResponseEntity<GuildPermissions> putPermission(@PathVariable("guild_id") DiscordSnowflake guildId,
-                                                          @PathVariable("permission_level") GuildPermissionLevels level,
-                                                          @PathVariable("id") DiscordSnowflake id) {
+    public ResponseEntity<GuildPermission> putPermission(@PathVariable("guild_id") DiscordSnowflake guildId,
+                                                         @PathVariable("permission_level") GuildPermissionLevel level,
+                                                         @PathVariable("id") DiscordSnowflake id) {
         try {
-            ResponseEntity<GuildPermissions> result = new ResponseEntity<>(
-                    GuildPermissions.of(this.guildPermsRepo.put(guildId.getSnowflakeId(),
+            ResponseEntity<GuildPermission> result = new ResponseEntity<>(
+                    GuildPermission.of(this.guildPermsRepo.put(guildId.getSnowflakeId(),
                             GuildPermissionsUtil.transferPermissionResolve(level), id.getSnowflakeId())), HttpStatus.OK);
 
             return result;
@@ -85,18 +85,18 @@ public class GuildPermissionController {
             @ApiImplicitParam(name = "guild_id", dataTypeClass = DiscordSnowflake.class, example = "174820236481134592",
                     required = true, paramType = "path", type = "string", format = "Discord snowflake",
                     value = "Discord snowflake"),
-            @ApiImplicitParam(name = "permission_level", dataTypeClass = GuildPermissionLevels.class, example = "dj",
+            @ApiImplicitParam(name = "permission_level", dataTypeClass = GuildPermissionLevel.class, example = "dj",
                     required = true, paramType = "path", type = "enum", format = "Discord snowflake"),
             @ApiImplicitParam(name = "id", dataTypeClass = DiscordSnowflake.class, example = "174820236481134599",
                     required = true, paramType = "path", type = "string", format = "Discord snowflake")
     })
     @DeleteMapping("{permission_level}/{id}")
-    public ResponseEntity<GuildPermissions> deleteGuildPermission(@PathVariable("guild_id") DiscordSnowflake guildId,
-                                                                  @PathVariable("permission_level") GuildPermissionLevels level,
-                                                                  @PathVariable("id") DiscordSnowflake id) {
+    public ResponseEntity<GuildPermission> deleteGuildPermission(@PathVariable("guild_id") DiscordSnowflake guildId,
+                                                                 @PathVariable("permission_level") GuildPermissionLevel level,
+                                                                 @PathVariable("id") DiscordSnowflake id) {
         try {
-            ResponseEntity<GuildPermissions> result = new ResponseEntity<>(
-                    GuildPermissions.of(this.guildPermsRepo.delete(guildId.getSnowflakeId(),
+            ResponseEntity<GuildPermission> result = new ResponseEntity<>(
+                    GuildPermission.of(this.guildPermsRepo.delete(guildId.getSnowflakeId(),
                             GuildPermissionsUtil.transferPermissionResolve(level), id.getSnowflakeId())), HttpStatus.OK);
             return result;
         } catch (PermissionNotSupportedException e) {
@@ -106,6 +106,6 @@ public class GuildPermissionController {
 
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
-        dataBinder.registerCustomEditor(GuildPermissionLevels.class, new GuildPermissionLevelsEnumConverter());
+        dataBinder.registerCustomEditor(GuildPermissionLevel.class, new GuildPermissionLevelsEnumConverter());
     }
 }

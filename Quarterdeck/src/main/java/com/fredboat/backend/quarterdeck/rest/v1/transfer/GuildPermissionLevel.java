@@ -27,11 +27,11 @@ package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
 import java.util.Arrays;
 
-public enum GuildPermissionLevels {
+public enum GuildPermissionLevel {
     ADMIN, DJ, USER;
 
-    public static GuildPermissionLevels parse(String value) {
-        for (GuildPermissionLevels level : GuildPermissionLevels.values()) {
+    public static GuildPermissionLevel parse(String value) {
+        for (GuildPermissionLevel level : GuildPermissionLevel.values()) {
             if (level.name().equalsIgnoreCase(value)) {
                 return level;
             }

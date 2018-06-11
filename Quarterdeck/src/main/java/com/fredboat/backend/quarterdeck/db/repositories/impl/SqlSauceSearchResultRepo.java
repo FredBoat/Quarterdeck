@@ -91,7 +91,7 @@ public class SqlSauceSearchResultRepo extends SqlSauceRepo<SearchResultId, Searc
     public Optional<SearchResult> find(SearchResultId id, long maxAgeMillis) {
         //language=JPAQL
         String query = "SELECT sr FROM SearchResult sr WHERE sr.id = :id AND sr.lookedUp > :oldest";
-        var params = DbUtils.paramsOf(
+        Map<String, Object> params = DbUtils.paramsOf(
                 "id", id,
                 "oldest", maxAgeMillis < 0 ? 0 : System.currentTimeMillis() - maxAgeMillis
         );

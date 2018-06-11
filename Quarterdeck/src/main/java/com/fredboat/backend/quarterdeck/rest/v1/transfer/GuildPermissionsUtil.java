@@ -35,7 +35,7 @@ public class GuildPermissionsUtil {
      * @param guildPermissionLevel Guild permission transfer object.
      * @return PermissionLevel object if match or null if unmatched.
      */
-    public static PermissionLevel transferPermissionResolve(GuildPermissionLevels guildPermissionLevel) {
+    public static PermissionLevel transferPermissionResolve(GuildPermissionLevel guildPermissionLevel) {
         switch (guildPermissionLevel) {
             case DJ:
                 return PermissionLevel.DJ;

@@ -35,7 +35,7 @@ public class GuildPermissionLevelsEnumConverter extends PropertyEditorSupport {
     public void setAsText(String text) throws IllegalArgumentException {
 
         String upperCase = text.toUpperCase();
-        GuildPermissionLevels levels = GuildPermissionLevels.valueOf(upperCase);
+        GuildPermissionLevel levels = GuildPermissionLevel.valueOf(upperCase);
         setValue(levels);
     }
 }
