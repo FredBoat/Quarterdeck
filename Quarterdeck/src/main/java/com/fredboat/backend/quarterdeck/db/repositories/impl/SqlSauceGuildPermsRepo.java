@@ -27,8 +27,7 @@ package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPermsRepo;
-import com.fredboat.backend.quarterdeck.exceptions.PermissionNotSupportedException;
-import fredboat.definitions.PermissionLevel;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
 
@@ -51,17 +50,17 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
      * {@inheritDoc}
      */
     @Override
-    public GuildPermissions delete(String guildId, PermissionLevel permissionLevel, String id) throws PermissionNotSupportedException {
+    public GuildPermissions delete(String guildId, GuildPermissionLevel guildPermissionLevel, String id) {
         GuildPermissions guildPermissions = super.fetch(guildId);
         Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
-        List<String> permissionList = this.resolvePermissionList(guildPermissions, permissionLevel);
+        List<String> permissionList = this.resolvePermissionList(guildPermissions, guildPermissionLevel);
 
         boolean isSuccessful = permissionList.removeIf(listId -> listId.equals(id));
         if (isSuccessful) {
             if (permissionList.isEmpty()) {
                 permissionList.add(""); // Cannot be empty list..
             }
-            update = update.andThen(guildPerm -> guildPerm.setFromEnum(permissionLevel, permissionList));
+            update = update.andThen(guildPerm -> guildPerm.setFromEnum(guildPermissionLevel, permissionList));
         } else {
             return guildPermissions;
         }
@@ -73,15 +72,15 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
      * {@inheritDoc}
      */
     @Override
-    public GuildPermissions put(String guildId, PermissionLevel permissionLevel, String id) throws PermissionNotSupportedException {
+    public GuildPermissions put(String guildId, GuildPermissionLevel guildPermissionLevel, String id) {
 
         GuildPermissions guildPermissions = super.fetch(guildId);
         Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
-        List<String> permissionList = this.resolvePermissionList(guildPermissions, permissionLevel);
+        List<String> permissionList = this.resolvePermissionList(guildPermissions, guildPermissionLevel);
 
         if (!permissionList.contains(id)) {
             permissionList.add(id);
-            update = update.andThen(guildPerm -> guildPerm.setFromEnum(permissionLevel, permissionList));
+            update = update.andThen(guildPerm -> guildPerm.setFromEnum(guildPermissionLevel, permissionList));
         } else {
             return guildPermissions;
         }
@@ -103,13 +102,11 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
      * Resolve permissions list based on level.
      *
      * @param guildPermissions Permission object.
-     * @param permissionLevel  Permission level.
+     * @param guildPermissionLevel  Permission level.
      * @return List of guild ids with permission according to the level.
-     * @throws PermissionNotSupportedException If passed a level not yet supported.
      */
-    private List<String> resolvePermissionList(GuildPermissions guildPermissions, PermissionLevel permissionLevel)
-            throws PermissionNotSupportedException {
-        switch (permissionLevel) {
+    private List<String> resolvePermissionList(GuildPermissions guildPermissions, GuildPermissionLevel guildPermissionLevel) {
+        switch (guildPermissionLevel) {
             case DJ:
                 return guildPermissions.splitDjList();
 
@@ -120,7 +117,7 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
                 return guildPermissions.splitAdminList();
 
             default:
-                throw new PermissionNotSupportedException("Permission not supported.");
+                throw new IllegalArgumentException("Permission not supported.");
         }
     }
 }

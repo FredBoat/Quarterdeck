@@ -26,7 +26,6 @@
 package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPermsRepo;
-import com.fredboat.backend.quarterdeck.exceptions.PermissionNotSupportedException;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.*;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -68,17 +67,13 @@ public class GuildPermissionController {
     })
     @PutMapping("{permission_level}/{id}")
     public ResponseEntity<GuildPermission> putPermission(@PathVariable("guild_id") DiscordSnowflake guildId,
-                                                         @PathVariable("permission_level") GuildPermissionLevel level,
+                                                         @PathVariable("permission_level") GuildPermissionLevel guildPermissionLevel,
                                                          @PathVariable("id") DiscordSnowflake id) {
-        try {
-            ResponseEntity<GuildPermission> result = new ResponseEntity<>(
-                    GuildPermission.of(this.guildPermsRepo.put(guildId.getSnowflakeId(),
-                            GuildPermissionsUtil.transferPermissionResolve(level), id.getSnowflakeId())), HttpStatus.OK);
+        ResponseEntity<GuildPermission> result = new ResponseEntity<>(
+                GuildPermission.of(this.guildPermsRepo.put(guildId.getSnowflakeId(),
+                        guildPermissionLevel, id.getSnowflakeId())), HttpStatus.OK);
 
-            return result;
-        } catch (PermissionNotSupportedException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return result;
     }
 
     @ApiImplicitParams(value = {
@@ -92,16 +87,12 @@ public class GuildPermissionController {
     })
     @DeleteMapping("{permission_level}/{id}")
     public ResponseEntity<GuildPermission> deleteGuildPermission(@PathVariable("guild_id") DiscordSnowflake guildId,
-                                                                 @PathVariable("permission_level") GuildPermissionLevel level,
+                                                                 @PathVariable("permission_level") GuildPermissionLevel guildPermissionLevel,
                                                                  @PathVariable("id") DiscordSnowflake id) {
-        try {
-            ResponseEntity<GuildPermission> result = new ResponseEntity<>(
-                    GuildPermission.of(this.guildPermsRepo.delete(guildId.getSnowflakeId(),
-                            GuildPermissionsUtil.transferPermissionResolve(level), id.getSnowflakeId())), HttpStatus.OK);
-            return result;
-        } catch (PermissionNotSupportedException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        ResponseEntity<GuildPermission> result = new ResponseEntity<>(
+                GuildPermission.of(this.guildPermsRepo.delete(guildId.getSnowflakeId(),
+                        guildPermissionLevel, id.getSnowflakeId())), HttpStatus.OK);
+        return result;
     }
 
     @InitBinder

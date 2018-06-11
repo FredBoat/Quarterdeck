@@ -39,5 +39,4 @@ public enum GuildPermissionLevel {
         throw new IllegalArgumentException(
                 "Unknown enum type " + value + ", Allowed values are " + Arrays.toString(values()));
     }
-
 }

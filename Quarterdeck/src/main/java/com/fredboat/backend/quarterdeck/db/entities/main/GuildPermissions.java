@@ -26,7 +26,7 @@
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
-import fredboat.definitions.PermissionLevel;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import space.npstr.sqlsauce.entities.SaucedEntity;
@@ -132,7 +132,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         return this;
     }
 
-    public List<String> getFromEnum(PermissionLevel level) {
+    public List<String> getFromEnum(GuildPermissionLevel level) {
         switch (level) {
             case ADMIN:
                 return splitAdminList();
@@ -145,7 +145,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         }
     }
 
-    public GuildPermissions setFromEnum(PermissionLevel level, List<String> list) {
+    public GuildPermissions setFromEnum(GuildPermissionLevel level, List<String> list) {
         switch (level) {
             case ADMIN:
                 return setAdminList(list);

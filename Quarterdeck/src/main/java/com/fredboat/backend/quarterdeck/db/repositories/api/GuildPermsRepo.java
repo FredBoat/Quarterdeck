@@ -26,8 +26,7 @@
 package com.fredboat.backend.quarterdeck.db.repositories.api;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
-import com.fredboat.backend.quarterdeck.exceptions.PermissionNotSupportedException;
-import fredboat.definitions.PermissionLevel;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 
 import java.util.Optional;
 
@@ -38,24 +37,22 @@ public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
     /**
      * Delete permission based on id.
      *
-     * @param guildId         Guild id.
-     * @param permissionLevel Permission level to delete from.
-     * @param id              User or role id..
+     * @param guildId              Guild id.
+     * @param guildPermissionLevel Permission level to delete from.
+     * @param id                   User or role id..
      * @return Updated guild permission.
-     * @throws PermissionNotSupportedException If passed a permission level not supported by this function.
      */
-    GuildPermissions delete(String guildId, PermissionLevel permissionLevel, String id) throws PermissionNotSupportedException;
+    GuildPermissions delete(String guildId, GuildPermissionLevel guildPermissionLevel, String id);
 
     /***
      * Update permission based on id and permission level
      *
-     * @param guildId         Guild id.
-     * @param permissionLevel Permission level to update.
-     * @param id              User or role id.
+     * @param guildId              Guild id.
+     * @param guildPermissionLevel Permission level to update.
+     * @param id                   User or role id.
      * @return Updated guild permission.
-     * @throws PermissionNotSupportedException If passed a permission level not supported by this function.
      */
-    GuildPermissions put(String guildId, PermissionLevel permissionLevel, String id) throws PermissionNotSupportedException;
+    GuildPermissions put(String guildId, GuildPermissionLevel guildPermissionLevel, String id);
 
     Optional<GuildPermissions> get(String id);
 }
