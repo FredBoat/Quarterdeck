@@ -33,6 +33,8 @@ import java.util.List;
 
 /**
  * Created by napster on 04.04.18.
+ *
+ * @see com.fredboat.backend.quarterdeck.rest.v1.transfer (package-info.java)
  */
 public class CommandModules {
 

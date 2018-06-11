@@ -23,28 +23,24 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.db.migrations.cache;
-
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
-
-import java.sql.Connection;
-import java.sql.Statement;
+package com.fredboat.backend.quarterdeck.parsing;
 
 /**
- * Created by napster on 17.04.18.
+ * Created by napster on 22.05.18.
  */
-public class V4__UsePosixCollation implements JdbcMigration {
+public class NotBase64StringException extends ParseException {
 
-    //language=PostgreSQL
-    private static final String ALTER_COLLATION
-            = "ALTER TABLE public.track_search_results ALTER search_term TYPE text COLLATE pg_catalog.\"POSIX\";";
+    private final String key;
+    private final String value;
 
+    public NotBase64StringException(String key, String value) {
+        super();
+        this.key = key;
+        this.value = value;
+    }
 
     @Override
-    public void migrate(Connection connection) throws Exception {
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(ALTER_COLLATION);
-        }
+    public String getMessage() {
+        return "Your provided value '" + this.value + "' for key '" + this.key + "' is not a base 64 string.";
     }
 }

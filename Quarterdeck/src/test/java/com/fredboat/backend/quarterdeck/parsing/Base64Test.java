@@ -23,28 +23,35 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.db.migrations.cache;
+package com.fredboat.backend.quarterdeck.parsing;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import com.fredboat.backend.quarterdeck.BaseTest;
+import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.Statement;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Created by napster on 17.04.18.
+ * Created by napster on 22.05.18.
  */
-public class V4__UsePosixCollation implements JdbcMigration {
+public class Base64Test extends BaseTest {
 
-    //language=PostgreSQL
-    private static final String ALTER_COLLATION
-            = "ALTER TABLE public.track_search_results ALTER search_term TYPE text COLLATE pg_catalog.\"POSIX\";";
+    @Test
+    public void test() {
+        var attributes = new HashMap<String, Object>();
+        byte[] content = new byte[4096];
+        ThreadLocalRandom.current().nextBytes(content);
+        attributes.put("base64", new String(Base64.getEncoder().encode(content)));
+        attributes.put("notBase64", "this string is not base64 🙃");
 
+        String base64 = PatchParseUtil.parseBase64String("base64", attributes);
+        assertArrayEquals(content, Base64.getDecoder().decode(base64), "Parsing base64 modified the content");
 
-    @Override
-    public void migrate(Connection connection) throws Exception {
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(ALTER_COLLATION);
-        }
+        //noinspection ResultOfMethodCallIgnored
+        assertThrows(NotBase64StringException.class, () -> PatchParseUtil.parseBase64String("notBase64", attributes));
     }
 }

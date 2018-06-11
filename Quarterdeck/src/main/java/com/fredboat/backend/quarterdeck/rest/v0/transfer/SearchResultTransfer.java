@@ -29,6 +29,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResultId;
 import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
 import fredboat.definitions.SearchProvider;
 
@@ -52,7 +53,7 @@ public class SearchResultTransfer {
 
     public TrackSearchResult toEntity() {
         return new TrackSearchResult()
-                .setId(new TrackSearchResult.SearchResultId(SearchProvider.valueOf(this.searchResultId.provider), this.searchResultId.searchTerm))
+                .setId(new SearchResultId(SearchProvider.valueOf(this.searchResultId.provider), this.searchResultId.searchTerm))
                 .setLookedUp(this.timestamp)
                 .setSerializedResult(this.serializedSearchResult);
     }

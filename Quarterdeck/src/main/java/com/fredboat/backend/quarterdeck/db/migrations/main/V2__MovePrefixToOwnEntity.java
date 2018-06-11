@@ -35,8 +35,11 @@ import java.sql.Statement;
  */
 public class V2__MovePrefixToOwnEntity implements JdbcMigration {
 
-    private static final String DROP = "DROP TABLE IF EXISTS public.prefixes";
+    //language=PostgreSQL
+    private static final String DROP
+            = "DROP TABLE IF EXISTS public.prefixes";
 
+    //language=PostgreSQL
     private static final String CREATE
             = "CREATE TABLE public.prefixes "
             + "( "
@@ -46,11 +49,13 @@ public class V2__MovePrefixToOwnEntity implements JdbcMigration {
             + "    CONSTRAINT prefixes_pkey PRIMARY KEY (guild_id, bot_id) "
             + ");";
 
+    //language=PostgreSQL
     private static final String SELECT
             = "SELECT guild_config.guildid, guild_config.prefix "
             + "FROM guild_config "
             + "WHERE guild_config.prefix IS NOT NULL";
 
+    //language=PostgreSQL
     private static final String INSERT
             = "INSERT INTO prefixes(guild_id, bot_id, prefix) VALUES(?, ?, ?)";
 

@@ -29,6 +29,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Created by napster on 01.04.18.
+ *
+ * @see com.fredboat.backend.quarterdeck.rest.v1.transfer (package-info.java)
  */
 public class DiscordSnowflake {
 

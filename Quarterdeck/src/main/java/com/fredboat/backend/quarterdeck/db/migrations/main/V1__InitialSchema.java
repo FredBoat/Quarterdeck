@@ -42,12 +42,14 @@ public class V1__InitialSchema implements JdbcMigration {
 
         //UConfig
         //drop UConfig if exists; it was never used anyways, and can be readded later if we actually use it
+        //language=PostgreSQL
         String dropUConfigSql = "DROP TABLE IF EXISTS public.user_config;";
         try (Statement dropUConfig = connection.createStatement()) {
             dropUConfig.execute(dropUConfigSql);
         }
 
         //BlacklistEntry
+        //language=PostgreSQL
         String createBlacklistSql
                 = "CREATE TABLE IF NOT EXISTS public.blacklist "
                 + "( "
@@ -63,6 +65,7 @@ public class V1__InitialSchema implements JdbcMigration {
         }
 
         //GuildConfig
+        //language=PostgreSQL
         String createGuildConfigSql
                 = "CREATE TABLE IF NOT EXISTS public.guild_config "
                 + "( "
@@ -78,6 +81,7 @@ public class V1__InitialSchema implements JdbcMigration {
         }
 
         //GuildPermissions
+        //language=PostgreSQL
         String createGuildPermissionsSql
                 = "CREATE TABLE IF NOT EXISTS public.guild_permissions "
                 + "( "
@@ -92,6 +96,7 @@ public class V1__InitialSchema implements JdbcMigration {
         }
 
         //HStorex (from sqlsauce, requires hstore extension to be enabled)
+        //language=PostgreSQL
         String createHstorexSql
                 = "CREATE TABLE IF NOT EXISTS public.hstorex "
                 + "( "

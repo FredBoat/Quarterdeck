@@ -36,11 +36,13 @@ import java.sql.Statement;
  */
 public class V5__CreateGuildPlayer implements JdbcMigration {
 
+    //language=PostgreSQL
     private static final String DROP_TYPE_REPEAT_MODE
             = "DROP TYPE IF EXISTS RepeatMode;";
     /**
      * See {@link RepeatMode} for the Java enum of this
      */
+    //language=PostgreSQL
     private static final String CREATE_TYPE_REPEAT_MODE
             = "CREATE TYPE RepeatMode AS ENUM "
             + "( "
@@ -49,9 +51,11 @@ public class V5__CreateGuildPlayer implements JdbcMigration {
             + "    'ALL' "
             + ");";
 
+    //language=PostgreSQL
     private static final String DROP_TABLE_GUILD_PLAYERS
             = "DROP TABLE IF EXISTS public.guild_players;";
 
+    //language=PostgreSQL
     private static final String CREATE_TABLE_GUILD_PLAYERS
             = "CREATE TABLE public.guild_players "
             + "( "

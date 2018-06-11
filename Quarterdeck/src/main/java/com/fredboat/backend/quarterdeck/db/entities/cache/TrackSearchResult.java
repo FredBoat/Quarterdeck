@@ -28,31 +28,28 @@ package com.fredboat.backend.quarterdeck.db.entities.cache;
 import fredboat.definitions.SearchProvider;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 import space.npstr.sqlsauce.entities.SaucedEntity;
 import space.npstr.sqlsauce.fp.types.EntityKey;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * Created by napster on 27.08.17.
  * <p>
  * Caches a search result
+ *
+ * @deprecated Bug fixes only please. Move over to using {@link SearchResult} asap.
  */
 @Entity
 @Table(name = "track_search_results")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "track_search_results")
-public class TrackSearchResult extends SaucedEntity<TrackSearchResult.SearchResultId, TrackSearchResult> {
+@Deprecated
+public class TrackSearchResult extends SaucedEntity<SearchResultId, TrackSearchResult> {
 
     @SuppressWarnings("NullableProblems") //populated by the orm
     @EmbeddedId
@@ -89,18 +86,8 @@ public class TrackSearchResult extends SaucedEntity<TrackSearchResult.SearchResu
         return this.searchResultId.getProvider();
     }
 
-    public TrackSearchResult setProvider(SearchProvider provider) {
-        this.searchResultId.provider = provider;
-        return this;
-    }
-
     public String getSearchTerm() {
-        return this.searchResultId.searchTerm;
-    }
-
-    public TrackSearchResult setSearchTerm(String searchTerm) {
-        this.searchResultId.searchTerm = searchTerm;
-        return this;
+        return this.searchResultId.getSearchTerm();
     }
 
     public byte[] getSerializedResult() {
@@ -121,65 +108,4 @@ public class TrackSearchResult extends SaucedEntity<TrackSearchResult.SearchResu
         return this;
     }
 
-    /**
-     * Composite primary key for SearchResults
-     */
-    @Embeddable
-    public static class SearchResultId implements Serializable {
-
-        private static final long serialVersionUID = 8969973651938173208L;
-
-        @SuppressWarnings("NullableProblems") //populated by the orm
-        @Enumerated(EnumType.STRING)
-        @Type(type = "pgsql_enum")
-        @Column(name = "provider", nullable = false)
-        private SearchProvider provider;
-
-        @SuppressWarnings("NullableProblems") //populated by the orm
-        @Column(name = "search_term", nullable = false, columnDefinition = "text")
-        private String searchTerm;
-
-        //for jpa / db wrapper
-        SearchResultId() {
-        }
-
-        public SearchResultId(SearchProvider provider, String searchTerm) {
-            this.provider = provider;
-            this.searchTerm = searchTerm;
-        }
-
-        public SearchProvider getProvider() {
-            return this.provider;
-        }
-
-        public void setProvider(SearchProvider provider) {
-            this.provider = provider;
-        }
-
-        public String getSearchTerm() {
-            return this.searchTerm;
-        }
-
-        public void setSearchTerm(String searchTerm) {
-            this.searchTerm = searchTerm;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(this.provider, this.searchTerm);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof SearchResultId)) return false;
-            SearchResultId other = (SearchResultId) o;
-            return this.provider.equals(other.provider) && this.searchTerm.equals(other.searchTerm);
-        }
-
-        @Override
-        public String toString() {
-            return "Search: Provider " + this.provider + " Search term " + this.searchTerm;
-        }
-    }
 }

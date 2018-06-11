@@ -31,38 +31,33 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 /**
- * Created by napster on 23.12.17.
+ * Created by napster on 18.05.18.
  */
-public class V1__InitialSchema implements JdbcMigration {
+public class V5__ImplementV1ApiSearchResult implements JdbcMigration {
+
+    //language=PostgreSQL
+    private static final String DROP
+            = "DROP TABLE IF EXISTS public.search_results;";
+
+    //language=PostgreSQL
+    private static final String CREATE
+            = "CREATE TABLE public.search_results "
+            + "( "
+            + "    provider         SearchProvider NOT NULL, "
+            + "    search_term      TEXT COLLATE pg_catalog.\"POSIX\" NOT NULL, "
+            + "    looked_up        BIGINT NOT NULL, "
+            + "    track            TEXT COLLATE pg_catalog.\"POSIX\" NOT NULL, "
+            + "    CONSTRAINT search_results_pkey PRIMARY KEY (provider, search_term) "
+            + ");";
+
+
     @Override
     public void migrate(Connection connection) throws Exception {
-
-        //SearchResult
-        //language=PostgreSQL
-        String createSearchResultsSql
-                = "CREATE TABLE IF NOT EXISTS public.search_results "
-                + "( "
-                + "    provider      CHARACTER VARYING(255) COLLATE pg_catalog.\"default\" NOT NULL, "
-                + "    search_term   TEXT COLLATE pg_catalog.\"default\" NOT NULL, "
-                + "    search_result OID, "
-                + "    \"timestamp\" BIGINT, "
-                + "    CONSTRAINT search_results_pkey PRIMARY KEY (provider, search_term) "
-                + ");";
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(createSearchResultsSql);
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(DROP);
         }
-
-        //HStorex (from sqlsauce, requires hstore extension to be enabled)
-        //language=PostgreSQL
-        String createHstorexSql
-                = "CREATE TABLE IF NOT EXISTS public.hstorex "
-                + "( "
-                + "    name    TEXT COLLATE pg_catalog.\"default\" NOT NULL, "
-                + "    hstorex HSTORE, "
-                + "    CONSTRAINT hstorex_pkey PRIMARY KEY (name) "
-                + ")";
-        try (Statement createHstorex = connection.createStatement()) {
-            createHstorex.execute(createHstorexSql);
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(CREATE);
         }
     }
 }

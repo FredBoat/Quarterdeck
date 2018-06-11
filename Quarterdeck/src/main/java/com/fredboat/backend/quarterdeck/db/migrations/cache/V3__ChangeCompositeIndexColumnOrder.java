@@ -36,9 +36,11 @@ import java.sql.Statement;
 public class V3__ChangeCompositeIndexColumnOrder implements JdbcMigration {
 
     //this is not the actual old table, just a precaution
+    //language=PostgreSQL
     private static final String DROP_TABLE_SEARCH_RESULTS
             = "DROP TABLE IF EXISTS public.search_results;";
 
+    //language=PostgreSQL
     private static final String CREATE_TABLE_SEARCH_RESULTS
             = "CREATE TABLE public.search_results "
             + "( "

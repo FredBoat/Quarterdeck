@@ -27,45 +27,68 @@ package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fredboat.backend.quarterdeck.ratelimit.BlacklistService;
+import fredboat.definitions.SearchProvider;
 
 /**
- * Created by napster on 09.04.18.
- * <p>
- * Answers a request
+ * Created by napster on 20.05.18.
  *
  * @see com.fredboat.backend.quarterdeck.rest.v1.transfer (package-info.java)
  */
-public class BlacklistEntry {
+public class SearchResult {
 
-    private final DiscordSnowflake snowflakeId;
-    private final int level;
-    private final long blacklistedUntil;
+    @SuppressWarnings("NullableProblems") //populated by constructor / jackson
+    private SearchProvider provider;
+    private String searchTerm = "";
+    private long lookedUp;
+    private String track = "";
 
-    private BlacklistEntry(DiscordSnowflake snowflakeId, int level, long blacklistedUntil) {
-        this.snowflakeId = snowflakeId;
-        this.level = level;
-        this.blacklistedUntil = blacklistedUntil;
+    public static SearchResult of(com.fredboat.backend.quarterdeck.db.entities.cache.SearchResult entity) {
+        return new SearchResult(entity.getId().getProvider(),
+                entity.getId().getSearchTerm(),
+                entity.getLookedUp(),
+                entity.getTrack());
     }
 
-    public static BlacklistEntry of(com.fredboat.backend.quarterdeck.db.entities.main.BlacklistEntry entry) {
-        return new BlacklistEntry(new DiscordSnowflake(entry.getId()), entry.getLevel(),
-                entry.getBlacklistedTimestamp() + BlacklistService.getBlacklistTimeLength(entry.getLevel()));
+    public SearchResult(SearchProvider provider, String searchTerm, long lookedUp, String track) {
+        this.provider = provider;
+        this.searchTerm = searchTerm;
+        this.lookedUp = lookedUp;
+        this.track = track;
     }
 
-    public DiscordSnowflake getSnowflakeId() {
-        return this.snowflakeId;
+    private SearchResult() {
     }
 
-    public int getLevel() {
-        return this.level;
+    public SearchProvider getProvider() {
+        return this.provider;
     }
 
-    /**
-     * @return epoch millis
-     */
+    public void setProvider(SearchProvider provider) {
+        this.provider = provider;
+    }
+
+    public String getSearchTerm() {
+        return this.searchTerm;
+    }
+
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
+    }
+
     @JsonSerialize(using = ToStringSerializer.class)
-    public long getBlacklistedUntil() {
-        return this.blacklistedUntil;
+    public long getLookedUp() {
+        return this.lookedUp;
+    }
+
+    public void setLookedUp(long lookedUp) {
+        this.lookedUp = lookedUp;
+    }
+
+    public String getTrack() {
+        return this.track;
+    }
+
+    public void setTrack(String track) {
+        this.track = track;
     }
 }

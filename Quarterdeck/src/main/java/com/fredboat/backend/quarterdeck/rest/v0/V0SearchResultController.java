@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.rest.v0;
 
+import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResultId;
 import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
 import com.fredboat.backend.quarterdeck.db.repositories.api.SearchResultRepo;
 import com.fredboat.backend.quarterdeck.rest.v0.transfer.SearchResultTransfer;
@@ -54,13 +55,13 @@ public class V0SearchResultController {
 
     @Nullable
     @PostMapping("/getmaxaged")
-    public SearchResultTransfer getMaxAged(@RequestBody TrackSearchResult.SearchResultId id, @RequestParam("millis") long maxAgeMillis) {
+    public SearchResultTransfer getMaxAged(@RequestBody SearchResultId id, @RequestParam("millis") long maxAgeMillis) {
         TrackSearchResult result = this.repo.getMaxAged(id, maxAgeMillis);
         return result == null ? null : SearchResultTransfer.of(result);
     }
 
     @PostMapping("/merge")
     public SearchResultTransfer merge(@RequestBody SearchResultTransfer transfer) {
-        return SearchResultTransfer.of(this.repo.merge(transfer.toEntity()));
+        return SearchResultTransfer.of(this.repo.mergeLegacy(transfer.toEntity()));
     }
 }
