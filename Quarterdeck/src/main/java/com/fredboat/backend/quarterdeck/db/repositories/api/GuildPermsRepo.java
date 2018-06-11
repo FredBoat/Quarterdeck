@@ -40,7 +40,7 @@ public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
      *
      * @param guildId         Guild id.
      * @param permissionLevel Permission level to delete from.
-     * @param id              Id of the user.
+     * @param id              User or role id..
      * @return Updated guild permission.
      * @throws PermissionNotSupportedException If passed a permission level not supported by this function.
      */
@@ -51,7 +51,7 @@ public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
      *
      * @param guildId         Guild id.
      * @param permissionLevel Permission level to update.
-     * @param id              Id of the user.
+     * @param id              User or role id.
      * @return Updated guild permission.
      * @throws PermissionNotSupportedException If passed a permission level not supported by this function.
      */
