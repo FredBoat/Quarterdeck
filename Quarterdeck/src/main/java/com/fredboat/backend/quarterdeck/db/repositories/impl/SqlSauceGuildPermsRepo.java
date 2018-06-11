@@ -52,18 +52,10 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
     @Override
     public GuildPermissions delete(String guildId, GuildPermissionLevel guildPermissionLevel, String id) {
         GuildPermissions guildPermissions = super.fetch(guildId);
-        Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
-        List<String> permissionList = this.resolvePermissionList(guildPermissions, guildPermissionLevel);
 
-        boolean isSuccessful = permissionList.removeIf(listId -> listId.equals(id));
-        if (isSuccessful) {
-            if (permissionList.isEmpty()) {
-                permissionList.add(""); // Cannot be empty list..
-            }
-            update = update.andThen(guildPerm -> guildPerm.setFromEnum(guildPermissionLevel, permissionList));
-        } else {
-            return guildPermissions;
-        }
+        Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
+        List<String> permissionList = guildPermissions.removePermission(id, guildPermissionLevel);
+        update = update.andThen(guildPerm -> guildPerm.setFromEnum(guildPermissionLevel, permissionList));
 
         return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(guildId), update);
     }
@@ -75,49 +67,21 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
     public GuildPermissions put(String guildId, GuildPermissionLevel guildPermissionLevel, String id) {
 
         GuildPermissions guildPermissions = super.fetch(guildId);
-        Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
-        List<String> permissionList = this.resolvePermissionList(guildPermissions, guildPermissionLevel);
 
-        if (!permissionList.contains(id)) {
-            permissionList.add(id);
-            update = update.andThen(guildPerm -> guildPerm.setFromEnum(guildPermissionLevel, permissionList));
-        } else {
-            return guildPermissions;
-        }
+        Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
+        List<String> permissionList = guildPermissions.addPermission(id, guildPermissionLevel);
+        update = update.andThen(guildPerm -> guildPerm.setFromEnum(guildPermissionLevel, permissionList));
 
         return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(guildId), update);
     }
 
     @Override
-    public GuildPermissions patch(String id, Map<String, Object> partialUpdate) {
-        return super.patch(id, partialUpdate);
+    public GuildPermissions patch(String guildId, Map<String, Object> partialUpdate) {
+        return super.patch(guildId, partialUpdate);
     }
 
     @Override
-    public Optional<GuildPermissions> get(String id) {
-        return Optional.ofNullable(this.dbWrapper.getEntity(GuildPermissions.key(id)));
-    }
-
-    /**
-     * Resolve permissions list based on level.
-     *
-     * @param guildPermissions Permission object.
-     * @param guildPermissionLevel  Permission level.
-     * @return List of guild ids with permission according to the level.
-     */
-    private List<String> resolvePermissionList(GuildPermissions guildPermissions, GuildPermissionLevel guildPermissionLevel) {
-        switch (guildPermissionLevel) {
-            case DJ:
-                return guildPermissions.splitDjList();
-
-            case USER:
-                return guildPermissions.splitUserList();
-
-            case ADMIN:
-                return guildPermissions.splitAdminList();
-
-            default:
-                throw new IllegalArgumentException("Permission not supported.");
-        }
+    public Optional<GuildPermissions> get(String guildId) {
+        return Optional.ofNullable(this.dbWrapper.getEntity(GuildPermissions.key(guildId)));
     }
 }

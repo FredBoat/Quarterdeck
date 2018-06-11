@@ -54,5 +54,5 @@ public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
      */
     GuildPermissions put(String guildId, GuildPermissionLevel guildPermissionLevel, String id);
 
-    Optional<GuildPermissions> get(String id);
+    Optional<GuildPermissions> get(String guildId);
 }

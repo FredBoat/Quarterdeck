@@ -26,6 +26,7 @@
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermission;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -37,9 +38,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @Table(name = "guild_permissions")
@@ -91,7 +94,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
     }
 
     public List<String> splitAdminList() {
-        return new ArrayList<String>(Arrays.asList(this.adminList.split(" ")));
+        return Arrays.asList(this.adminList.split(" "));
     }
 
     public GuildPermissions setAdminList(List<String> list) {
@@ -105,7 +108,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
     }
 
     public List<String> splitDjList() {
-        return new ArrayList<String>(Arrays.asList(this.djList.split(" ")));
+        return Arrays.asList(this.djList.split(" "));
     }
 
     public GuildPermissions setDjList(List<String> list) {
@@ -119,7 +122,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
     }
 
     public List<String> splitUserList() {
-        return new ArrayList<String>(Arrays.asList(this.userList.split(" ")));
+        return Arrays.asList(this.userList.split(" "));
     }
 
     public GuildPermissions setUserList(List<String> list) {
@@ -158,6 +161,20 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         }
     }
 
+    public List<String> addPermission(String id, GuildPermissionLevel level) {
+        List<String> list = getPermissionListFromEnum(level);
+
+        if (!list.contains(id)) {
+            list.add(id);
+        }
+        return list;
+    }
+
+    public List<String> removePermission(String id, GuildPermissionLevel level) {
+        List<String> list = getPermissionListFromEnum(level);
+
+        return Stream.of(list).flatMap(List::stream).filter(listId -> !listId.equals(id)).collect(Collectors.toList());
+    }
     //the boilerplate below is for v0 jackson
 
 
@@ -183,5 +200,21 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
 
     public void setUserList(String userList) {
         this.userList = userList;
+    }
+
+    private List<String> getPermissionListFromEnum(GuildPermissionLevel level) {
+        switch (level) {
+            case ADMIN:
+                return Arrays.stream(adminList.split(" ")).collect(Collectors.toList());
+
+            case DJ:
+                return Arrays.stream(djList.split(" ")).collect(Collectors.toList());
+
+            case USER:
+                return Arrays.stream(userList.split(" ")).collect(Collectors.toList());
+
+            default:
+                throw new IllegalArgumentException("Unexpected enum " + level);
+        }
     }
 }
