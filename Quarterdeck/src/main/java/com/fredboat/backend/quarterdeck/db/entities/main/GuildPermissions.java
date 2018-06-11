@@ -47,22 +47,18 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "guild_permissions")
 public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
 
-    public static final String ADMIN_LIST_COLUMN = "list_admin";
-    public static final String DJ_LIST_COLUMN = "list_dj";
-    public static final String USER_LIST_COLUMN = "list_user";
-
     // Guild ID
     @Id
     @Column(name = "id")
     private String id;
 
-    @Column(name = ADMIN_LIST_COLUMN, nullable = false, columnDefinition = "text")
+    @Column(name = "list_admin", nullable = false, columnDefinition = "text")
     private String adminList = "";
 
-    @Column(name = DJ_LIST_COLUMN, nullable = false, columnDefinition = "text")
+    @Column(name = "list_dj", nullable = false, columnDefinition = "text")
     private String djList = "";
 
-    @Column(name = USER_LIST_COLUMN, nullable = false, columnDefinition = "text")
+    @Column(name = "list_user", nullable = false, columnDefinition = "text")
     private String userList = "";
 
     //for jpa / db wrapper
