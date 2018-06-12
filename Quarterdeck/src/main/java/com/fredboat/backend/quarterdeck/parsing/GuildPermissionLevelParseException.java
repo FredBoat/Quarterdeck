@@ -23,19 +23,28 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v1.transfer;
+package com.fredboat.backend.quarterdeck.parsing;
 
-import java.util.Optional;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 
-public enum GuildPermissionLevel {
-    ADMIN, DJ, USER;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
-    public static Optional<GuildPermissionLevel> parse(String value) {
-        for (GuildPermissionLevel level : GuildPermissionLevel.values()) {
-            if (level.name().equalsIgnoreCase(value)) {
-                return Optional.of(level);
-            }
-        }
-        return Optional.empty();
+public class GuildPermissionLevelParseException extends ParseException {
+
+    private static final String KNOWN_PERMISSIONS = String.join(", ", Arrays.stream(GuildPermissionLevel.values())
+            .map(Enum::name)
+            .collect(Collectors.toList()));
+
+    private final String unknown;
+
+    public GuildPermissionLevelParseException(String unknown) {
+        super();
+        this.unknown = unknown;
+    }
+
+    @Override
+    public String getMessage() {
+        return this.unknown + " is not a recognized permission. Known permissions are: " + KNOWN_PERMISSIONS;
     }
 }

@@ -26,6 +26,7 @@
 package com.fredboat.backend.quarterdeck.rest.v1;
 
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPermsRepo;
+import com.fredboat.backend.quarterdeck.parsing.GuildPermissionLevelParseException;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.*;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,6 +34,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/" + EntityController.VERSION_PATH
@@ -60,20 +63,22 @@ public class GuildPermissionController {
                     required = true, paramType = "path", type = "string", format = "Discord snowflake",
                     value = "Discord snowflake"),
             @ApiImplicitParam(name = "permission_level", dataTypeClass = GuildPermissionLevel.class, example = "dj",
-                    required = true, paramType = "path", type = "enum", format = "Discord snowflake"),
+                    required = true, paramType = "path", type = "string", format = "Discord snowflake"),
             @ApiImplicitParam(name = "id", dataTypeClass = DiscordSnowflake.class, example = "174820236481134599",
                     required = true, paramType = "path", type = "string", format = "Discord snowflake",
                     value = "Discord snowflake"),
     })
     @PutMapping("{permission_level}/{id}")
     public ResponseEntity<GuildPermission> putPermission(@PathVariable("guild_id") DiscordSnowflake guildId,
-                                                         @PathVariable("permission_level") GuildPermissionLevel guildPermissionLevel,
+                                                         @PathVariable("permission_level") String guildPermissionLevel,
                                                          @PathVariable("id") DiscordSnowflake id) {
-        ResponseEntity<GuildPermission> result = new ResponseEntity<>(
-                GuildPermission.of(this.guildPermsRepo.put(guildId.getSnowflakeId(),
-                        guildPermissionLevel, id.getSnowflakeId())), HttpStatus.OK);
-
-        return result;
+        Optional<GuildPermissionLevel> parse = GuildPermissionLevel.parse(guildPermissionLevel);
+        if (parse.isPresent()) {
+            return new ResponseEntity<>(
+                    GuildPermission.of(this.guildPermsRepo.put(guildId.getSnowflakeId(),
+                            parse.get(), id.getSnowflakeId())), HttpStatus.OK);
+        }
+        throw new GuildPermissionLevelParseException(guildPermissionLevel);
     }
 
     @ApiImplicitParams(value = {
@@ -81,18 +86,22 @@ public class GuildPermissionController {
                     required = true, paramType = "path", type = "string", format = "Discord snowflake",
                     value = "Discord snowflake"),
             @ApiImplicitParam(name = "permission_level", dataTypeClass = GuildPermissionLevel.class, example = "dj",
-                    required = true, paramType = "path", type = "enum", format = "Discord snowflake"),
+                    required = true, paramType = "path", type = "string", format = "Discord snowflake"),
             @ApiImplicitParam(name = "id", dataTypeClass = DiscordSnowflake.class, example = "174820236481134599",
                     required = true, paramType = "path", type = "string", format = "Discord snowflake")
     })
     @DeleteMapping("{permission_level}/{id}")
     public ResponseEntity<GuildPermission> deleteGuildPermission(@PathVariable("guild_id") DiscordSnowflake guildId,
-                                                                 @PathVariable("permission_level") GuildPermissionLevel guildPermissionLevel,
+                                                                 @PathVariable("permission_level") String guildPermissionLevel,
                                                                  @PathVariable("id") DiscordSnowflake id) {
-        ResponseEntity<GuildPermission> result = new ResponseEntity<>(
-                GuildPermission.of(this.guildPermsRepo.delete(guildId.getSnowflakeId(),
-                        guildPermissionLevel, id.getSnowflakeId())), HttpStatus.OK);
-        return result;
+
+        Optional<GuildPermissionLevel> parse = GuildPermissionLevel.parse(guildPermissionLevel);
+        if (parse.isPresent()) {
+            return new ResponseEntity<>(
+                    GuildPermission.of(this.guildPermsRepo.delete(guildId.getSnowflakeId(),
+                            parse.get(), id.getSnowflakeId())), HttpStatus.OK);
+        }
+        throw new GuildPermissionLevelParseException(guildPermissionLevel);
     }
 
     @InitBinder
