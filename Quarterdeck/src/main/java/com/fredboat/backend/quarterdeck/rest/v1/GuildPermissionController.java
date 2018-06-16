@@ -104,8 +104,8 @@ public class GuildPermissionController {
         throw new GuildPermissionLevelParseException(guildPermissionLevel);
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder dataBinder) {
-        dataBinder.registerCustomEditor(GuildPermissionLevel.class, new GuildPermissionLevelsEnumConverter());
+        GuildPermissionLevel permissionLevel = PatchParseUtil.parsePermissionLevel(guildPermissionLevel);
+        return GuildPermission.of(this.guildPermsRepo.delete(guildId.getSnowflakeId(), permissionLevel,
+                id.getSnowflakeId()));
     }
 }
