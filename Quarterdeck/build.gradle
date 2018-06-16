@@ -70,6 +70,14 @@ test {
     }
 }
 
+sonarqube {
+    properties {
+        property 'sonar.host.url', System.getenv('SONAR_HOST_URL')
+        property 'sonar.organization', System.getenv('SONAR_ORGANIZATION')
+        property 'sonar.login', System.getenv('SONAR_LOGIN')
+    }
+}
+
 dependencies {
     //actually just the Shared module, jitpack falls back to top level project naming if there is only 1 artifact
     compile group: 'com.github.Frederikam', name: 'FredBoat', version: fredBoatRootVersion
