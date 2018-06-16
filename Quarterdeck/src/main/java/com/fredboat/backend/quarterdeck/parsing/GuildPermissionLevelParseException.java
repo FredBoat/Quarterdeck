@@ -45,6 +45,6 @@ public class GuildPermissionLevelParseException extends ParseException {
 
     @Override
     public String getMessage() {
-        return this.unknown + " is not a recognized permission. Known permissions are: " + KNOWN_PERMISSIONS;
+        return this.unknown + " is not a recognized guild permission level. Known guild permission levels are: " + KNOWN_PERMISSIONS;
     }
 }

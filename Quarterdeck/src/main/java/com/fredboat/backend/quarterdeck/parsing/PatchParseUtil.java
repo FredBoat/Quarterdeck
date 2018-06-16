@@ -26,6 +26,7 @@
 package com.fredboat.backend.quarterdeck.parsing;
 
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 
 import javax.annotation.CheckReturnValue;
 import java.util.Map;
@@ -148,6 +149,20 @@ public class PatchParseUtil {
     @CheckReturnValue
     public static String parseString(String key, Map<String, Object> attributes) throws ParseCastException {
         return cast(key, attributes, String.class);
+    }
+
+    /**
+     * @return the GuildPermissionLevel object parsed from the provided string.
+     *
+     * @throws GuildPermissionLevelParseException if unable to parse guild permission level.
+     */
+    @CheckReturnValue
+    public static GuildPermissionLevel parsePermissionLevel(String guildPermissionLevel) {
+        Optional<GuildPermissionLevel> parse = GuildPermissionLevel.parse(guildPermissionLevel);
+        if (parse.isPresent()) {
+            return parse.get();
+        }
+        throw new GuildPermissionLevelParseException(guildPermissionLevel);
     }
 
     /**
