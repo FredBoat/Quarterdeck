@@ -31,8 +31,6 @@ import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
 
-import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.Optional;
 
@@ -51,11 +49,8 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
      */
     @Override
     public GuildPermissions delete(String guildId, GuildPermissionLevel guildPermissionLevel, String id) {
-        GuildPermissions guildPermissions = super.fetch(guildId);
-
         Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
-        List<String> permissionList = guildPermissions.removePermission(id, guildPermissionLevel);
-        update = update.andThen(guildPerm -> guildPerm.setFromEnum(guildPermissionLevel, permissionList));
+        update = update.andThen(guildPerm -> guildPerm.removeIdFromLevel(id, guildPermissionLevel));
 
         return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(guildId), update);
     }
@@ -65,19 +60,10 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
      */
     @Override
     public GuildPermissions put(String guildId, GuildPermissionLevel guildPermissionLevel, String id) {
-
-        GuildPermissions guildPermissions = super.fetch(guildId);
-
         Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
-        List<String> permissionList = guildPermissions.addPermission(id, guildPermissionLevel);
-        update = update.andThen(guildPerm -> guildPerm.setFromEnum(guildPermissionLevel, permissionList));
+        update = update.andThen(guildPerm -> guildPerm.addIdToLevel(id, guildPermissionLevel));
 
         return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(guildId), update);
-    }
-
-    @Override
-    public GuildPermissions patch(String guildId, Map<String, Object> partialUpdate) {
-        return super.patch(guildId, partialUpdate);
     }
 
     @Override

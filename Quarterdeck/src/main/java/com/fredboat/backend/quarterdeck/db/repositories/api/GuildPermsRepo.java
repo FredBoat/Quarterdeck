@@ -35,22 +35,22 @@ import java.util.Optional;
  */
 public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
     /**
-     * Delete permission based on id.
+     * Remove an id from guild permission based on specified level and guild id.
      *
      * @param guildId              Guild id.
      * @param guildPermissionLevel Permission level to delete from.
      * @param id                   User or role id..
-     * @return Updated guild permission.
+     * @return Updated guild permission with id removed from specified level.
      */
     GuildPermissions delete(String guildId, GuildPermissionLevel guildPermissionLevel, String id);
 
     /***
-     * Update permission based on id and permission level
+     * Add an id to guild permission based on specified level and guild id.
      *
      * @param guildId              Guild id.
      * @param guildPermissionLevel Permission level to update.
      * @param id                   User or role id.
-     * @return Updated guild permission.
+     * @return Updated guild permission with id added to specified level.
      */
     GuildPermissions put(String guildId, GuildPermissionLevel guildPermissionLevel, String id);
 

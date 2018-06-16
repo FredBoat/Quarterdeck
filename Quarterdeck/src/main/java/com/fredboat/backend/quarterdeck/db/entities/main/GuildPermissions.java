@@ -161,19 +161,25 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         }
     }
 
-    public List<String> addPermission(String id, GuildPermissionLevel level) {
+    public GuildPermissions addIdToLevel(String id, GuildPermissionLevel level) {
         List<String> list = getPermissionListFromEnum(level);
 
         if (!list.contains(id)) {
             list.add(id);
         }
-        return list;
+        this.setFromEnum(level, list);
+        return this;
     }
 
-    public List<String> removePermission(String id, GuildPermissionLevel level) {
-        List<String> list = getPermissionListFromEnum(level);
+    public GuildPermissions removeIdFromLevel(String id, GuildPermissionLevel level) {
+        List<String> permissions = getPermissionListFromEnum(level);
+        List<String> ids = Stream.of(permissions)
+                .flatMap(List::stream)
+                .filter(listId -> !listId.equals(id))
+                .collect(Collectors.toList());
+        this.setFromEnum(level, ids);
 
-        return Stream.of(list).flatMap(List::stream).filter(listId -> !listId.equals(id)).collect(Collectors.toList());
+        return this;
     }
     //the boilerplate below is for v0 jackson
 
