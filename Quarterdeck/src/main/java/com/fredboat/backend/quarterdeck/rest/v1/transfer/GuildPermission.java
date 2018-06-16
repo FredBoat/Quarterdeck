@@ -27,12 +27,17 @@ package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class GuildPermission {
 
     private final DiscordSnowflake guildId;
-    private final String adminIds;
-    private final String djIds;
-    private final String userIds;
+    private final List<DiscordSnowflake> adminIds;
+    private final List<DiscordSnowflake> djIds;
+    private final List<DiscordSnowflake> userIds;
 
     public static GuildPermission of(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
         return new GuildPermission(guildPermissions);
@@ -40,9 +45,9 @@ public class GuildPermission {
 
     private GuildPermission(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
         this.guildId = new DiscordSnowflake(guildPermissions.getId());
-        this.adminIds = guildPermissions.getAdminList();
-        this.djIds = guildPermissions.getDjList();
-        this.userIds = guildPermissions.getUserList();
+        this.adminIds = this.parseIds(guildPermissions.splitAdminList());
+        this.djIds = this.parseIds(guildPermissions.splitDjList());
+        this.userIds = this.parseIds(guildPermissions.splitDjList());
     }
 
     // the getters are picked up by springfox for the documentation
@@ -51,15 +56,40 @@ public class GuildPermission {
         return guildId;
     }
 
-    public String getAdminIds() {
+    public List<DiscordSnowflake> getAdminIds() {
         return this.adminIds;
     }
 
-    public String getDjIds() {
+    public List<DiscordSnowflake> getDjIds() {
         return this.djIds;
     }
 
-    public String getUserIds() {
+    public List<DiscordSnowflake> getUserIds() {
         return this.userIds;
+    }
+
+    /**
+     * Parse list of string into discord snowflake list.
+     *
+     * @param ids List of ids to be parsed.
+     * @return List of discord snowflake.
+     */
+    private List<DiscordSnowflake> parseIds(List<String> ids) {
+        List<DiscordSnowflake> idList = new LinkedList<>();
+        Stream<String> stream = ids.stream();
+        stream.forEach(id -> {
+            if (id == null || id.length() == 0) {
+                return;
+            }
+
+            try {
+                DiscordSnowflake discordSnowflake = new DiscordSnowflake(id);
+                idList.add(discordSnowflake);
+            } catch (NumberFormatException e) {
+                // ignored
+            }
+        });
+
+        return idList;
     }
 }
