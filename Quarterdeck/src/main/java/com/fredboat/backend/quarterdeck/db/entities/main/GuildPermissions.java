@@ -26,7 +26,6 @@
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
-import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermission;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -39,7 +38,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

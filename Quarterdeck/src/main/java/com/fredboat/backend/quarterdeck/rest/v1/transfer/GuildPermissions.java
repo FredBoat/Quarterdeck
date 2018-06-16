@@ -29,21 +29,20 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GuildPermission {
+public class GuildPermissions {
 
     private final DiscordSnowflake guildId;
     private final List<DiscordSnowflake> adminIds;
     private final List<DiscordSnowflake> djIds;
     private final List<DiscordSnowflake> userIds;
 
-    public static GuildPermission of(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
-        return new GuildPermission(guildPermissions);
+    public static GuildPermissions of(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
+        return new GuildPermissions(guildPermissions);
     }
 
-    private GuildPermission(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
+    private GuildPermissions(com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions guildPermissions) {
         this.guildId = new DiscordSnowflake(guildPermissions.getId());
         this.adminIds = this.parseIds(guildPermissions.splitAdminList());
         this.djIds = this.parseIds(guildPermissions.splitDjList());

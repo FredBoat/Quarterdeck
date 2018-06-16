@@ -30,9 +30,9 @@ import java.util.Optional;
 public enum GuildPermissionLevel {
     ADMIN, DJ, USER;
 
-    public static Optional<GuildPermissionLevel> parse(String value) {
+    public static Optional<GuildPermissionLevel> parse(String input) {
         for (GuildPermissionLevel level : GuildPermissionLevel.values()) {
-            if (level.name().equalsIgnoreCase(value)) {
+            if (level.name().equalsIgnoreCase(input)) {
                 return Optional.of(level);
             }
         }
