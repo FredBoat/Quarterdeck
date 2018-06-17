@@ -164,5 +164,11 @@ public class Ratelimit {
         public int hashCode() {
             return Long.hashCode(this.id);
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            return (obj instanceof Bucket)
+                    && ((Bucket) obj).id == this.id;
+        }
     }
 }
