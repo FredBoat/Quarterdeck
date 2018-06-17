@@ -84,8 +84,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth, SecurityConfig securityConfig) throws Exception {
         InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuth = auth.inMemoryAuthentication();
         for (SecurityConfig.Admin admin : securityConfig.getAdmins()) {
+            if (admin.getName().isEmpty()) {
+                throw new InvalidConfigurationException("An admin has configured with an empty name.");
+            }
             if (admin.getPass().isEmpty()) {
-                throw new RuntimeException("Admin " + admin.getName() + " configured with empty pass.");
+                throw new InvalidConfigurationException("Admin " + admin.getName() + " configured with empty pass.");
             }
             //we are treating the pass as tokens right now so using the noop encoder is fine
             inMemoryAuth.withUser(admin.getName()).password("{noop}" + admin.getPass()).roles("ADMIN", "USER");

@@ -104,9 +104,9 @@ public class DatabaseConfiguration {
         try {
             return databaseManager.getCacheDbConn();
         } catch (Exception e) {
-            String message = "Exception when connecting to cache db";
+            String message = "Exception when connecting to cache db. Is it properly configured and running?";
             log.error(message, e);
-            throw new RuntimeException(message);
+            throw new InvalidConfigurationException(message);
         }
     }
 
