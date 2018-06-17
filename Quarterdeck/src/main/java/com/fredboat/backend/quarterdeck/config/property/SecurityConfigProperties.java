@@ -45,11 +45,11 @@ public class SecurityConfigProperties implements SecurityConfig {
         return this.admins;
     }
 
-    public void setAdmins(List<Admin> admins) {
+    public void setAdmins(List<MutableAdmin> admins) {
         this.admins = new ArrayList<>(admins);
     }
 
-    public static class Admin implements SecurityConfig.Admin {
+    private static class MutableAdmin implements SecurityConfig.Admin {
         private String name = "";
         private String pass = "";
 
