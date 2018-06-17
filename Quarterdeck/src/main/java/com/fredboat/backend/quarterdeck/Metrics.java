@@ -106,7 +106,7 @@ public class Metrics {
             .help("Api calls that we did not instrument") //meaning the regexes for instrumenting them need a fix. this number should be 0.
             .register();
 
-    public static Gauge searchResultCacheSize = Gauge.build()
+    public static final Gauge searchResultCacheSize = Gauge.build()
             .name("fredboat_quarterdeck_search_result_cache_size")
             .help("Size of the search result cache")
             .register();
