@@ -39,11 +39,11 @@ public class ParseCastNullException extends ParseException {
         this.expected = expected;
     }
 
-    private static final String messageTemplate = "Failed to cast the value for key %s: value is null but should be of class %s";
+    private static final String MESSAGE_TEMPLATE = "Failed to cast the value for key %s: value is null but should be of class %s";
 
     @Override
     public String getMessage() {
-        return String.format(messageTemplate,
+        return String.format(MESSAGE_TEMPLATE,
                 this.key, this.expected.getSimpleName());
     }
 }

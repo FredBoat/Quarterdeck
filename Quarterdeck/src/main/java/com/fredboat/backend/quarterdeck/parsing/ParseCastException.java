@@ -45,11 +45,11 @@ public class ParseCastException extends ParseException {
         this(key, value, expected, null);
     }
 
-    private static final String messageTemplate = "Failed to cast the value %s for key %s: class is %s but should be %s";
+    private static final String MESSAGE_TEMPLATE = "Failed to cast the value %s for key %s: class is %s but should be %s";
 
     @Override
     public String getMessage() {
-        return String.format(messageTemplate,
+        return String.format(MESSAGE_TEMPLATE,
                 this.value, this.key, this.value.getClass().getSimpleName(), this.expected.getSimpleName());
     }
 }
