@@ -135,7 +135,7 @@ public class PatchParseUtil {
      *         If anything went wrong.
      */
     @CheckReturnValue
-    public static boolean parseBoolean(String key, Map<String, Object> attributes) throws ParseCastException {
+    public static boolean parseBoolean(String key, Map<String, Object> attributes) {
         return cast(key, attributes, Boolean.class);
     }
 
@@ -146,7 +146,7 @@ public class PatchParseUtil {
      *         If anything went wrong.
      */
     @CheckReturnValue
-    public static String parseString(String key, Map<String, Object> attributes) throws ParseCastException {
+    public static String parseString(String key, Map<String, Object> attributes) {
         return cast(key, attributes, String.class);
     }
 

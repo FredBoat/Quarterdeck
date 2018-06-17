@@ -36,7 +36,6 @@ import org.flywaydb.core.api.MigrationVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import space.npstr.sqlsauce.DatabaseConnection;
-import space.npstr.sqlsauce.DatabaseException;
 import space.npstr.sqlsauce.DatabaseWrapper;
 
 import javax.annotation.Nullable;
@@ -178,7 +177,7 @@ public class DatabaseManager {
         return this.cacheConnBuilt;
     }
 
-    private DatabaseConnection initMainDbConn() throws DatabaseException {
+    private DatabaseConnection initMainDbConn() {
 
         Flyway flyway = null;
         if (this.migrateAndValidate) {
@@ -197,7 +196,7 @@ public class DatabaseManager {
     }
 
 
-    public DatabaseConnection initCacheConn(String jdbc) throws DatabaseException {
+    public DatabaseConnection initCacheConn(String jdbc) {
 
         Flyway flyway = null;
         if (this.migrateAndValidate) {
