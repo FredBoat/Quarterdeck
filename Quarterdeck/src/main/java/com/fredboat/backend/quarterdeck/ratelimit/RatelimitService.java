@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -62,7 +62,7 @@ public class RatelimitService {
         this.whitelist = Collections.unmodifiableSet(whitelistConfig.getWhitelist());
 
         //Create all the rate limiters we have defined
-        this.ratelimits = new HashMap<>();
+        this.ratelimits = new EnumMap<>(Rate.class);
         for (Rate rate : Rate.values()) {
             this.ratelimits.put(rate, new Ratelimit(rate, cacheMetrics));
         }
