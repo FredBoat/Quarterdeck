@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.db;
 
+import com.fredboat.backend.quarterdeck.config.property.DatabaseConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory;
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
@@ -35,74 +36,79 @@ import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseConnection;
-import space.npstr.sqlsauce.DatabaseWrapper;
+import space.npstr.sqlsauce.DatabaseException;
 
 import javax.annotation.Nullable;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-public class DatabaseManager {
+/**
+ *
+ */
+@Component
+public class Database {
 
-    private static final Logger log = LoggerFactory.getLogger(DatabaseManager.class);
+    private static final Logger log = LoggerFactory.getLogger(Database.class);
 
     private static final String MAIN_PERSISTENCE_UNIT_NAME = "fredboat.main";
     private static final String CACHE_PERSISTENCE_UNIT_NAME = "fredboat.cache";
 
-    @Nullable
+    private final DatabaseConfig dbConf;
     private final HibernateStatisticsCollector hibernateStats;
-    @Nullable
     private final PrometheusMetricsTrackerFactory hikariStats;
-    private final int poolsize;
-    private final String appName;
-    private final boolean migrateAndValidate;
-    private final String mainJdbc;
-    @Nullable
-    private final String cacheJdbc;
-    @Nullable
-    private final DatabaseConnection.EntityManagerFactoryBuilder entityManagerFactoryBuilder;
+
+    private final DatabaseConnection.EntityManagerFactoryBuilder entityManagerFactoryBuilder =
+            (puName, dataSource, properties, entityPackages) -> {
+                LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
+                emfb.setDataSource(dataSource);
+                emfb.setPackagesToScan(entityPackages.toArray(new String[0]));
+
+                JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+                emfb.setJpaVendorAdapter(vendorAdapter);
+                emfb.setJpaProperties(properties);
+
+                emfb.afterPropertiesSet(); //initiate creation of the native emf
+                return emfb.getNativeEntityManagerFactory();
+            };
 
     @Nullable
-    private DatabaseConnection mainDbConn;
+    private volatile DatabaseConnection mainDbConn;
     private final Object mainDbConnInitLock = new Object();
-    private boolean mainConnBuilt = false;
-    @Nullable
-    private volatile DatabaseWrapper mainDbWrapper;
-    private final Object mainDbWrapperInitLock = new Object();
 
     @Nullable
-    private DatabaseConnection cacheDbConn;
+    private volatile DatabaseConnection cacheDbConn;
     private final Object cacheDbConnInitLock = new Object();
-    private boolean cacheConnBuilt = false;
-    @Nullable
-    private volatile DatabaseWrapper cacheDbWrapper;
-    private final Object cacheDbWrapperInitLock = new Object();
 
-    public DatabaseManager(@Nullable HibernateStatisticsCollector hibernateStats,
-                           @Nullable PrometheusMetricsTrackerFactory hikariStats,
-                           int poolsize,
-                           String appName,
-                           boolean migrateAndValidate,
-                           String mainJdbc,
-                           @Nullable String cacheJdbc,
-                           @Nullable DatabaseConnection.EntityManagerFactoryBuilder entityManagerFactoryBuilder) {
+    public Database(DatabaseConfig dbConf, HibernateStatisticsCollector hibernateStats,
+                    PrometheusMetricsTrackerFactory hikariStats) {
+        this.dbConf = dbConf;
         this.hibernateStats = hibernateStats;
         this.hikariStats = hikariStats;
-        this.poolsize = poolsize;
-        this.appName = appName;
-        this.migrateAndValidate = migrateAndValidate;
-        this.mainJdbc = mainJdbc;
-        this.cacheJdbc = cacheJdbc;
-        this.entityManagerFactoryBuilder = entityManagerFactoryBuilder;
 
-        if (mainJdbc.isEmpty()) {
-            log.error("Main jdbc url is empty - database creation will fail");
-        }
-        if (cacheJdbc != null && cacheJdbc.isEmpty()) {
-            log.error("Cache jdbc url is empty - database creation will fail");
-        }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            final DatabaseConnection cache = this.cacheDbConn;
+            if (cache != null) {
+                cache.shutdown();
+            }
+            final DatabaseConnection main = this.mainDbConn;
+            if (main != null) {
+                main.shutdown();
+            }
+        }, "databasemanager-shutdown-hook"));
     }
 
+    /**
+     * @return the connection to the main db.
+     * If not connected yet, a connection will be attempted, which may take a long time (seconds).
+     *
+     * @throws DatabaseException
+     *         if anything went wrong
+     */
     public DatabaseConnection getMainDbConn() {
         DatabaseConnection singleton = this.mainDbConn;
         if (singleton == null) {
@@ -110,20 +116,6 @@ public class DatabaseManager {
                 singleton = this.mainDbConn;
                 if (singleton == null) {
                     this.mainDbConn = singleton = initMainDbConn();
-                    this.mainConnBuilt = true;
-                }
-            }
-        }
-        return singleton;
-    }
-
-    public DatabaseWrapper getMainDbWrapper() {
-        DatabaseWrapper singleton = this.mainDbWrapper;
-        if (singleton == null) {
-            synchronized (this.mainDbWrapperInitLock) {
-                singleton = this.mainDbWrapper;
-                if (singleton == null) {
-                    this.mainDbWrapper = singleton = new DatabaseWrapper(getMainDbConn());
                 }
             }
         }
@@ -131,9 +123,17 @@ public class DatabaseManager {
     }
 
 
-    @Nullable //may return null if no cache db is configured
+    /**
+     * @return the connection to the cache db. May be null if the cache db is not configured.
+     * If not connected yet, a connection will be attempted, which may take a long time (seconds).
+     *
+     * @throws DatabaseException
+     *         if anything went wrong
+     */
+    @Nullable
     public DatabaseConnection getCacheDbConn() {
-        if (this.cacheJdbc == null || this.cacheJdbc.isEmpty()) {
+        final String cacheJdbcUrl = this.dbConf.getCacheJdbcUrl();
+        if (cacheJdbcUrl == null || cacheJdbcUrl.isEmpty()) {
             return null;
         }
         DatabaseConnection singleton = this.cacheDbConn;
@@ -141,50 +141,22 @@ public class DatabaseManager {
             synchronized (this.cacheDbConnInitLock) {
                 singleton = this.cacheDbConn;
                 if (singleton == null) {
-                    this.cacheDbConn = singleton = initCacheConn(this.cacheJdbc);
-                    this.cacheConnBuilt = true;
+                    this.cacheDbConn = singleton = initCacheConn(cacheJdbcUrl);
                 }
             }
         }
         return singleton;
     }
 
-    @Nullable //may return null if no cache db is configured
-    public DatabaseWrapper getCacheDbWrapper() {
-        if (this.cacheJdbc == null) {
-            return null;
-        }
-        DatabaseWrapper singleton = this.cacheDbWrapper;
-        if (singleton == null) {
-            synchronized (this.cacheDbWrapperInitLock) {
-                singleton = this.cacheDbWrapper;
-                if (singleton == null) {
-                    DatabaseConnection cacheDbConnection = getCacheDbConn();
-                    if (cacheDbConnection != null) {
-                        this.cacheDbWrapper = singleton = new DatabaseWrapper(cacheDbConnection);
-                    }
-                }
-            }
-        }
-        return singleton;
-    }
-
-    public boolean isMainConnBuilt() {
-        return this.mainConnBuilt;
-    }
-
-    public boolean isCacheConnBuilt() {
-        return this.cacheConnBuilt;
-    }
-
+    /**
+     * @throws DatabaseException
+     *         if anything went wrong
+     */
     private DatabaseConnection initMainDbConn() {
 
-        Flyway flyway = null;
-        if (this.migrateAndValidate) {
-            flyway = buildFlyway("classpath:com/fredboat/backend/quarterdeck/db/migrations/main");
-        }
+        Flyway flyway = buildFlyway("classpath:com/fredboat/backend/quarterdeck/db/migrations/main");
 
-        DatabaseConnection databaseConnection = getBasicConnectionBuilder(MAIN_PERSISTENCE_UNIT_NAME, this.mainJdbc)
+        DatabaseConnection databaseConnection = getBasicConnectionBuilder(MAIN_PERSISTENCE_UNIT_NAME, this.dbConf.getMainJdbcUrl())
                 .setHibernateProps(buildHibernateProps("ehcache_main.xml"))
                 .addEntityPackage("com.fredboat.backend.quarterdeck.db.entities.main")
                 .setFlyway(flyway)
@@ -195,13 +167,13 @@ public class DatabaseManager {
         return databaseConnection;
     }
 
+    /**
+     * @throws DatabaseException
+     *         if anything went wrong
+     */
+    private DatabaseConnection initCacheConn(String jdbc) {
 
-    public DatabaseConnection initCacheConn(String jdbc) {
-
-        Flyway flyway = null;
-        if (this.migrateAndValidate) {
-            flyway = buildFlyway("classpath:com/fredboat/backend/quarterdeck/db/migrations/cache");
-        }
+        Flyway flyway = buildFlyway("classpath:com/fredboat/backend/quarterdeck/db/migrations/cache");
 
         DatabaseConnection databaseConnection = getBasicConnectionBuilder(CACHE_PERSISTENCE_UNIT_NAME, jdbc)
                 .setHibernateProps(buildHibernateProps("ehcache_cache.xml"))
@@ -215,20 +187,17 @@ public class DatabaseManager {
     }
 
     private DatabaseConnection.Builder getBasicConnectionBuilder(String connectionName, String jdbcUrl) {
-        DatabaseConnection.Builder builder = new DatabaseConnection.Builder(connectionName, jdbcUrl)
+        return new DatabaseConnection.Builder(connectionName, jdbcUrl)
                 .setHikariConfig(buildHikariConfig())
                 .setDialect("org.hibernate.dialect.PostgreSQL95Dialect")
-                .setAppName("FredBoat_" + this.appName)
+                .setAppName("FredBoat_Quarterdeck")
                 .setHikariStats(this.hikariStats)
                 .setHibernateStats(this.hibernateStats)
                 .setProxyDataSourceBuilder(new ProxyDataSourceBuilder()
                         .logSlowQueryBySlf4j(10, TimeUnit.SECONDS, SLF4JLogLevel.WARN, "SlowQueryLog")
                         .multiline()
-                );
-        if (this.entityManagerFactoryBuilder != null) {
-            builder = builder.setEntityManagerFactoryBuilder(this.entityManagerFactoryBuilder);
-        }
-        return builder;
+                )
+                .setEntityManagerFactoryBuilder(this.entityManagerFactoryBuilder);
     }
 
     private Flyway buildFlyway(String locations) {
@@ -243,7 +212,7 @@ public class DatabaseManager {
 
     private HikariConfig buildHikariConfig() {
         HikariConfig hikariConfig = DatabaseConnection.Builder.getDefaultHikariConfig();
-        hikariConfig.setMaximumPoolSize(this.poolsize);
+        hikariConfig.setMaximumPoolSize(this.dbConf.getHikariPoolSize());
         return hikariConfig;
     }
 
@@ -257,12 +226,7 @@ public class DatabaseManager {
         //hide some exception spam on start, as postgres does not support CLOBs
         // https://stackoverflow.com/questions/43905119/postgres-error-method-org-postgresql-jdbc-pgconnection-createclob-is-not-imple
         hibernateProps.put("hibernate.jdbc.lob.non_contextual_creation", "true");
-
-        if (this.migrateAndValidate) {
-            hibernateProps.put("hibernate.hbm2ddl.auto", "validate");
-        } else {
-            hibernateProps.put("hibernate.hbm2ddl.auto", "none");
-        }
+        hibernateProps.put("hibernate.hbm2ddl.auto", "validate");
 
         return hibernateProps;
     }

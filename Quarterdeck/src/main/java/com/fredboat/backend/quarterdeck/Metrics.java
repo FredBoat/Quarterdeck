@@ -27,7 +27,6 @@ package com.fredboat.backend.quarterdeck;
 
 import ch.qos.logback.classic.LoggerContext;
 import com.fredboat.backend.quarterdeck.config.DatabaseConfiguration;
-import com.fredboat.backend.quarterdeck.db.DatabaseManager;
 import com.fredboat.backend.quarterdeck.db.repositories.api.SearchResultRepo;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
@@ -58,8 +57,9 @@ public class Metrics {
     );
 
     public Metrics(InstrumentedAppender prometheusAppender, HibernateStatisticsCollector hibernateStats,
-                   DatabaseWrapper mainDbWrapper, DatabaseConfiguration dbConfig, DatabaseManager databaseManager,
-                   SearchResultRepo searchResultRepo) {
+                   DatabaseWrapper mainWrapper, DatabaseConfiguration databaseConfiguration,
+                   SearchResultRepo searchResultRepo)
+            throws InterruptedException {
         //log metrics
         final LoggerContext factory = (LoggerContext) LoggerFactory.getILoggerFactory();
         final ch.qos.logback.classic.Logger root = factory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -72,13 +72,13 @@ public class Metrics {
 
         //hibernate stats
         // 1. ensure all connections have been created
-        mainDbWrapper.getName();
-        dbConfig.cacheDbConn(databaseManager);
+        mainWrapper.getName(); //to avoid unused warnings of the parameter
+        databaseConfiguration.getCacheDbWrapper();
         // 2. register the metrics
         hibernateStats.register();
 
         //start jobs to collect "expensive" metrics
-        scheduler.scheduleAtFixedRate(() -> {
+        this.scheduler.scheduleAtFixedRate(() -> {
             try {
                 searchResultCacheSize.set(searchResultRepo.getSize());
             } catch (Exception e) {
