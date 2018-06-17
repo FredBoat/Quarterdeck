@@ -82,7 +82,7 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
     }
 
     //compared via "starts with"
-    private final Set<String> IGNORED_PATHS = Set.of(
+    private static final Set<String> IGNORED_PATHS = Set.of(
             "/swagger-ui.html",
             "/v2/api-docs",
             "/webjars/springfox-swagger-ui",
@@ -90,7 +90,7 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
     );
 
     //compared via "equals"
-    private final Set<String> ACCEPTED_ROOT_PATHS = Set.of(
+    private static final Set<String> ACCEPTED_ROOT_PATHS = Set.of(
             "/metrics",
             "/brew",
             "/info/api/versions"
@@ -100,7 +100,8 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
     // /v0/{entity}/[fetch|delete|merge|getraw]
     //
     // https://regex101.com/r/cUrr2d/2
-    private final Pattern V0_ALL_PATHS_REGEX = Pattern.compile("^/v0/[a-z]+/(?:fetch|merge|delete|getraw|getmaxaged)$");
+    private static final Pattern V0_ALL_PATHS_REGEX
+            = Pattern.compile("^/v0/[a-z]+/(?:fetch|merge|delete|getraw|getmaxaged)$");
 
     //v1 paths look like
     // /v1/guilds/{guildId}/{endpoint}
@@ -109,11 +110,13 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
     // https://regex101.com/r/QKUTbi/1
     // group 1: everything before the guildId
     // group 2: everything after the guildId
-    private final Pattern V1_GUILDS_PATHS_REGEX = Pattern.compile("^(/v1/guilds/)[0-9]+/([a-z]+)$");
+    private static final Pattern V1_GUILDS_PATHS_REGEX
+            = Pattern.compile("^(/v1/guilds/)[0-9]+/([a-z]+)$");
 
     // https://regex101.com/r/nwWAvn/1/
     // group 1: the controller path, which is enough with these currently
-    private final Pattern V1_BLACKLIST_AND_RATELIMIT_PATHS_REGEX = Pattern.compile("^(/v1/(?:ratelimit|blacklist))/?[0-9]*$");
+    private static final Pattern V1_BLACKLIST_AND_RATELIMIT_PATHS_REGEX
+            = Pattern.compile("^(/v1/(?:ratelimit|blacklist))/?[0-9]*$");
 
 
     /**
@@ -122,13 +125,13 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
     private void instrumentBeforeApiRequest(HttpServletRequest request) {
         String servletPath = request.getServletPath().toLowerCase();
 
-        for (String ignored : this.IGNORED_PATHS) {
+        for (String ignored : IGNORED_PATHS) {
             if (servletPath.startsWith(ignored)) {
                 return;
             }
         }
 
-        for (String ok : this.ACCEPTED_ROOT_PATHS) {
+        for (String ok : ACCEPTED_ROOT_PATHS) {
             if (servletPath.equalsIgnoreCase(ok)) {
                 countIt(servletPath, request);
                 return;
@@ -136,19 +139,19 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
         }
 
 
-        if (this.V0_ALL_PATHS_REGEX.matcher(servletPath).matches()) {
+        if (V0_ALL_PATHS_REGEX.matcher(servletPath).matches()) {
             countIt(servletPath, request);
             return;
         }
 
-        Matcher v1GuildsMatcher = this.V1_GUILDS_PATHS_REGEX.matcher(servletPath);
+        Matcher v1GuildsMatcher = V1_GUILDS_PATHS_REGEX.matcher(servletPath);
         if (v1GuildsMatcher.matches()) {
             String invariantPath = v1GuildsMatcher.group(1) + v1GuildsMatcher.group(2);
             countIt(invariantPath, request);
             return;
         }
 
-        Matcher v1BlacklistRatelimitMatcher = this.V1_BLACKLIST_AND_RATELIMIT_PATHS_REGEX.matcher(servletPath);
+        Matcher v1BlacklistRatelimitMatcher = V1_BLACKLIST_AND_RATELIMIT_PATHS_REGEX.matcher(servletPath);
         if (v1BlacklistRatelimitMatcher.matches()) {
             String invariantPath = v1BlacklistRatelimitMatcher.group(1);
             countIt(invariantPath, request);
