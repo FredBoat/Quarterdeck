@@ -31,7 +31,7 @@ package com.fredboat.backend.quarterdeck.parsing;
 public class ParseCastException extends ParseException {
 
     private final String key;
-    private final Object value;
+    private final transient Object value;
     private final Class expected;
 
     public ParseCastException(String key, Object value, Class expected, Throwable cause) {

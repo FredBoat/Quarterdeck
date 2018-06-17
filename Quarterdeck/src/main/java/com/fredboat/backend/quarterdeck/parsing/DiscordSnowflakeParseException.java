@@ -31,7 +31,7 @@ package com.fredboat.backend.quarterdeck.parsing;
 public class DiscordSnowflakeParseException extends ParseException {
 
     private final String key;
-    private final Object value;
+    private final transient Object value;
 
     public DiscordSnowflakeParseException(String key, Object value) {
         super();
