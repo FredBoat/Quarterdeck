@@ -113,7 +113,7 @@ public class Ratelimit {
             //clear outdated timestamps
             long maxTimeStampsToClear = (now - bucket.lastUpdated) * this.rate.getRequests() / this.rate.getTimeFrameMillis();
             long cleared = 0;
-            while (bucket.timeStamps.size() > 0
+            while (!bucket.timeStamps.isEmpty()
                     && bucket.timeStamps.getLong(0) + this.rate.getTimeFrameMillis() < now
                     && cleared < maxTimeStampsToClear) {
                 bucket.timeStamps.removeLong(0);
