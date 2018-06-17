@@ -160,9 +160,9 @@ public class DatabaseManager {
             synchronized (this.cacheDbWrapperInitLock) {
                 singleton = this.cacheDbWrapper;
                 if (singleton == null) {
-                    DatabaseConnection cacheDbConn = getCacheDbConn();
-                    if (cacheDbConn != null) {
-                        this.cacheDbWrapper = singleton = new DatabaseWrapper(cacheDbConn);
+                    DatabaseConnection cacheDbConnection = getCacheDbConn();
+                    if (cacheDbConnection != null) {
+                        this.cacheDbWrapper = singleton = new DatabaseWrapper(cacheDbConnection);
                     }
                 }
             }
