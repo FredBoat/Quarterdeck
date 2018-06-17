@@ -31,10 +31,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import space.npstr.sqlsauce.DatabaseWrapper;
+import space.npstr.sqlsauce.entities.Hstore;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +49,13 @@ import java.util.stream.Collectors;
 @RestController
 public class Teapot {
 
-    private final AtomicInteger teasServed = new AtomicInteger(0);
+    private static final String TEAS_SERVED_KEY = "teasServed";
+
+    private final DatabaseWrapper mainDbWrapper;
+
+    public Teapot(DatabaseWrapper mainDbWrapper) {
+        this.mainDbWrapper = mainDbWrapper;
+    }
 
     @GetMapping("/brew")
     public ResponseEntity<Tea> brewTea(@RequestParam("type") String type) {
@@ -58,7 +66,17 @@ public class Teapot {
         final Tea.TeaType teaType = Tea.TeaType.parse(type)
                 .orElseThrow(() -> new TeaParseException(type));
 
-        return new ResponseEntity<>(new Tea(teaType, this.teasServed.incrementAndGet()), HttpStatus.OK);
+        return new ResponseEntity<>(new Tea(teaType, incrementAndGetTeasServed()), HttpStatus.OK);
+    }
+
+    private long incrementAndGetTeasServed() {
+        AtomicLong teasServed = new AtomicLong();
+        Hstore.loadApplyAndSave(this.mainDbWrapper, hstore -> {
+            teasServed.set(Long.parseUnsignedLong(hstore.get(TEAS_SERVED_KEY, "0")));
+            return hstore.set(TEAS_SERVED_KEY, Long.toString(teasServed.incrementAndGet()));
+        });
+
+        return teasServed.get();
     }
 
     private static class TeaParseException extends ParseException {
@@ -103,9 +121,9 @@ public class Teapot {
         }
 
         private final TeaType teaType;
-        private final int number;
+        private final long number;
 
-        public Tea(TeaType teaType, int number) {
+        public Tea(TeaType teaType, long number) {
             this.teaType = teaType;
             this.number = number;
         }
@@ -114,7 +132,7 @@ public class Teapot {
             return this.teaType;
         }
 
-        public int getNumber() {
+        public long getNumber() {
             return this.number;
         }
     }
