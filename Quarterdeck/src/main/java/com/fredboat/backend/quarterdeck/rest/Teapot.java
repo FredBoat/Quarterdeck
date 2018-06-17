@@ -25,13 +25,17 @@
 
 package com.fredboat.backend.quarterdeck.rest;
 
+import com.fredboat.backend.quarterdeck.parsing.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * Created by napster on 12.03.18.
@@ -41,8 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Ships have a historical responsibility to serve tea.
  */
 @RestController
-@SuppressWarnings("unused")
-public class TeaPot {
+public class Teapot {
 
     private final AtomicInteger teasServed = new AtomicInteger(0);
 
@@ -52,17 +55,32 @@ public class TeaPot {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
 
-        Tea.TeaType teaType;
-        try {
-            teaType = Tea.TeaType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        final Tea.TeaType teaType = Tea.TeaType.parse(type)
+                .orElseThrow(() -> new TeaParseException(type));
 
         return new ResponseEntity<>(new Tea(teaType, this.teasServed.incrementAndGet()), HttpStatus.OK);
     }
 
-    private static class Tea {
+    private static class TeaParseException extends ParseException {
+
+        private static final String TEA_TYPES = String.join(", ", Arrays.stream(Tea.TeaType.values())
+                .map(Enum::name)
+                .collect(Collectors.toList()));
+
+        private final String unknown;
+
+        public TeaParseException(String unknown) {
+            super();
+            this.unknown = unknown;
+        }
+
+        @Override
+        public String getMessage() {
+            return this.unknown + " is not a recognized type of tea. Known types of tea are: " + TEA_TYPES;
+        }
+    }
+
+    protected static class Tea {
         //http://theteaspot.com/about-tea.html
         enum TeaType {
             WHITE,
@@ -72,7 +90,16 @@ public class TeaPot {
             PUERH,
             YERBA_MATE,
             HERBAL,
-            ROOIBOS,
+            ROOIBOS;
+
+            public static Optional<TeaType> parse(String input) {
+                for (TeaType type : TeaType.values()) {
+                    if (type.name().equalsIgnoreCase(input)) {
+                        return Optional.of(type);
+                    }
+                }
+                return Optional.empty();
+            }
         }
 
         private final TeaType teaType;
