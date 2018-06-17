@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Ratelimit {
 
-    private final static Logger log = LoggerFactory.getLogger(Ratelimit.class);
+    private static final Logger log = LoggerFactory.getLogger(Ratelimit.class);
 
 
     private final LoadingCache<Long, Bucket> rates;
