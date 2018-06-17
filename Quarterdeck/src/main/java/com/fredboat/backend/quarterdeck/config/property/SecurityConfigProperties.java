@@ -38,15 +38,15 @@ import java.util.List;
 @ConfigurationProperties(prefix = "security")
 public class SecurityConfigProperties implements SecurityConfig {
 
-    private List<Admin> admins = new ArrayList<>();
+    private List<SecurityConfig.Admin> admins = new ArrayList<>();
 
     @Override
-    public List<Admin> getAdmins() {
+    public List<SecurityConfig.Admin> getAdmins() {
         return this.admins;
     }
 
     public void setAdmins(List<Admin> admins) {
-        this.admins = admins;
+        this.admins = new ArrayList<>(admins);
     }
 
     public static class Admin implements SecurityConfig.Admin {

@@ -32,7 +32,7 @@ import java.util.List;
  */
 public interface SecurityConfig {
 
-    List<? extends Admin> getAdmins();
+    List<Admin> getAdmins();
 
     interface Admin {
         String getName();
