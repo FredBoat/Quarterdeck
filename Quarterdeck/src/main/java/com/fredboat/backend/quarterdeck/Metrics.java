@@ -58,8 +58,7 @@ public class Metrics {
 
     public Metrics(InstrumentedAppender prometheusAppender, HibernateStatisticsCollector hibernateStats,
                    DatabaseWrapper mainWrapper, DatabaseConfiguration databaseConfiguration,
-                   SearchResultRepo searchResultRepo)
-            throws InterruptedException {
+                   SearchResultRepo searchResultRepo) {
         //log metrics
         final LoggerContext factory = (LoggerContext) LoggerFactory.getILoggerFactory();
         final ch.qos.logback.classic.Logger root = factory.getLogger(Logger.ROOT_LOGGER_NAME);
