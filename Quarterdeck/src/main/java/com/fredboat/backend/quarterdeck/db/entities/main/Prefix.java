@@ -51,7 +51,7 @@ import java.util.Set;
 @Table(name = "prefixes")
 public class Prefix extends SaucedEntity<GuildBotId, Prefix> {
 
-    public static final Set<String> DEFAULT_PREFIXES = Set.of(";;", "!");
+    public static final Set<String> DEFAULT_PREFIXES = Collections.unmodifiableSet(Set.of(";;", "!"));
 
     @SuppressWarnings("NullableProblems")
     @EmbeddedId
