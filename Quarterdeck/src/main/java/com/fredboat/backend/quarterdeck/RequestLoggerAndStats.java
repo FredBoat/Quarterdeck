@@ -160,7 +160,7 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
 
         //todo v1 paths are not done yet
 
-        log.debug("Did not instrument unknown path: " + servletPath);
+        log.debug("Did not instrument unknown path: {}", servletPath);
         Metrics.apiRequestsNotInstrumented.inc();
     }
 
