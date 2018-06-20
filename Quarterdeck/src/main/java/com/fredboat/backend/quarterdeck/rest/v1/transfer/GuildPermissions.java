@@ -46,7 +46,7 @@ public class GuildPermissions {
         this.guildId = new DiscordSnowflake(guildPermissions.getId());
         this.adminIds = this.parseIds(guildPermissions.splitAdminList());
         this.djIds = this.parseIds(guildPermissions.splitDjList());
-        this.userIds = this.parseIds(guildPermissions.splitDjList());
+        this.userIds = this.parseIds(guildPermissions.splitUserList());
     }
 
     // the getters are picked up by springfox for the documentation
