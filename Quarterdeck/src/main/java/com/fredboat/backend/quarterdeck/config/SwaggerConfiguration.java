@@ -143,20 +143,25 @@ public class SwaggerConfiguration {
                 .build();
     }
 
+    private static final String DESCRIPTION_PATH = "/docs/api_description.md";
+
     private static ApiInfo metadata() {
+        final String description;
         try {
-            return new ApiInfoBuilder()
-                    .title("Quarterdeck - FredBoat Backend API")
-                    .description(IOUtils.resourceToString("/docs/api_description.md", Charset.forName("UTF-8")))
-                    .version("v1")
-                    .contact(new Contact("The FredBoat Org", "https://github.com/FredBoat", ""))
-                    .license("MIT")
-                    .licenseUrl("https://github.com/FredBoat/Backend/blob/dev/LICENSE")
-                    .termsOfServiceUrl("https://fredboat.com/docs/terms")
-                    .build();
+            description = IOUtils.resourceToString(DESCRIPTION_PATH, Charset.forName("UTF-8"));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new InvalidConfigurationException("Failed to read the description from " + DESCRIPTION_PATH, e);
         }
+
+        return new ApiInfoBuilder()
+                .title("Quarterdeck - FredBoat Backend API")
+                .description(description)
+                .version("v1")
+                .contact(new Contact("The FredBoat Org", "https://github.com/FredBoat", ""))
+                .license("MIT")
+                .licenseUrl("https://github.com/FredBoat/Backend/blob/dev/LICENSE")
+                .termsOfServiceUrl("https://fredboat.com/docs/terms")
+                .build();
     }
 
 }

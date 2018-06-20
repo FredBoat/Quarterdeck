@@ -51,7 +51,7 @@ import java.util.Set;
 @Table(name = "prefixes")
 public class Prefix extends SaucedEntity<GuildBotId, Prefix> {
 
-    public static final Set<String> DEFAULT_PREFIXES = Set.of(";;", "!");
+    public static final Set<String> DEFAULT_PREFIXES = Collections.unmodifiableSet(Set.of(";;", "!"));
 
     @SuppressWarnings("NullableProblems")
     @EmbeddedId
@@ -129,17 +129,17 @@ public class Prefix extends SaucedEntity<GuildBotId, Prefix> {
 
     @CheckReturnValue
     public Prefix addPrefixes(Collection<String> prefixes) {
-        HashSet<String> values = new HashSet<>(getValues());
-        values.addAll(prefixes);
-        this.values = values;
+        HashSet<String> valuesCopy = new HashSet<>(getValues());
+        valuesCopy.addAll(prefixes);
+        this.values = valuesCopy;
         return this;
     }
 
     @CheckReturnValue
     public Prefix removePrefixes(Collection<String> prefixes) {
-        HashSet<String> values = new HashSet<>(this.getValues());
-        values.removeAll(prefixes);
-        this.values = values;
+        HashSet<String> valuesCopy = new HashSet<>(this.getValues());
+        valuesCopy.removeAll(prefixes);
+        this.values = valuesCopy;
         return this;
     }
 }

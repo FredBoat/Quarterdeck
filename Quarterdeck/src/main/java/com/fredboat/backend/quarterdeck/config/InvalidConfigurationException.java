@@ -23,33 +23,20 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.parsing;
+package com.fredboat.backend.quarterdeck.config;
 
 /**
- * Created by napster on 30.03.18.
+ * Created by napster on 17.06.18.
+ * <p>
+ * For exceptions most likely caused by a wrong configuration
  */
-public class ParseCastException extends ParseException {
+public class InvalidConfigurationException extends RuntimeException {
 
-    private final String key;
-    private final transient Object value;
-    private final Class expected;
-
-    public ParseCastException(String key, Object value, Class expected, Throwable cause) {
-        super(cause);
-        this.key = key;
-        this.value = value;
-        this.expected = expected;
+    public InvalidConfigurationException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public ParseCastException(String key, Object value, Class expected) {
-        this(key, value, expected, null);
-    }
-
-    private static final String MESSAGE_TEMPLATE = "Failed to cast the value %s for key %s: class is %s but should be %s";
-
-    @Override
-    public String getMessage() {
-        return String.format(MESSAGE_TEMPLATE,
-                this.value, this.key, this.value.getClass().getSimpleName(), this.expected.getSimpleName());
+    public InvalidConfigurationException(String message) {
+        super(message);
     }
 }

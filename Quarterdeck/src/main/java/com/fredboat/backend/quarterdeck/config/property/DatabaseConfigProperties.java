@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.config.property;
 
+import com.fredboat.backend.quarterdeck.config.InvalidConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -57,7 +58,7 @@ public class DatabaseConfigProperties implements DatabaseConfig {
             } else {
                 String message = "No main jdbcUrl provided in a non-docker environment. FredBoat cannot work without a database.";
                 log.error(message);
-                throw new RuntimeException(message);
+                throw new InvalidConfigurationException(message);
             }
         }
         return jdbcUrl;

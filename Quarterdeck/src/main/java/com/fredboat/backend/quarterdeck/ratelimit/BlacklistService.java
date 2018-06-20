@@ -46,7 +46,7 @@ import java.util.function.Function;
 public class BlacklistService {
 
     //this holds progressively increasing lengths of blacklisting in milliseconds
-    public static final List<Long> BLACKLIST_LEVELS = List.of(
+    private static final List<Long> BLACKLIST_LEVELS = List.of(
             1000L * 60,                     //one minute
             1000L * 600,                    //ten minutes
             1000L * 3600,                   //one hour

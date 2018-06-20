@@ -79,6 +79,12 @@ public class BlacklistEntry extends SaucedEntity<Long, BlacklistEntry> {
         return Long.hashCode(this.id);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof BlacklistEntry)
+                && ((BlacklistEntry) obj).id == this.id;
+    }
+
     //Boilerplate code below
 
     //for jpa / db wrapper

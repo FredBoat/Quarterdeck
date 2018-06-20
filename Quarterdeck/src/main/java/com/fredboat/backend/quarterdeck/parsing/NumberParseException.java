@@ -31,7 +31,7 @@ package com.fredboat.backend.quarterdeck.parsing;
 public class NumberParseException extends ParseException {
 
     private final String key;
-    private final Object value;
+    private final transient Object value;
     private final Class<? extends Number> expected;
 
     public NumberParseException(String key, Object value, Class<? extends Number> expected) {

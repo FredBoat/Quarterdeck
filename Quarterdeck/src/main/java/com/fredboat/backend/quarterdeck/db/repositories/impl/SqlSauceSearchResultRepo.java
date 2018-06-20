@@ -26,7 +26,6 @@
 package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
 import com.fredboat.backend.quarterdeck.config.DatabaseConfiguration;
-import com.fredboat.backend.quarterdeck.db.DatabaseManager;
 import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResult;
 import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResultId;
 import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
@@ -48,8 +47,8 @@ import java.util.Optional;
 public class SqlSauceSearchResultRepo extends SqlSauceRepo<SearchResultId, SearchResult>
         implements SearchResultRepo {
 
-    public SqlSauceSearchResultRepo(DatabaseConfiguration dbConfiguration, DatabaseManager databaseManager) {
-        super(dbConfiguration.cacheDbWrapper(databaseManager), SearchResult.class); //todo noop / reloading
+    public SqlSauceSearchResultRepo(DatabaseConfiguration dbConfiguration) {
+        super(dbConfiguration.getCacheDbWrapper(), SearchResult.class); //todo noop / reloading
     }
 
     @Nullable

@@ -29,6 +29,8 @@ apply plugin: 'com.gorylenko.gradle-git-properties'
 apply plugin: 'propdeps'
 apply plugin: 'propdeps-idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'jacoco'
+apply plugin: 'org.sonarqube'
 
 
 description = 'FredBoat backend, providing REST database services'
@@ -63,6 +65,17 @@ bootJar {
 test {
     useJUnitPlatform()
     systemProperty("keepPostgresContainer", System.getProperty("keepPostgresContainer"))
+    jacoco {
+        includes['com.fredboat.backend.*']
+    }
+}
+
+sonarqube {
+    properties {
+        property 'sonar.host.url', System.getenv('SONAR_HOST_URL')
+        property 'sonar.organization', System.getenv('SONAR_ORGANIZATION')
+        property 'sonar.login', System.getenv('SONAR_LOGIN')
+    }
 }
 
 dependencies {

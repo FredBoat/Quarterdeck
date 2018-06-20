@@ -43,10 +43,10 @@ public class AppInfo {
 
     private static final Logger log = LoggerFactory.getLogger(AppInfo.class);
 
-    private final String VERSION;
-    private final String GROUP_ID;
-    private final String ARTIFACT_ID;
-    private final String BUILD_NUMBER;
+    private final String version;
+    private final String groupId;
+    private final String artifactId;
+    private final String buildNumber;
 
     public AppInfo() {
         InputStream resourceAsStream = this.getClass().getResourceAsStream("/app.properties");
@@ -56,29 +56,29 @@ public class AppInfo {
         } catch (IOException e) {
             log.error("Failed to load app.properties", e);
         }
-        this.VERSION = prop.getProperty("version");
-        this.GROUP_ID = prop.getProperty("groupId");
-        this.ARTIFACT_ID = prop.getProperty("artifactId");
-        this.BUILD_NUMBER = prop.getProperty("buildNumber");
+        this.version = prop.getProperty("version");
+        this.groupId = prop.getProperty("groupId");
+        this.artifactId = prop.getProperty("artifactId");
+        this.buildNumber = prop.getProperty("buildNumber");
     }
 
     public String getVersion() {
-        return this.VERSION;
+        return this.version;
     }
 
     public String getGroupId() {
-        return this.GROUP_ID;
+        return this.groupId;
     }
 
     public String getArtifactId() {
-        return this.ARTIFACT_ID;
+        return this.artifactId;
     }
 
     public String getBuildNumber() {
-        return this.BUILD_NUMBER;
+        return this.buildNumber;
     }
 
     public String getVersionBuild() {
-        return this.VERSION + "_" + this.BUILD_NUMBER;
+        return this.version + "_" + this.buildNumber;
     }
 }

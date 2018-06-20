@@ -192,7 +192,7 @@ public class GuildModules extends SaucedEntity<Long, GuildModules> {
                 this.funModule = enabled;
                 break;
             default:
-                throw new RuntimeException("Unknown Module " + module.name());
+                throw new IllegalArgumentException("Unknown Module " + module.name());
         }
         return this;
     }
@@ -225,7 +225,7 @@ public class GuildModules extends SaucedEntity<Long, GuildModules> {
                 result = this.funModule;
                 break;
             default:
-                throw new RuntimeException("Unknown Module " + module.name());
+                throw new IllegalArgumentException("Unknown Module " + module.name());
         }
 
         return Optional.ofNullable(result);

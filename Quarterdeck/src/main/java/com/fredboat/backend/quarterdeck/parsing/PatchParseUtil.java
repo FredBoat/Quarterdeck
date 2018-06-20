@@ -42,6 +42,10 @@ public class PatchParseUtil {
     private static final Pattern BASE64
             = Pattern.compile("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$");
 
+    private PatchParseUtil() {
+        //this is a static utility class
+    }
+
     /**
      * @return the base 64 string parsed from the provided map of attributes and provided key
      *
@@ -136,7 +140,7 @@ public class PatchParseUtil {
      *         If anything went wrong.
      */
     @CheckReturnValue
-    public static boolean parseBoolean(String key, Map<String, Object> attributes) throws ParseCastException {
+    public static boolean parseBoolean(String key, Map<String, Object> attributes) {
         return cast(key, attributes, Boolean.class);
     }
 
@@ -147,7 +151,7 @@ public class PatchParseUtil {
      *         If anything went wrong.
      */
     @CheckReturnValue
-    public static String parseString(String key, Map<String, Object> attributes) throws ParseCastException {
+    public static String parseString(String key, Map<String, Object> attributes) {
         return cast(key, attributes, String.class);
     }
 

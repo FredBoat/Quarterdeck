@@ -44,7 +44,7 @@ public class DiscordSnowflake {
      * @throws NumberFormatException
      *         if the passed snowflakeId is not an unsigned long
      */
-    public DiscordSnowflake(String snowflakeId) throws NumberFormatException {
+    public DiscordSnowflake(String snowflakeId) {
         this.snowflakeId = Long.parseUnsignedLong(snowflakeId);
     }
 

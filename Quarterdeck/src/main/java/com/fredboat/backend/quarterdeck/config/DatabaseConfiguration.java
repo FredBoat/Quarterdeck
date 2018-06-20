@@ -25,122 +25,106 @@
 
 package com.fredboat.backend.quarterdeck.config;
 
-import com.fredboat.backend.quarterdeck.config.property.DatabaseConfig;
-import com.fredboat.backend.quarterdeck.db.DatabaseManager;
-import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory;
-import io.prometheus.client.hibernate.HibernateStatisticsCollector;
+import com.fredboat.backend.quarterdeck.db.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import space.npstr.sqlsauce.DatabaseConnection;
 import space.npstr.sqlsauce.DatabaseWrapper;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 /**
  * Created by napster on 23.02.18.
  * <p>
- * Provides database related beans
+ * Provides database related beans. Also see {@link Database}
  */
 @Configuration
 public class DatabaseConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
-    private final DatabaseConfig dbConf;
 
-    public DatabaseConfiguration(DatabaseConfig dbConf) {
-        this.dbConf = dbConf;
+    private final Database database;
+
+    @Nullable
+    private volatile DatabaseWrapper cacheWrapper;
+    private final Object cacheWrapperInitLock = new Object();
+
+    public DatabaseConfiguration(Database database) {
+        this.database = database;
     }
 
-    @Primary
     @Bean
-    public DatabaseWrapper mainDbWrapper(DatabaseConnection mainDbConn) {
-        return new DatabaseWrapper(mainDbConn);
+    public DatabaseWrapper mainDbWrapper() {
+        return new DatabaseWrapper(createMainDatabaseConnection());
     }
 
-    @Primary
-    @Bean
-    public DatabaseConnection mainDbConn(DatabaseManager databaseManager) throws InterruptedException {
+    private DatabaseConnection createMainDatabaseConnection() {
+        final DatabaseConnection connection = createADatabaseConnection(this.database::getMainDbConn);
+        if (connection == null) {
+            throw new NullPointerException("The main database is not supposed to ever return a null connection. "
+                    + "Did the method contract change?");
+        }
+        return connection;
+    }
+
+    //with this bean being nullable, it cannot be reliably created / cached by the spring application context - inject
+    //this configuration class instead and call this method, which employs double checked locking.
+    @Nullable
+    public DatabaseWrapper getCacheDbWrapper() {
+        DatabaseWrapper singleton = this.cacheWrapper;
+        if (singleton == null) {
+            synchronized (this.cacheWrapperInitLock) {
+                singleton = this.cacheWrapper;
+                if (singleton == null) {
+                    DatabaseConnection cacheDbConn = createCacheDatabaseConnection();
+                    this.cacheWrapper = singleton =
+                            cacheDbConn == null
+                                    ? null
+                                    : new DatabaseWrapper(cacheDbConn);
+                }
+            }
+        }
+        return singleton;
+    }
+
+    @Nullable
+    private DatabaseConnection createCacheDatabaseConnection() {
+        return createADatabaseConnection(this.database::getCacheDbConn);
+    }
+
+
+    @CheckForNull //depending on what kind of method was passed as the supplier.
+    private DatabaseConnection createADatabaseConnection(Supplier<DatabaseConnection> method) {
         //attempt to connect to the database a few times
         // this is relevant in a dockerized environment because after a reboot there is no guarantee that the db
         // container will be started before the fredboat one
         int dbConnectionAttempts = 0;
-        DatabaseConnection mainDbConn = null;
-        while ((mainDbConn == null || !mainDbConn.isAvailable()) && dbConnectionAttempts++ < 10) {
+
+        do {
             try {
-                if (mainDbConn != null) {
-                    mainDbConn.shutdown();
-                }
-                mainDbConn = databaseManager.getMainDbConn();
+                return method.get();
             } catch (Exception e) {
-                log.info("Could not connect to the database. Retrying in a moment...", e);
-                Thread.sleep(6000);
-            }
-        }
-        if (mainDbConn == null || !mainDbConn.isAvailable()) {
-            String message = "Could not establish database connection. Exiting...";
-            log.error(message);
-            System.exit(1);
-        }
-
-        return mainDbConn;
-    }
-
-    @Bean
-    @Nullable
-    public DatabaseWrapper cacheDbWrapper(DatabaseManager databaseManager) {
-        DatabaseConnection cacheDbConn = cacheDbConn(databaseManager);
-        return cacheDbConn == null ? null : new DatabaseWrapper(cacheDbConn);
-    }
-
-    @Bean
-    @Nullable
-    public DatabaseConnection cacheDbConn(DatabaseManager databaseManager) {
-        try {
-            return databaseManager.getCacheDbConn();
-        } catch (Exception e) {
-            String message = "Exception when connecting to cache db";
-            log.error(message, e);
-            throw new RuntimeException(message);
-        }
-    }
-
-    @Bean
-    public DatabaseManager databaseManager(HibernateStatisticsCollector hibernateStats,
-                                           PrometheusMetricsTrackerFactory hikariStats) {
-        DatabaseManager databaseManager = new DatabaseManager(hibernateStats, hikariStats,
-                this.dbConf.getHikariPoolSize(), "Quarterdeck", true,
-                this.dbConf.getMainJdbcUrl(), this.dbConf.getCacheJdbcUrl(),
-                (puName, dataSource, properties, entityPackages) -> {
-                    LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
-                    emfb.setDataSource(dataSource);
-                    emfb.setPackagesToScan(entityPackages.toArray(new String[entityPackages.size()]));
-
-                    JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-                    emfb.setJpaVendorAdapter(vendorAdapter);
-                    emfb.setJpaProperties(properties);
-
-                    emfb.afterPropertiesSet(); //initiate creation of the native emf
-                    return emfb.getNativeEntityManagerFactory();
-                });
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (databaseManager.isCacheConnBuilt()) {
-                DatabaseConnection cacheDbConn = databaseManager.getCacheDbConn();
-                if (cacheDbConn != null) {
-                    cacheDbConn.shutdown();
+                log.info("Could not connect to database. Retrying in a moment...", e);
+                try {
+                    Thread.sleep(6000);
+                } catch (InterruptedException ex) {
+                    log.warn("Interrupted while creating a database connection. Returning...", ex);
+                    Thread.currentThread().interrupt();
                 }
             }
-            if (databaseManager.isMainConnBuilt()) {
-                databaseManager.getMainDbConn().shutdown();
-            }
-        }, "databasemanager-shutdown-hook"));
+        } while (dbConnectionAttempts++ < 10 && !Thread.interrupted());
 
-        return databaseManager;
+        String message = "Could not establish database connection. Is everything configured correctly? " +
+                "If this is the first run on a slow machine the database may need more time to be initiated. Exiting...";
+        log.error(message);
+        // Exiting may lead to a restart of this container (depending on the user's configuration), giving the
+        // application more attempts at connecting to the database, which may really just be having a very slow
+        // initiation (arm machines, raspis etc).
+        System.exit(1);
+        throw new InvalidConfigurationException(message);
     }
 }

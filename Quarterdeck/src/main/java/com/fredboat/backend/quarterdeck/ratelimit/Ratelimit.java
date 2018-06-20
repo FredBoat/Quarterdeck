@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Ratelimit {
 
-    private final static Logger log = LoggerFactory.getLogger(Ratelimit.class);
+    private static final Logger log = LoggerFactory.getLogger(Ratelimit.class);
 
 
     private final LoadingCache<Long, Bucket> rates;
@@ -113,7 +113,7 @@ public class Ratelimit {
             //clear outdated timestamps
             long maxTimeStampsToClear = (now - bucket.lastUpdated) * this.rate.getRequests() / this.rate.getTimeFrameMillis();
             long cleared = 0;
-            while (bucket.timeStamps.size() > 0
+            while (!bucket.timeStamps.isEmpty()
                     && bucket.timeStamps.getLong(0) + this.rate.getTimeFrameMillis() < now
                     && cleared < maxTimeStampsToClear) {
                 bucket.timeStamps.removeLong(0);
@@ -163,6 +163,12 @@ public class Ratelimit {
         @Override
         public int hashCode() {
             return Long.hashCode(this.id);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return (obj instanceof Bucket)
+                    && ((Bucket) obj).id == this.id;
         }
     }
 }
