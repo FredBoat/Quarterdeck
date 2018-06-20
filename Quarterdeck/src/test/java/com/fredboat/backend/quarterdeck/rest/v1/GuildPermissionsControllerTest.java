@@ -194,5 +194,4 @@ public class GuildPermissionsControllerTest extends BaseTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
 
-
 }
