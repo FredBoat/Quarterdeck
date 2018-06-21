@@ -32,6 +32,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/" + EntityController.VERSION_PATH + "guilds/{guild_id}/permissions")
 public class GuildPermissionController {
@@ -49,7 +51,11 @@ public class GuildPermissionController {
     })
     @GetMapping
     public GuildPermissions getGuildPermissions(@PathVariable("guild_id") DiscordSnowflake guildId) {
-        return GuildPermissions.of(this.guildPermsRepo.fetch(guildId.getSnowflakeId()));
+
+        var guildPermissions = this.guildPermsRepo.get(guildId.getSnowflakeId())
+                .orElse(new com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions(guildId.getSnowflakeId()));
+
+        return GuildPermissions.of(guildPermissions);
     }
 
     @ApiImplicitParams(value = {
