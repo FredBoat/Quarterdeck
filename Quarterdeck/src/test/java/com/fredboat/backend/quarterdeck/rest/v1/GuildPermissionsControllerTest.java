@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class GuildPermissionsControllerTest extends BaseTest {
 
-    private static final String GET_GUILDPERMISSION_URL_TEMPLATE = "/v1/guilds/{guild_id}/permissions";
+    private static final String REQUEST_GUILDPERMISSION_URL_TEMPLATE = "/v1/guilds/{guild_id}/permissions";
     private static final String MODIFY_GUILDPERMISSION_URL_TEMPLATE = "/v1/guilds/{guild_id}/permissions/{permission_level}/{id}";
 
     private static final String ADMIN_PERMISSION_LEVEL = "admin";
@@ -30,7 +30,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
     @Test
     public void ifRequestNewGuildIdThenReturnGuildPermissionWithGuildIdOnDjListAndUserList() throws Exception {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
-        this.mockMvc.perform(get(GET_GUILDPERMISSION_URL_TEMPLATE, guildId))
+        this.mockMvc.perform(get(REQUEST_GUILDPERMISSION_URL_TEMPLATE, guildId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
