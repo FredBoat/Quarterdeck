@@ -32,6 +32,8 @@ import com.palantir.docker.compose.connection.Container;
 import com.palantir.docker.compose.connection.waiting.HealthChecks;
 import com.palantir.docker.compose.connection.waiting.SuccessOrFailure;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ConditionEvaluationResult;
+import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * Do not kill the test execution via SIGKILL (this happens when running with IntelliJ's debug mode and clicking the
  * stop button), or else you might end up with orphaned docker containers on your machine.
  */
-public class PostgresDockerExtension implements BeforeAllCallback {
+public class PostgresDockerExtension implements BeforeAllCallback, ExecutionCondition {
 
     private static final Logger log = LoggerFactory.getLogger(PostgresDockerExtension.class);
 
@@ -89,6 +91,14 @@ public class PostgresDockerExtension implements BeforeAllCallback {
         }
     }
 
+    @Override
+    public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
+        String databaseProvided = System.getProperty("databaseProvided", "true");
+        if ("false".equalsIgnoreCase(databaseProvided)) {
+            return ConditionEvaluationResult.disabled("databaseProvided flag set to false. Skipping test that requires database.");
+        }
+        return ConditionEvaluationResult.enabled("databaseProvided flag not set, or not set to false. Continuing test");
+    }
 
     //executing it via the built in DockerComposeRule#exec() is not possible due to quotation marks handling
     private static SuccessOrFailure postgresHealthCheck(Container container) {
