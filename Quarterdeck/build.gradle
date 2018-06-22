@@ -65,6 +65,7 @@ bootJar {
 test {
     useJUnitPlatform()
     systemProperty("keepPostgresContainer", System.getProperty("keepPostgresContainer"))
+    systemProperty("databaseProvided", System.getProperty("databaseProvided"))
     jacoco {
         includes['com.fredboat.backend.*']
     }

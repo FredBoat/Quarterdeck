@@ -25,7 +25,6 @@
 
 package com.fredboat.backend.quarterdeck.parsing;
 
-import com.fredboat.backend.quarterdeck.BaseTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Base64;
@@ -38,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Created by napster on 22.05.18.
  */
-public class Base64Test extends BaseTest {
+public class Base64Test {
 
     @Test
     public void test() {
