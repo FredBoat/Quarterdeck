@@ -49,7 +49,7 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
      */
     @Override
     public GuildPermissions delete(String guildId, GuildPermissionLevel guildPermissionLevel, String id) {
-        Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
+        Function<GuildPermissions, GuildPermissions> update = guildPermission -> get(guildId);
         update = update.andThen(guildPerm -> guildPerm.removeIdFromLevel(id, guildPermissionLevel));
 
         return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(guildId), update);
@@ -60,14 +60,15 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
      */
     @Override
     public GuildPermissions put(String guildId, GuildPermissionLevel guildPermissionLevel, String id) {
-        Function<GuildPermissions, GuildPermissions> update = guildPermission -> guildPermission;
+        Function<GuildPermissions, GuildPermissions> update = guildPermission -> get(guildId);
         update = update.andThen(guildPerm -> guildPerm.addIdToLevel(id, guildPermissionLevel));
 
         return this.getDatabaseWrapper().findApplyAndMerge(GuildPermissions.key(guildId), update);
     }
 
     @Override
-    public Optional<GuildPermissions> get(String guildId) {
-        return Optional.ofNullable(this.dbWrapper.getEntity(GuildPermissions.key(guildId)));
+    public GuildPermissions get(String guildId) {
+        return Optional.ofNullable(this.dbWrapper.getEntity(GuildPermissions.key(guildId)))
+                .orElse(new GuildPermissions(guildId));
     }
 }

@@ -51,7 +51,7 @@ public class GuildPermsController extends EntityController<String, GuildPermissi
     @PostMapping("/fetch")
     public GuildPermissions fetch(@RequestBody String id) {
         String sanitizedId = id.replaceAll("\"", ""); //jackson plz
-        return this.guildPermsRepo.get(sanitizedId).orElse(new GuildPermissions(sanitizedId));
+        return this.guildPermsRepo.get(sanitizedId);
     }
 
     @Override

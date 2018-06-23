@@ -52,9 +52,7 @@ public class GuildPermissionController {
     @GetMapping
     public GuildPermissions getGuildPermissions(@PathVariable("guild_id") DiscordSnowflake guildId) {
 
-        var guildPermissions = this.guildPermsRepo.get(guildId.getSnowflakeId())
-                .orElse(new com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions(guildId.getSnowflakeId()));
-
+        var guildPermissions = this.guildPermsRepo.get(guildId.getSnowflakeId());
         return GuildPermissions.of(guildPermissions);
     }
 
