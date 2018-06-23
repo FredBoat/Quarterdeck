@@ -73,9 +73,7 @@ test {
 
 sonarqube {
     properties {
-        property 'sonar.host.url', System.getenv('SONAR_HOST_URL')
-        property 'sonar.organization', System.getenv('SONAR_ORGANIZATION')
-        property 'sonar.login', System.getenv('SONAR_LOGIN')
+        property 'sonar.inclusions', 'src/main/java/com/fredboat/backend/**/*'
     }
 }
 
