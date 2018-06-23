@@ -45,6 +45,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 /**
  * Created by napster on 30.03.18.
+ *
+ * Base test that provides an application context and relies on an active database.
+ * Tests that don't have those requirements should not subclass this.
  */
 @ExtendWith({
         LogExceptionExtension.class,
