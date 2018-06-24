@@ -38,6 +38,7 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.AuthorizationScopeBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.AlternateTypeRule;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.BasicAuth;
@@ -100,11 +101,15 @@ public class SwaggerConfiguration {
     }
 
     private Docket baseDocket() {
+        TypeResolver resolver = new TypeResolver();
         Docket baseDocket = new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(metadata())
                 .produces(Set.of(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .consumes(Set.of(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .directModelSubstitute(DiscordSnowflake.class, String.class)
+                .alternateTypeRules(new AlternateTypeRule(
+                        resolver.resolve(List.class, DiscordSnowflake.class),
+                        resolver.resolve(List.class, String.class)))
                 .useDefaultResponseMessages(false);
 
         String host = this.docsConfig.getHost();

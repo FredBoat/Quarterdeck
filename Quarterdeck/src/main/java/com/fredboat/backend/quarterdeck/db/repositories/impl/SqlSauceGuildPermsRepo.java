@@ -27,9 +27,14 @@ package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPermsRepo;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
+import space.npstr.sqlsauce.entities.SaucedEntity;
+import space.npstr.sqlsauce.fp.types.EntityKey;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.util.Optional;
 
 /**
@@ -42,8 +47,73 @@ public class SqlSauceGuildPermsRepo extends SqlSauceRepo<String, GuildPermission
         super(dbWrapper, GuildPermissions.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Optional<GuildPermissions> get(String id) {
-        return Optional.ofNullable(this.dbWrapper.getEntity(GuildPermissions.key(id)));
+    public GuildPermissions delete(String guildId, GuildPermissionLevel guildPermissionLevel, String id) {
+        EntityKey<String, GuildPermissions> key = EntityKey.of(guildId, GuildPermissions.class);
+        synchronized (SaucedEntity.getEntityLock(key)) {
+            EntityManager entityManager = this.getDatabaseWrapper().getEntityManagerFactory().createEntityManager();
+            try {
+                EntityTransaction transaction = entityManager.getTransaction();
+                try {
+                    transaction.begin();
+                    GuildPermissions guildPermissions = entityManager.find(GuildPermissions.class, guildId);
+                    if (guildPermissions == null) {
+                        guildPermissions = new GuildPermissions(guildId);
+                    }
+                    guildPermissions = guildPermissions.removeIdFromLevel(id, guildPermissionLevel);
+
+                    guildPermissions = entityManager.merge(guildPermissions);
+                    transaction.commit();
+                    return guildPermissions;
+                } finally {
+                    if (transaction.isActive()) {
+                        transaction.rollback();
+                    }
+                }
+            } finally {
+                entityManager.close();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GuildPermissions put(String guildId, GuildPermissionLevel guildPermissionLevel, String id) {
+        EntityKey<String, GuildPermissions> key = EntityKey.of(guildId, GuildPermissions.class);
+        synchronized (SaucedEntity.getEntityLock(key)) {
+            EntityManager entityManager = this.getDatabaseWrapper().getEntityManagerFactory().createEntityManager();
+            try {
+                EntityTransaction transaction = entityManager.getTransaction();
+                try {
+                    transaction.begin();
+                    GuildPermissions guildPermissions = entityManager.find(GuildPermissions.class, guildId);
+                    if (guildPermissions == null) {
+                        guildPermissions = new GuildPermissions(guildId);
+                    }
+
+                    guildPermissions = guildPermissions.addIdToLevel(id, guildPermissionLevel);
+                    guildPermissions = entityManager.merge(guildPermissions);
+                    transaction.commit();
+                    return guildPermissions;
+                } finally {
+                    if (transaction.isActive()) {
+                        transaction.rollback();
+                    }
+                }
+            } finally {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public GuildPermissions fetch(String id) {
+        return Optional.ofNullable(this.dbWrapper.getEntity(GuildPermissions.key(id)))
+                .orElse(new GuildPermissions(id));
     }
 }

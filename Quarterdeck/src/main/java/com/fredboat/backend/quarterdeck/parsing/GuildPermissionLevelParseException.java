@@ -23,32 +23,28 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.db.repositories.api;
+package com.fredboat.backend.quarterdeck.parsing;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 
-/**
- * Created by napster on 05.02.18.
- */
-public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
-    /**
-     * Remove an id from guild permission based on specified level and guild id.
-     *
-     * @param guildId              Guild id.
-     * @param guildPermissionLevel Permission level to delete from.
-     * @param id                   User or role id..
-     * @return Updated guild permission with id removed from specified level.
-     */
-    GuildPermissions delete(String guildId, GuildPermissionLevel guildPermissionLevel, String id);
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
-    /***
-     * Add an id to guild permission based on specified level and guild id.
-     *
-     * @param guildId              Guild id.
-     * @param guildPermissionLevel Permission level to update.
-     * @param id                   User or role id.
-     * @return Updated guild permission with id added to specified level.
-     */
-    GuildPermissions put(String guildId, GuildPermissionLevel guildPermissionLevel, String id);
+public class GuildPermissionLevelParseException extends ParseException {
+
+    private static final String KNOWN_PERMISSIONS = String.join(", ", Arrays.stream(GuildPermissionLevel.values())
+            .map(Enum::name)
+            .collect(Collectors.toList()));
+
+    private final String unknown;
+
+    public GuildPermissionLevelParseException(String unknown) {
+        super();
+        this.unknown = unknown;
+    }
+
+    @Override
+    public String getMessage() {
+        return this.unknown + " is not a recognized guild permission level. Known guild permission levels are: " + KNOWN_PERMISSIONS;
+    }
 }
