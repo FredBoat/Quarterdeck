@@ -53,6 +53,4 @@ public interface GuildPermsRepo extends Repo<String, GuildPermissions> {
      * @return Updated guild permission with id added to specified level.
      */
     GuildPermissions put(String guildId, GuildPermissionLevel guildPermissionLevel, String id);
-
-    GuildPermissions get(String guildId);
 }
