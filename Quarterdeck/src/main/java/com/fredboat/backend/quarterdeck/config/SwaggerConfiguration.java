@@ -158,7 +158,7 @@ public class SwaggerConfiguration {
                 .description(description)
                 .version("v1")
                 .contact(new Contact("The FredBoat Org", "https://github.com/FredBoat", ""))
-                .license("MIT")
+                .license("MIT License")
                 .licenseUrl("https://github.com/FredBoat/Backend/blob/dev/LICENSE")
                 .termsOfServiceUrl("https://fredboat.com/docs/terms")
                 .build();

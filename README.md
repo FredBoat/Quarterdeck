@@ -86,7 +86,7 @@ to keep the postgres container alive between tests:
 ```
 
 or setting it via IntelliJ IDEA's run/debug config as a VM option:
-[![Setting the keep postgres container property with IntelliJ IDEA's run/debug config](https://fred.moe/rBL.png)] 
+![Setting the keep postgres container property with IntelliJ IDEA's run/debug config](https://fred.moe/rBL.png)
 
 Keep in mind that in that case you will have to manually shut down the container to get rid of it:
 

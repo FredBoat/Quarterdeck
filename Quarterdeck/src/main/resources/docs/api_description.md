@@ -1,8 +1,8 @@
 # Introduction
 
-Quarterdeck bundles several databased services for FredBoat.
-At this point, this is not a public API of any sorts.
-Any documentation found here is aimed at FreBoat developers.
+Quarterdeck bundles several database based services for FredBoat.
+At this point in time, it is not a public API of any sorts.
+Any documentation found here is aimed at FredBoat developers.
 Future development of the API might include additional, semi-public services.
 This documentation is covering v1+ resources and conventions.
 
@@ -19,10 +19,10 @@ but also please do not hesitate to provide feedback.
 ## HTTP verbs
 | Verb | Usage |
 | ---- | ----- |
-| `GET` | Used to retrieve a resource |
-| `POST`| Used to create a new resource |
-| `PATCH` | Used to update an existing resource, including partial updates |
-| `DELETE` | Used to delete or reset an existing resource |
+| `GET` | Retrieve a resource |
+| `POST`| Create a new resource |
+| `PATCH` | Update an existing resource, including partial updates |
+| `DELETE` | Delete or reset an existing resource |
 
 ## HTTP status codes
 Quarterdeck does not use any special http status codes and does not stray far away from the one true
@@ -38,7 +38,7 @@ The most important ones are listed here:
 | ----------- | ----- |
 | `2xx` | Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST or PATCH request, the response will contain an entity describing or containing the result of the action. A DELETE request will probably just be empty. |
 | `4xx` | Something is wrong with your request. Pay attention to the concrete status code as well as the attached message, those will usually contain more information to help fix your request. |
-| `5xx` | Something unexpected blew up on Quarterdecks side. Try again later, and if the 5xx persists, please [file an issue](https://github.com/FredBoat/Backend/issues). |
+| `5xx` | Something unexpected blew up on Quarterdeck's side. Try again later, and if the 5xx persists, please [file an issue](https://github.com/FredBoat/Backend/issues). |
 
 
 
