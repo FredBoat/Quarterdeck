@@ -26,7 +26,7 @@
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
-import fredboat.definitions.PermissionLevel;
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import space.npstr.sqlsauce.entities.SaucedEntity;
@@ -39,6 +39,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @Table(name = "guild_permissions")
@@ -66,7 +68,6 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
 
     public GuildPermissions(String id) {
         String sanitizedId = setId(id).getId();
-
         //init other default values
         this.djList = sanitizedId;
         this.userList = sanitizedId;
@@ -132,7 +133,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         return this;
     }
 
-    public List<String> getFromEnum(PermissionLevel level) {
+    public List<String> getFromEnum(GuildPermissionLevel level) {
         switch (level) {
             case ADMIN:
                 return splitAdminList();
@@ -145,7 +146,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         }
     }
 
-    public GuildPermissions setFromEnum(PermissionLevel level, List<String> list) {
+    public GuildPermissions setFromEnum(GuildPermissionLevel level, List<String> list) {
         switch (level) {
             case ADMIN:
                 return setAdminList(list);
@@ -158,6 +159,26 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
         }
     }
 
+    public GuildPermissions addIdToLevel(String id, GuildPermissionLevel level) {
+        List<String> list = getPermissionListFromEnum(level);
+
+        if (!list.contains(id)) {
+            list.add(id);
+        }
+        this.setFromEnum(level, list);
+        return this;
+    }
+
+    public GuildPermissions removeIdFromLevel(String id, GuildPermissionLevel level) {
+        List<String> permissions = getPermissionListFromEnum(level);
+        List<String> ids = Stream.of(permissions)
+                .flatMap(List::stream)
+                .filter(listId -> !listId.equals(id))
+                .collect(Collectors.toList());
+        this.setFromEnum(level, ids);
+
+        return this;
+    }
     //the boilerplate below is for v0 jackson
 
 
@@ -183,5 +204,21 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
 
     public void setUserList(String userList) {
         this.userList = userList;
+    }
+
+    private List<String> getPermissionListFromEnum(GuildPermissionLevel level) {
+        switch (level) {
+            case ADMIN:
+                return Arrays.stream(adminList.split(" ")).collect(Collectors.toList());
+
+            case DJ:
+                return Arrays.stream(djList.split(" ")).collect(Collectors.toList());
+
+            case USER:
+                return Arrays.stream(userList.split(" ")).collect(Collectors.toList());
+
+            default:
+                throw new IllegalArgumentException("Unexpected enum " + level);
+        }
     }
 }
