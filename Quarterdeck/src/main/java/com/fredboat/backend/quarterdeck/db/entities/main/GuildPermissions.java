@@ -47,6 +47,8 @@ import java.util.stream.Stream;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "guild_permissions")
 public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
+    
+    private static final String UNEXPECTED_ENUM_ERROR = "Unexpected enum ";
 
     // Guild ID
     @Id
@@ -142,7 +144,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
             case USER:
                 return splitUserList();
             default:
-                throw new IllegalArgumentException("Unexpected enum " + level);
+                throw new IllegalArgumentException(UNEXPECTED_ENUM_ERROR + level);
         }
     }
 
@@ -155,7 +157,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
             case USER:
                 return setUserList(list);
             default:
-                throw new IllegalArgumentException("Unexpected enum " + level);
+                throw new IllegalArgumentException(UNEXPECTED_ENUM_ERROR + level);
         }
     }
 
@@ -218,7 +220,7 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
                 return Arrays.stream(userList.split(" ")).collect(Collectors.toList());
 
             default:
-                throw new IllegalArgumentException("Unexpected enum " + level);
+                throw new IllegalArgumentException(UNEXPECTED_ENUM_ERROR + level);
         }
     }
 }

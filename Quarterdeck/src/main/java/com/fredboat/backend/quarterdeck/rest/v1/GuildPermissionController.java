@@ -32,8 +32,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/" + EntityController.VERSION_PATH + "guilds/{guild_id}/permissions")
 public class GuildPermissionController {
