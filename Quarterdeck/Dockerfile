@@ -9,4 +9,4 @@ COPY Quarterdeck.jar /opt/Quarterdeck/Quarterdeck.jar
 
 EXPOSE 4269
 
-ENTRYPOINT ["java", "-Xmx64m", "-jar", "Quarterdeck.jar"]
+ENTRYPOINT ["java", "-Xmx128m", "-jar", "Quarterdeck.jar"]
