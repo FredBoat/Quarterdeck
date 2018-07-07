@@ -122,6 +122,11 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
     private static final Pattern V1_BLACKLIST_AND_RATELIMIT_PATHS_REGEX
             = Pattern.compile("^(/v1/(?:ratelimit|blacklist))/?[0-9]*$");
 
+    // https://regex101.com/r/h8JNt9/1
+    // group 1: path before the guildId
+    // group 2: module specific path after the guildId
+    private static final Pattern V1_GUILD_MODULES_REGEX
+            = Pattern.compile("^(/v1/guilds/)[0-9]+/(modules/[a-z]+)$");
 
     /**
      * Only instrument paths of known complexity to avoid an explosion of metric samples due to path variables.
@@ -161,6 +166,13 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
         Matcher v1BlacklistRatelimitMatcher = V1_BLACKLIST_AND_RATELIMIT_PATHS_REGEX.matcher(servletPath);
         if (v1BlacklistRatelimitMatcher.matches()) {
             String invariantPath = v1BlacklistRatelimitMatcher.group(1);
+            countIt(invariantPath, request);
+            return;
+        }
+
+        Matcher v1GuildModulesMatcher = V1_GUILD_MODULES_REGEX.matcher(servletPath);
+        if (v1GuildModulesMatcher.matches()) {
+            String invariantPath = v1GuildModulesMatcher.group(1) + v1GuildModulesMatcher.group(2);
             countIt(invariantPath, request);
             return;
         }
