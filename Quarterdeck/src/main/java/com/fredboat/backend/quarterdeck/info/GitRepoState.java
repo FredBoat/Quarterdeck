@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 /**
@@ -40,7 +42,6 @@ import java.util.Properties;
  * Requires a generated git.properties, which can be achieved with the gradle git plugin
  */
 @Component
-@SuppressWarnings("WeakerAccess")
 public class GitRepoState {
 
     private static final Logger log = LoggerFactory.getLogger(GitRepoState.class);
@@ -52,7 +53,7 @@ public class GitRepoState {
     private final String commitUserEmail;
     private final String commitMessageFull;
     private final String commitMessageShort;
-    private final long commitTime;
+    private final long commitTime; //epoch seconds
 
     @SuppressWarnings("ConstantConditions")
     public GitRepoState() {
@@ -73,7 +74,14 @@ public class GitRepoState {
         this.commitUserEmail = String.valueOf(properties.getOrDefault("git.commit.user.email", ""));
         this.commitMessageFull = String.valueOf(properties.getOrDefault("git.commit.message.full", ""));
         this.commitMessageShort = String.valueOf(properties.getOrDefault("git.commit.message.short", ""));
-        this.commitTime = Long.parseLong(String.valueOf(properties.getOrDefault("git.commit.time", "0"))); //epoch seconds
+        final String time = String.valueOf(properties.get("git.commit.time"));
+        if (time == null) {
+            this.commitTime = 0;
+        } else {
+            // https://github.com/n0mer/gradle-git-properties/issues/71
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
+            this.commitTime = OffsetDateTime.from(dtf.parse(time)).toEpochSecond();
+        }
     }
 
     public String getBranch() {
