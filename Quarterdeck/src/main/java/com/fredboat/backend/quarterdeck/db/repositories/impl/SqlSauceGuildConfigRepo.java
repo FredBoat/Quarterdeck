@@ -29,7 +29,7 @@ import com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildConfigRepo;
 import com.fredboat.backend.quarterdeck.parsing.LanguageParseException;
 import com.fredboat.backend.quarterdeck.parsing.PatchParseUtil;
-import fredboat.definitions.Language;
+import com.fredboat.backend.shared.Language;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
 

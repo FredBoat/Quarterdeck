@@ -26,7 +26,7 @@
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
-import fredboat.definitions.Language;
+import com.fredboat.backend.shared.Language;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import space.npstr.sqlsauce.entities.SaucedEntity;

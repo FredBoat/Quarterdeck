@@ -25,7 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
-import fredboat.definitions.Language;
+import com.fredboat.backend.shared.Language;
 import io.swagger.annotations.ApiModelProperty;
 
 /**

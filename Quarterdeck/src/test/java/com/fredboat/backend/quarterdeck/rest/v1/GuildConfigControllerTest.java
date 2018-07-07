@@ -28,7 +28,7 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
-import fredboat.definitions.Language;
+import com.fredboat.backend.shared.Language;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
