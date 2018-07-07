@@ -25,7 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
-import fredboat.definitions.RepeatMode;
+import com.fredboat.backend.shared.RepeatMode;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;

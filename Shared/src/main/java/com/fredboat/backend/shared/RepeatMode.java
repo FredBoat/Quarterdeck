@@ -23,31 +23,37 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.parsing;
+package com.fredboat.backend.shared;
 
-import com.fredboat.backend.shared.RepeatMode;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
- * Created by napster on 31.03.18.
+ * Created by napster on 11.03.17.
+ * <p>
+ * Describes the possible repeat modes
+ * <p>
+ * OFF = no repeat is happening
+ * SINGLE = the top most song in the queue is repeated
+ * ALL = the whole queue is repeated.
+ * <p>
  */
-public class RepeatModeParseException extends ParseException {
+public enum RepeatMode {
+    OFF, SINGLE, ALL;
 
-    private static final String REPEAT_MODES = String.join(", ", Arrays.stream(RepeatMode.values())
-            .map(Enum::name)
-            .collect(Collectors.toList()));
-
-    private final String unknown;
-
-    public RepeatModeParseException(String unknown) {
-        super();
-        this.unknown = unknown;
-    }
-
-    @Override
-    public String getMessage() {
-        return this.unknown + " is not a recognized repeat mode. Known repeat modes are: " + REPEAT_MODES;
+    /**
+     * This method tries to parse an input into a repeat mode that we recognize.
+     *
+     * @param input
+     *         input to be parsed into a repeat mode known to us (= defined in this enum)
+     *
+     * @return the optional repeat mode identified from the input.
+     */
+    public static Optional<RepeatMode> parse(String input) {
+        for (RepeatMode repeatMode : RepeatMode.values()) {
+            if (repeatMode.name().equalsIgnoreCase(input)) {
+                return Optional.of(repeatMode);
+            }
+        }
+        return Optional.empty();
     }
 }

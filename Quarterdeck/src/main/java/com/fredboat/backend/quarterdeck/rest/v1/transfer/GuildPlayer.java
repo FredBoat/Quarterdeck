@@ -25,7 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
-import fredboat.definitions.RepeatMode;
+import com.fredboat.backend.shared.RepeatMode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**

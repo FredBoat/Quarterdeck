@@ -25,7 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.db.migrations.main;
 
-import fredboat.definitions.RepeatMode;
+import com.fredboat.backend.shared.RepeatMode;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import java.sql.Connection;
