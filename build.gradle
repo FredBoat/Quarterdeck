@@ -58,7 +58,7 @@ subprojects {
         flywayVersion               = '5.1.4'
         dsProxyVersion              = '1.4.9'
         jaxbApiVersion              = '2.3.0'
-        springfoxVersion            = '2.8.0'
+        springfoxVersion            = '2.9.2'
         fastUtilVersion             = '8.2.1'
 
         jUnitVersion                = '5.2.0'
