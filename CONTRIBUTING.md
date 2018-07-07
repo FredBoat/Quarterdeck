@@ -1,16 +1,16 @@
 # Contributing
-* Read [FredBoat contributing](https://github.com/Frederikam/FredBoat/blob/dev/CONTRIBUTING.md)
+* Please read the general FredBoat contribution guide [FredBoat contributing](https://github.com/Frederikam/FredBoat/blob/dev/CONTRIBUTING.md)
 * Pull requests must contain unit tests related to your changes
 
 ## Prerequisite
 
 * Add `quarterdeck.yaml` files to the FredBoat backend root directory.
-* This project use swagger as documentation/client to test the rest api, after running Application class, head over to [http://localhost:[port_number]/swagger-ui.html#/](http://localhost:4269/swagger-ui.html#/)
+* This project uses swagger as a documentation/client to test the REST api. After running the Application class or starting it via ``./gradlew bootRun``, head over to [http://localhost:[port_number]/swagger-ui.html#/](http://localhost:4269/swagger-ui.html#/)
   * Use username and password from `quarterdeck.yaml` as swagger authentication
 
 ## Unit test requirement
 
-* This project tests use [Spring MockMvc](https://docs.spring.io/spring-security/site/docs/current/reference/html/test-mockmvc.html) to perform http requests. Please see existing code for details.
+* These project's tests use [Spring MockMvc](https://docs.spring.io/spring-security/site/docs/current/reference/html/test-mockmvc.html) to perform http requests. Please see existing code for details.
 * Unit test method naming convention `"if/whenConditionThenExpectedState/Behavior"` 
 
 ## Join Developer Chat
