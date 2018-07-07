@@ -29,6 +29,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalNotification;
+import io.prometheus.client.Counter;
 import io.prometheus.client.Summary;
 import io.prometheus.client.guava.cache.CacheMetricsCollector;
 import org.slf4j.Logger;
@@ -65,7 +66,10 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
             })
             .build();
 
-    public RequestLoggerAndStats(CacheMetricsCollector cacheMetrics) {
+    private final Counter apiRequestsNotInstrumented;
+
+    public RequestLoggerAndStats(CacheMetricsCollector cacheMetrics, Counter apiRequestsNotInstrumented) {
+        this.apiRequestsNotInstrumented = apiRequestsNotInstrumented;
         cacheMetrics.addCache("requestTimers", this.timers);
     }
 
@@ -108,8 +112,8 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
     // + a few special cases
     //
     // https://regex101.com/r/QKUTbi/1
-    // group 1: everything before the guildId
-    // group 2: everything after the guildId
+    // group 1: path before the guildId
+    // group 2: path after the guildId
     private static final Pattern V1_GUILDS_PATHS_REGEX
             = Pattern.compile("^(/v1/guilds/)[0-9]+/([a-z]+)$");
 
@@ -124,6 +128,9 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
      */
     private void instrumentBeforeApiRequest(HttpServletRequest request) {
         String servletPath = request.getServletPath().toLowerCase();
+        if (servletPath.isEmpty()) { //this can happen in tests
+            servletPath = request.getRequestURI().toLowerCase();
+        }
 
         for (String ignored : IGNORED_PATHS) {
             if (servletPath.startsWith(ignored)) {
@@ -161,7 +168,7 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
         //todo v1 paths are not done yet
 
         log.debug("Did not instrument unknown path: {}", servletPath);
-        Metrics.apiRequestsNotInstrumented.inc();
+        this.apiRequestsNotInstrumented.inc();
     }
 
     private void countIt(String sanitizedPath, HttpServletRequest request) {
