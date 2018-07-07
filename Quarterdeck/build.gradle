@@ -76,15 +76,26 @@ sonarqube {
 }
 
 dependencies {
-    //actually just the Shared module, jitpack falls back to top level project naming if there is only 1 artifact
-    compile group: 'com.github.Frederikam', name: 'FredBoat', version: fredBoatRootVersion
     compile project(':Shared')
+
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
+    compile group: 'io.sentry', name: 'sentry-logback', version: sentryVersion
 
     compile group: 'space.npstr.SqlSauce', name: 'sqlsauce-core', version: sqlsauceVersion
     compile group: 'org.hibernate', name: 'hibernate-ehcache', version: hibernateVersion
     compile group: 'org.flywaydb', name: 'flyway-core', version: flywayVersion
     compile group: 'net.ttddyy', name: 'datasource-proxy', version: dsProxyVersion
-    compile group: 'javax.xml.bind', name: 'jaxb-api', version: jaxbApiVersion // required by hibernate for java 9
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: jaxbApiVersion // required by hibernate for java 9+
+
+    compile group: 'commons-io', name: 'commons-io', version: commonsIOVersion
+    compileOnly group: 'space.npstr', name: 'annotations', version: napsterAnnotations
+
+    compile group: 'io.prometheus', name: 'simpleclient', version: prometheusVersion
+    compile group: 'io.prometheus', name: 'simpleclient_hotspot', version: prometheusVersion
+    compile group: 'io.prometheus', name: 'simpleclient_logback', version: prometheusVersion
+    compile group: 'io.prometheus', name: 'simpleclient_hibernate', version: prometheusVersion
+    compile group: 'io.prometheus', name: 'simpleclient_guava', version: prometheusVersion
+    compile group: 'io.prometheus', name: 'simpleclient_servlet', version: prometheusVersion
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVersion
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion) {
