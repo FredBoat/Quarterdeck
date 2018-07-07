@@ -78,6 +78,7 @@ sonarqube {
 dependencies {
     //actually just the Shared module, jitpack falls back to top level project naming if there is only 1 artifact
     compile group: 'com.github.Frederikam', name: 'FredBoat', version: fredBoatRootVersion
+    compile project(':Shared')
 
     compile group: 'space.npstr.SqlSauce', name: 'sqlsauce-core', version: sqlsauceVersion
     compile group: 'org.hibernate', name: 'hibernate-ehcache', version: hibernateVersion

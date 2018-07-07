@@ -1,4 +1,8 @@
+enableFeaturePreview('STABLE_PUBLISHING')// remove me after introducing Gradle 5.0
+
 rootProject.name = 'Backend'
 include ':Quarterdeck'
+include ':Shared'
 
 project(':Quarterdeck').projectDir = "$rootDir/Quarterdeck" as File
+project(':Shared').projectDir = "$rootDir/Shared" as File

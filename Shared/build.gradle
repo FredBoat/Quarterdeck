@@ -1,0 +1,29 @@
+description = 'Shared code, free to be used by clients'
+version '1.0'
+ext {
+    moduleName = 'Shared'
+}
+
+
+apply plugin: 'maven-publish'
+
+task install(dependsOn: 'publishToMavenLocal')
+publishToMavenLocal.dependsOn 'jar'
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier "sources"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            groupId rootProject.group
+            artifactId moduleName
+            artifact sourceJar
+        }
+    }
+}
+
+dependencies {}
