@@ -8,9 +8,10 @@ This documentation is covering v1+ resources and conventions.
 
 * * *
 
-**CAUTION**: The Quarterdeck v1 API's status is **work in progress**. Things are open to be changed,
-so do not build anything production grade relying on it yet,
-but also please do not hesitate to provide feedback.
+**CAUTION**: The Quarterdeck v1 API's status is **unstable**. 
+General work on the endpoints has finished,
+but bugs under load may yet be encountered,
+or there may be routes missing that would come in handy for clients.
 
 * * *
 

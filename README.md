@@ -10,24 +10,25 @@ Any documentation found here is aimed at FreBoat developers. Future development 
 
 ## Versions
 
-The API is currently versioned as v0, which is a straight port of the existing database operations.  
-The endpoints are split up by [existing entities](https://github.com/Frederikam/FredBoat/tree/dev/Database/src/main/java/fredboat/db/entity).
+### v1
 
-The plans for v1 and future versions include:
-- proper usage of http verbs (GET, DELETE, PATCH, etc)
-- decoupling from the internal entity model, instead granular calls
-- a success/error layer
-- end-user access and authorization
-
-### v1 [WIP]
-
-The v1 Quarterdeck docs can be found [here](https://koakuma.fredboat.com/qd/swagger-ui.html).  
-It includes running test queries in the browser against a live testing deployment of Quarterdeck. 
+##### Click [here](https://koakuma.fredboat.com/qd/swagger-ui.html) to find detailed online docs.  
+The online documentation includes running test queries in the browser against a live staging deployment of Quarterdeck. 
 If you are a developer who wants to build apps based on FredBoat's backend, please read the document 
 [linked below](#contributing) to learn how to join our community, where you can request credentials to access
 our testing environment.
 
-### v0
+### v0 [Deprecated]
+
+v0 has been fully deprecated and nothing new should be built based on it.
+The v1 endpoints should fully support any existing use cases. If any routes are discovered 
+to be missing please open an issue or PR. 
+
+Since v0 and v1 endpoints can coexists in a single application, both will stay
+accessible for a while. The v0 endpoints are scheduled to be deleted from the 
+code once our clients are past the risk of potential rollbacks to versions with v0 implementations.
+
+<details><summary>[Deprecated] Click me</summary>
 
 The existing entity endpoints are:
 - /blacklist
@@ -67,6 +68,7 @@ There is an additional endpoint, that will return the supported versions of the 
 Authentication happens via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).  
 No kind of authorization is existent, you either have access, or you don't. In terms of security, treat this the same way you would treat a redis instance.  
 
+</details>
 
 ## Building And Testing Quarterdeck
 
