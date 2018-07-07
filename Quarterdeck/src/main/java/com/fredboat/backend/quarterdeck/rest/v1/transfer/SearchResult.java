@@ -27,7 +27,7 @@ package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import fredboat.definitions.SearchProvider;
+import com.fredboat.backend.shared.SearchProvider;
 
 /**
  * Created by napster on 20.05.18.

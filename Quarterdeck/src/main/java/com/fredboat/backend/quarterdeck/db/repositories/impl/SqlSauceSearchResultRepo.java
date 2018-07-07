@@ -30,7 +30,7 @@ import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResult;
 import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResultId;
 import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
 import com.fredboat.backend.quarterdeck.db.repositories.api.SearchResultRepo;
-import fredboat.definitions.SearchProvider;
+import com.fredboat.backend.shared.SearchProvider;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DbUtils;
 

@@ -29,7 +29,7 @@ import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResultId;
 import com.fredboat.backend.quarterdeck.db.repositories.api.SearchResultRepo;
 import com.fredboat.backend.quarterdeck.parsing.PatchParseUtil;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.SearchResult;
-import fredboat.definitions.SearchProvider;
+import com.fredboat.backend.shared.SearchProvider;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.http.HttpStatus;
