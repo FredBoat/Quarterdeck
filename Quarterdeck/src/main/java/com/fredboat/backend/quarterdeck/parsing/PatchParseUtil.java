@@ -26,7 +26,7 @@
 package com.fredboat.backend.quarterdeck.parsing;
 
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
-import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
+import com.fredboat.backend.shared.GuildPermissionLevel;
 
 import javax.annotation.CheckReturnValue;
 import java.util.Map;

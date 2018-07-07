@@ -25,7 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.parsing;
 
-import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
+import com.fredboat.backend.shared.GuildPermissionLevel;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

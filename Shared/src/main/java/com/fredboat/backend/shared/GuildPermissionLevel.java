@@ -23,12 +23,14 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v1.transfer;
+package com.fredboat.backend.shared;
 
 import java.util.Optional;
 
 public enum GuildPermissionLevel {
-    ADMIN, DJ, USER;
+    ADMIN,
+    DJ,
+    USER;
 
     public static Optional<GuildPermissionLevel> parse(String input) {
         for (GuildPermissionLevel level : GuildPermissionLevel.values()) {
