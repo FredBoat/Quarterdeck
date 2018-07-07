@@ -18,9 +18,8 @@ subprojects {
             //@formatter:off
 
             //plugin versions
-            gradleGitVersion        = '1.4.21'
-            springBootVersion       = '2.0.1.RELEASE'
-            propDepsVersion         = '0.0.9.RELEASE'
+            gradleGitVersion        = '1.5.1'
+            springBootVersion       = '2.0.3.RELEASE'
             sonarqubeVersion        = '2.6.2'
 
             //@formatter:on
@@ -33,7 +32,6 @@ subprojects {
         dependencies {
             classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:${gradleGitVersion}"
             classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-            classpath "io.spring.gradle:propdeps-plugin:${propDepsVersion}"
             classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${sonarqubeVersion}"
         }
     }
@@ -55,18 +53,18 @@ subprojects {
         fredBoatRootVersion         = '0392c55abf2d4238ddb1221d082bed698149a1b0'
         springBootVersion           = "${springBootVersion}"
 
-        sqlsauceVersion             = '0.2.2'
+        sqlsauceVersion             = '0.2.3'
         hibernateVersion            = '5.2.17.Final'
-        flywayVersion               = '5.0.7'
+        flywayVersion               = '5.1.4'
         dsProxyVersion              = '1.4.9'
         jaxbApiVersion              = '2.3.0'
-        springfoxVersion            = '2.8.0'
-        fastUtilVersion             = '8.1.1'
+        springfoxVersion            = '2.9.2'
+        fastUtilVersion             = '8.2.1'
 
         jUnitVersion                = '5.2.0'
         apiGuardianVersion          = '1.0.0'
-        springSecurityTestVersion   = '5.0.4.RELEASE'
-        dockerComposeRuleVersion    = '0.33.0'
+        springSecurityTestVersion   = '5.0.6.RELEASE'
+        dockerComposeRuleVersion    = '0.34.0'
         //@formatter:on
     }
 }
@@ -76,8 +74,8 @@ ext {
     moduleName = 'Backend'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+wrapper {
+    gradleVersion = '4.8.1'
     //noinspection UnnecessaryQualifiedReference
     distributionType = Wrapper.DistributionType.ALL
 }
