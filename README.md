@@ -99,8 +99,8 @@ docker rm quarterdecktest_db_1
 
 
 ## Contributing
-If you are interested, you can read about contributing to this project [here](https://github.com/Frederikam/FredBoat/blob/master/CONTRIBUTING.md).
+The constribution guideline for this project can be found [here](CONTRIBUTING.md).
 
 
 ## Code of Conduct
-The code of conduct for this project can be found [here](https://github.com/Frederikam/FredBoat/blob/master/CODE_OF_CONDUCT.md).
+The code of conduct for this project can be found [here](https://github.com/Frederikam/FredBoat/blob/dev/CODE_OF_CONDUCT.md).
