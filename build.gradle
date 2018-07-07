@@ -53,6 +53,9 @@ subprojects {
         fredBoatRootVersion         = '0392c55abf2d4238ddb1221d082bed698149a1b0'
         springBootVersion           = "${springBootVersion}"
 
+        logbackVersion              = '1.2.3'
+        sentryVersion               = '1.7.5'
+
         sqlsauceVersion             = '0.2.3'
         hibernateVersion            = '5.2.17.Final'
         flywayVersion               = '5.1.4'
@@ -60,6 +63,9 @@ subprojects {
         jaxbApiVersion              = '2.3.0'
         springfoxVersion            = '2.9.2'
         fastUtilVersion             = '8.2.1'
+        prometheusVersion           = '0.4.0'
+        commonsIOVersion            = '2.6'
+        napsterAnnotations          = '0.0.1'
 
         jUnitVersion                = '5.2.0'
         apiGuardianVersion          = '1.0.0'
