@@ -25,7 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.parsing;
 
-import fredboat.definitions.Language;
+import com.fredboat.backend.shared.Language;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
