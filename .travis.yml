@@ -22,11 +22,39 @@ cache:
     - "$HOME/.sonar/cache"
 
 stages:
+  - build & test
   - sonar
 
 jobs:
   fast_finish: true
+  allow_failures:
+    - jdk: openjdk-ea
+    - jdk: oraclejdk-ea
   include:
+    - stage: build & test
+      jdk: openjdk10
+      script:
+        - "java -Xmx32m -version"
+        - "./gradlew build --info"
+
+    - stage: build & test
+      jdk: oraclejdk10
+      script:
+        - "java -Xmx32m -version"
+        - "./gradlew build --info"
+
+    - stage: build & test
+      jdk: openjdk-ea
+      script:
+        - "java -Xmx32m -version"
+        - "./gradlew build -x test --info" #tests skipped due to jacoco incompatibility, watch https://github.com/jacoco/jacoco/issues/663
+
+    - stage: build & test
+      jdk: oraclejdk-ea
+      script:
+        - "java -Xmx32m -version"
+        - "./gradlew build -x test --info" #tests skipped due to jacoco incompatibility, watch https://github.com/jacoco/jacoco/issues/663
+
     - stage: sonar
       jdk: openjdk10
       before_script:
