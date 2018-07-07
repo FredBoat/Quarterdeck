@@ -57,6 +57,8 @@ whitelist:
     - 166604053629894657
 
 spring:
+  main:
+    banner-mode: log
   output:
     ansi:
       enabled: detect                # for developers: setting this to "always" will force colored logs in your console

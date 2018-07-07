@@ -27,7 +27,7 @@ package com.fredboat.backend.quarterdeck;
 
 import com.fredboat.backend.quarterdeck.info.AppInfo;
 import com.fredboat.backend.quarterdeck.info.GitRepoState;
-import com.fredboat.backend.quarterdeck.rest.v0.EntityController;
+import com.fredboat.backend.quarterdeck.rest.v1.EntityController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -37,6 +37,8 @@ import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
+import org.springframework.boot.context.event.ApplicationFailedEvent;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -66,38 +68,52 @@ public class Application {
             System.out.println("Version info printed, exiting.");
             return;
         }
-        log.info(getVersionInfo());
 
         System.setProperty("spring.config.name", "quarterdeck");
-        SpringApplication.run(Application.class, args);
+        SpringApplication springApplication = new SpringApplication(Application.class);
+        springApplication.addListeners(
+                event -> {
+                    if (event instanceof ApplicationEnvironmentPreparedEvent) {
+                        log.info(getVersionInfo());
+                    }
+                },
+                event -> {
+                    if (event instanceof ApplicationFailedEvent) {
+                        ApplicationFailedEvent failed = (ApplicationFailedEvent) event;
+                        log.error("Application failed", failed.getException());
+                    }
+                }
+        );
+        springApplication.run(args);
     }
 
     private static String getVersionInfo() {
         AppInfo appInfo = new AppInfo();
         GitRepoState gitRepoState = new GitRepoState();
 
-        return "\n\n" +
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss z")
+                .withZone(ZoneId.of("Europe/Copenhagen"));
+
+        String buildTime = dtf.format(Instant.ofEpochMilli(appInfo.getBuildTime()));
+        String commitTime = dtf.format(Instant.ofEpochMilli(gitRepoState.getCommitTime() * 1000));
+
+        return "\n\n\u001b[36m" +
                 "   ___                   _               _           _    \n" +
                 "  / _ \\ _   _  __ _ _ __| |_ ___ _ __ __| | ___  ___| | __\n" +
                 " | | | | | | |/ _` | '__| __/ _ \\ '__/ _` |/ _ \\/ __| |/ /\n" +
                 " | |_| | |_| | (_| | |  | ||  __/ | | (_| |  __/ (__|   < \n" +
-                "  \\__\\_\\\\__,_|\\__,_|_|   \\__\\___|_|  \\__,_|\\___|\\___|_|\\_\\\n\n"
+                "  \\__\\_\\\\__,_|\\__,_|_|   \\__\\___|_|  \\__,_|\\___|\\___|_|\\_\\\n\n\u001B[0m"
 
                 + "\n\tVersion:        " + appInfo.getVersion()
                 + "\n\tBuild:          " + appInfo.getBuildNumber()
-                + "\n\tCommit:         " + gitRepoState.getCommitIdAbbrev() + " (" + gitRepoState.getBranch() + ")"
-                + "\n\tCommit time:    " + asTimeInCentralEurope(gitRepoState.getCommitTime() * 1000)
+                + "\n\tBuild time:     " + buildTime
+                + "\n\tBranch:         " + gitRepoState.getBranch()
+                + "\n\tCommit:         " + gitRepoState.getCommitIdAbbrev()
+                + "\n\tCommit time:    " + commitTime
                 + "\n\tJVM:            " + Runtime.version()
-                + "\n\tQuarterdeck API " + "v" + EntityController.API_VERSION
+                + "\n\tQuarterdeck API " + "v" + com.fredboat.backend.quarterdeck.rest.v0.EntityController.API_VERSION
+                + " [deprecated], v" + EntityController.API_VERSION
                 + "\n";
-    }
-
-
-    public static final DateTimeFormatter TIME_IN_CENTRAL_EUROPE = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss z")
-            .withZone(ZoneId.of("Europe/Copenhagen"));
-
-    public static String asTimeInCentralEurope(final long epochMillis) {
-        return TIME_IN_CENTRAL_EUROPE.format(Instant.ofEpochMilli(epochMillis));
     }
 
 }

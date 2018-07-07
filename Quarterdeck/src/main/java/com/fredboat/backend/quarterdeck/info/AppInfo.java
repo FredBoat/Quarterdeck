@@ -47,6 +47,7 @@ public class AppInfo {
     private final String groupId;
     private final String artifactId;
     private final String buildNumber;
+    private final long buildTime;
 
     public AppInfo() {
         InputStream resourceAsStream = this.getClass().getResourceAsStream("/app.properties");
@@ -60,6 +61,7 @@ public class AppInfo {
         this.groupId = prop.getProperty("groupId");
         this.artifactId = prop.getProperty("artifactId");
         this.buildNumber = prop.getProperty("buildNumber");
+        this.buildTime = Long.parseLong(prop.getProperty("buildTime"));
     }
 
     public String getVersion() {
@@ -76,6 +78,10 @@ public class AppInfo {
 
     public String getBuildNumber() {
         return this.buildNumber;
+    }
+
+    public long getBuildTime() {
+        return this.buildTime;
     }
 
     public String getVersionBuild() {
