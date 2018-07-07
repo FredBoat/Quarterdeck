@@ -25,7 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.db.entities.cache;
 
-import fredboat.definitions.SearchProvider;
+import com.fredboat.backend.shared.SearchProvider;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;

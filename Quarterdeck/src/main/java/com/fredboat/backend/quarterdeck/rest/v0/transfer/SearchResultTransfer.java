@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResultId;
 import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
-import fredboat.definitions.SearchProvider;
+import com.fredboat.backend.shared.SearchProvider;
 
 import java.io.IOException;
 

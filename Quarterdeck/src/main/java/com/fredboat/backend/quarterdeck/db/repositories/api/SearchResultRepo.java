@@ -28,7 +28,7 @@ package com.fredboat.backend.quarterdeck.db.repositories.api;
 import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResult;
 import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResultId;
 import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
-import fredboat.definitions.SearchProvider;
+import com.fredboat.backend.shared.SearchProvider;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
