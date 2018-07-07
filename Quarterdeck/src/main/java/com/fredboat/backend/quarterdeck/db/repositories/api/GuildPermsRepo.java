@@ -26,7 +26,7 @@
 package com.fredboat.backend.quarterdeck.db.repositories.api;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPermissions;
-import com.fredboat.backend.quarterdeck.rest.v1.transfer.GuildPermissionLevel;
+import com.fredboat.backend.shared.GuildPermissionLevel;
 
 /**
  * Created by napster on 05.02.18.

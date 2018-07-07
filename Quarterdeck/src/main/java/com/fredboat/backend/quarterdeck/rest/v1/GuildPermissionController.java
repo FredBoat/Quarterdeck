@@ -28,6 +28,7 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPermsRepo;
 import com.fredboat.backend.quarterdeck.parsing.PatchParseUtil;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.*;
+import com.fredboat.backend.shared.GuildPermissionLevel;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.web.bind.annotation.*;
