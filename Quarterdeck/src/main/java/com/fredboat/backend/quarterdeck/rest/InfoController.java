@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class InfoController {
 
     private static final String[] VERSIONS = {
-            Integer.toString(com.fredboat.backend.quarterdeck.rest.v0.EntityController.API_VERSION),
             Integer.toString(EntityController.API_VERSION),
     };
 

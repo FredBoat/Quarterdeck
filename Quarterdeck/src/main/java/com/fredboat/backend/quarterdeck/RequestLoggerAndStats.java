@@ -100,12 +100,6 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
             "/info/api/versions"
     );
 
-    //v0 paths look like
-    // /v0/{entity}/[fetch|delete|merge|getraw]
-    //
-    // https://regex101.com/r/cUrr2d/2
-    private static final Pattern V0_ALL_PATHS_REGEX
-            = Pattern.compile("^/v0/[a-z]+/(?:fetch|merge|delete|getraw|getmaxaged)$");
 
     //v1 paths look like
     // /v1/guilds/{guildId}/{endpoint}
@@ -159,12 +153,6 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
                 countIt(servletPath, request);
                 return;
             }
-        }
-
-
-        if (V0_ALL_PATHS_REGEX.matcher(servletPath).matches()) {
-            countIt(servletPath, request);
-            return;
         }
 
         Matcher v1GuildsMatcher = V1_GUILDS_PATHS_REGEX.matcher(servletPath);

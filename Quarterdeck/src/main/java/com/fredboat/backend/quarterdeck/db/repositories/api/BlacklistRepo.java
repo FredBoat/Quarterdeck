@@ -27,24 +27,12 @@ package com.fredboat.backend.quarterdeck.db.repositories.api;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.BlacklistEntry;
 
-import java.util.List;
 import java.util.function.Function;
 
 /**
  * Created by napster on 05.02.18.
  */
 public interface BlacklistRepo extends Repo<Long, BlacklistEntry> {
-
-    /**
-     * @return the whole blacklist aka all entries. Not a lightweight operation, and shouldn't be called outside
-     * of initial population of the blacklist (and probably not even then, reworking the ratelimiter is planned).
-     *
-     * @deprecated This loads a ton of data all at once. A better endpoint will be provided in the future, if a
-     * legitimate use case can be found. Meanwhile, {@link BlacklistRepo#fetch(Object)}} + a cache are good enough.
-     */
-    @Deprecated
-    List<BlacklistEntry> loadBlacklist();
-
 
     /**
      * General purpose change to the blacklist entry in a single transaction.

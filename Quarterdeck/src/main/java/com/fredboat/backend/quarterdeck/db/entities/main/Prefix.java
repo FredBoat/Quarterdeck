@@ -25,14 +25,12 @@
 
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
-import com.fredboat.backend.quarterdeck.rest.v0.transfer.PrefixTransfer;
 import org.hibernate.annotations.Type;
 import space.npstr.sqlsauce.entities.SaucedEntity;
 import space.npstr.sqlsauce.fp.types.EntityKey;
 import space.npstr.sqlsauce.hibernate.types.BasicType;
 
 import javax.annotation.CheckReturnValue;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -94,33 +92,6 @@ public class Prefix extends SaucedEntity<GuildBotId, Prefix> {
             return DEFAULT_PREFIXES;
         }
         return this.values;
-    }
-
-    /**
-     * @deprecated switch to v1 asap pl0x, this method
-     */
-    @Deprecated
-    @Nullable
-    public String getPrefix() {
-        if (this.values.isEmpty()
-                || (this.values.size() == 2 && this.values.contains(";;") && this.values.contains("!"))) {
-            return null; //the client is expected to pick their default one
-        } else {
-            //after the migration, if there was a custom prefix in the old format, it will be the only one in the set
-            return this.values.iterator().next();
-        }
-    }
-
-    @Deprecated
-    public static Prefix fromTransfer(PrefixTransfer transfer) {
-        Prefix result = new Prefix().setId(transfer.getId());
-        result.values = new HashSet<>();
-        String newPrefix = transfer.getPrefix();
-        if (newPrefix != null) {
-            result.values.add(newPrefix);
-        }
-
-        return result;
     }
 
     public Set<String> getPrefixes() {

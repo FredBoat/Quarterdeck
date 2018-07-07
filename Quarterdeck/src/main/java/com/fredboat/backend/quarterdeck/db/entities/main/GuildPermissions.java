@@ -181,43 +181,17 @@ public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
 
         return this;
     }
-    //the boilerplate below is for v0 jackson
-
-
-    public String getAdminList() {
-        return this.adminList;
-    }
-
-    public String getDjList() {
-        return this.djList;
-    }
-
-    public String getUserList() {
-        return this.userList;
-    }
-
-    public void setAdminList(String adminList) {
-        this.adminList = adminList;
-    }
-
-    public void setDjList(String djList) {
-        this.djList = djList;
-    }
-
-    public void setUserList(String userList) {
-        this.userList = userList;
-    }
 
     private List<String> getPermissionListFromEnum(GuildPermissionLevel level) {
         switch (level) {
             case ADMIN:
-                return Arrays.stream(adminList.split(" ")).collect(Collectors.toList());
+                return Arrays.stream(this.adminList.split(" ")).collect(Collectors.toList());
 
             case DJ:
-                return Arrays.stream(djList.split(" ")).collect(Collectors.toList());
+                return Arrays.stream(this.djList.split(" ")).collect(Collectors.toList());
 
             case USER:
-                return Arrays.stream(userList.split(" ")).collect(Collectors.toList());
+                return Arrays.stream(this.userList.split(" ")).collect(Collectors.toList());
 
             default:
                 throw new IllegalArgumentException(UNEXPECTED_ENUM_ERROR + level);

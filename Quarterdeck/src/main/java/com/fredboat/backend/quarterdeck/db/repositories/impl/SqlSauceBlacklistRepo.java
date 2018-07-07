@@ -31,7 +31,6 @@ import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
 import space.npstr.sqlsauce.fp.types.EntityKey;
 
-import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -42,11 +41,6 @@ public class SqlSauceBlacklistRepo extends SqlSauceRepo<Long, BlacklistEntry> im
 
     public SqlSauceBlacklistRepo(DatabaseWrapper dbWrapper) {
         super(dbWrapper, BlacklistEntry.class);
-    }
-
-    @Override
-    public List<BlacklistEntry> loadBlacklist() {
-        return this.dbWrapper.loadAll(BlacklistEntry.class);
     }
 
     @Override

@@ -20,55 +20,8 @@ our testing environment.
 
 ### v0 [Deprecated]
 
-v0 has been fully deprecated and nothing new should be built based on it.
-The v1 endpoints should fully support any existing use cases. If any routes are discovered 
-to be missing please open an issue or PR. 
-
-Since v0 and v1 endpoints can coexists in a single application, both will stay
-accessible for a while. The v0 endpoints are scheduled to be deleted from the 
-code once our clients are past the risk of potential rollbacks to versions with v0 implementations.
-
-<details><summary>[Deprecated] Click me</summary>
-
-The existing entity endpoints are:
-- /blacklist
-- /guildconfig
-- /guilddata
-- /guildmodules
-- /guildperms
-- /prefix
-- /searchresult
-
-Each entity endpoint supports the following operations:
-- POST /fetch
-- POST /merge
-- POST /delete
-
-`fetch` and `delete` require the id to be sent, `merge` the entity itself.  
-
-Some entity endpoints have additional calls:
-- Blacklist:
-  - GET /loadall
-
-- Prefix:
-  - POST /getraw
-
-- Search result:
-  - POST /getmaxaged
-
-The entity endpoints are reachable behind the version path, for example:
-```
-GET http[s]://backend.url[:port]/v0/blacklist/loadall
-```
-
-
-There is an additional endpoint, that will return the supported versions of the API:
-- GET /info/api/versions
-
-Authentication happens via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).  
-No kind of authorization is existent, you either have access, or you don't. In terms of security, treat this the same way you would treat a redis instance.  
-
-</details>
+v0 has been fully deprecated and removed. The v1 endpoints should fully support any existing use cases. 
+If any routes are discovered to be missing please open an issue or PR. 
 
 ## Building And Testing Quarterdeck
 

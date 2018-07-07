@@ -50,10 +50,8 @@ public class InfoControllerTest extends BaseTest {
         this.mockMvc.perform(get("/info/api/versions"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$", both(iterableWithSize(2))
-                        .and(containsInAnyOrder(
-                                Integer.toString(com.fredboat.backend.quarterdeck.rest.v0.EntityController.API_VERSION),
-                                Integer.toString(EntityController.API_VERSION)))));
+                .andExpect(jsonPath("$", both(iterableWithSize(1))
+                        .and(containsInAnyOrder(Integer.toString(EntityController.API_VERSION)))));
     }
 
 

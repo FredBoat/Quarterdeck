@@ -28,16 +28,11 @@ package com.fredboat.backend.quarterdeck.db.repositories.impl;
 import com.fredboat.backend.quarterdeck.config.DatabaseConfiguration;
 import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResult;
 import com.fredboat.backend.quarterdeck.db.entities.cache.SearchResultId;
-import com.fredboat.backend.quarterdeck.db.entities.cache.TrackSearchResult;
 import com.fredboat.backend.quarterdeck.db.repositories.api.SearchResultRepo;
 import com.fredboat.backend.shared.SearchProvider;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DbUtils;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -49,31 +44,6 @@ public class SqlSauceSearchResultRepo extends SqlSauceRepo<SearchResultId, Searc
 
     public SqlSauceSearchResultRepo(DatabaseConfiguration dbConfiguration) {
         super(dbConfiguration.getCacheDbWrapper(), SearchResult.class); //todo noop / reloading
-    }
-
-    @Nullable
-    @Override
-    @Deprecated
-    public TrackSearchResult getMaxAged(SearchResultId id, long maxAgeMillis) {
-        //language=JPAQL
-        String query = "SELECT tsr FROM TrackSearchResult tsr WHERE tsr.searchResultId = :id AND tsr.lookedUp > :oldest";
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-        params.put("oldest", maxAgeMillis < 0 ? 0 : System.currentTimeMillis() - maxAgeMillis);
-
-        List<TrackSearchResult> queryResult = this.dbWrapper.selectJpqlQuery(query, params, TrackSearchResult.class, 1);
-
-        if (queryResult.isEmpty()) {
-            return null;
-        } else {
-            return queryResult.get(0);
-        }
-    }
-
-    @Override
-    @Deprecated
-    public TrackSearchResult mergeLegacy(TrackSearchResult entity) {
-        return this.dbWrapper.merge(entity);
     }
 
     @Override

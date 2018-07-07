@@ -111,8 +111,7 @@ public class Application {
                 + "\n\tCommit:         " + gitRepoState.getCommitIdAbbrev()
                 + "\n\tCommit time:    " + commitTime
                 + "\n\tJVM:            " + Runtime.version()
-                + "\n\tQuarterdeck API " + "v" + com.fredboat.backend.quarterdeck.rest.v0.EntityController.API_VERSION
-                + " [deprecated], v" + EntityController.API_VERSION
+                + "\n\tQuarterdeck API " + "v" + EntityController.API_VERSION
                 + "\n";
     }
 
