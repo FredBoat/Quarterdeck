@@ -55,7 +55,7 @@ subprojects {
 
         sqlsauceVersion             = '0.2.3'
         hibernateVersion            = '5.2.17.Final'
-        flywayVersion               = '5.0.7'
+        flywayVersion               = '5.1.4'
         dsProxyVersion              = '1.4.9'
         jaxbApiVersion              = '2.3.0'
         springfoxVersion            = '2.8.0'
