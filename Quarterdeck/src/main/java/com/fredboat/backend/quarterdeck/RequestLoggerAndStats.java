@@ -134,6 +134,11 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
     private static final Pattern V1_GUILD_PERMISSIONS_REGEX
             = Pattern.compile("^(/v1/guilds/)[0-9]+/(permissions/[a-z]+)/[0-9]+$");
 
+    // https://regex101.com/r/ERsucr/1/
+    // group 1: path before the search term
+    private static final Pattern V1_TRACKS_REGEX
+            = Pattern.compile("^(/v1/tracks/search/[a-z]+)/.+$");
+
     /**
      * Only instrument paths of known complexity to avoid an explosion of metric samples due to path variables.
      */
@@ -190,7 +195,13 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
             return;
         }
 
-        //todo v1 paths are not done yet
+        Matcher v1TracksMatcher = V1_TRACKS_REGEX.matcher(servletPath);
+        if (v1TracksMatcher.matches()) {
+            String invariantPath = v1TracksMatcher.group(1);
+            countIt(invariantPath, request);
+            return;
+        }
+
 
         log.debug("Did not instrument unknown path: {}", servletPath);
         this.apiRequestsNotInstrumented.inc();
