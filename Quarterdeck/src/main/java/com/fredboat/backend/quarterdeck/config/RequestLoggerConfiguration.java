@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.config;
 
+import com.fredboat.backend.quarterdeck.Metrics;
 import com.fredboat.backend.quarterdeck.RequestLoggerAndStats;
 import io.prometheus.client.guava.cache.CacheMetricsCollector;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +46,7 @@ public class RequestLoggerConfiguration {
 
     @Bean
     public AbstractRequestLoggingFilter logFilter() {
-        RequestLoggerAndStats filter = new RequestLoggerAndStats(this.cacheMetrics);
+        RequestLoggerAndStats filter = new RequestLoggerAndStats(this.cacheMetrics, Metrics.apiRequestsNotInstrumented);
         filter.setIncludeQueryString(true);
         filter.setIncludePayload(true);
         filter.setMaxPayloadLength(10000);

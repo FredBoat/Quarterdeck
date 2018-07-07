@@ -29,6 +29,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalNotification;
+import io.prometheus.client.Counter;
 import io.prometheus.client.Summary;
 import io.prometheus.client.guava.cache.CacheMetricsCollector;
 import org.slf4j.Logger;
@@ -65,7 +66,10 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
             })
             .build();
 
-    public RequestLoggerAndStats(CacheMetricsCollector cacheMetrics) {
+    private final Counter apiRequestsNotInstrumented;
+
+    public RequestLoggerAndStats(CacheMetricsCollector cacheMetrics, Counter apiRequestsNotInstrumented) {
+        this.apiRequestsNotInstrumented = apiRequestsNotInstrumented;
         cacheMetrics.addCache("requestTimers", this.timers);
     }
 
@@ -108,8 +112,8 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
     // + a few special cases
     //
     // https://regex101.com/r/QKUTbi/1
-    // group 1: everything before the guildId
-    // group 2: everything after the guildId
+    // group 1: path before the guildId
+    // group 2: path after the guildId
     private static final Pattern V1_GUILDS_PATHS_REGEX
             = Pattern.compile("^(/v1/guilds/)[0-9]+/([a-z]+)$");
 
@@ -118,12 +122,31 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
     private static final Pattern V1_BLACKLIST_AND_RATELIMIT_PATHS_REGEX
             = Pattern.compile("^(/v1/(?:ratelimit|blacklist))/?[0-9]*$");
 
+    // https://regex101.com/r/h8JNt9/1
+    // group 1: path before the guildId
+    // group 2: module specific path after the guildId
+    private static final Pattern V1_GUILD_MODULES_REGEX
+            = Pattern.compile("^(/v1/guilds/)[0-9]+/(modules/[a-z]+)$");
+
+    // https://regex101.com/r/vmf6YG/1
+    // group 1: path before the guildId
+    // group 2: permissions specific path between guildId and userId
+    private static final Pattern V1_GUILD_PERMISSIONS_REGEX
+            = Pattern.compile("^(/v1/guilds/)[0-9]+/(permissions/[a-z]+)/[0-9]+$");
+
+    // https://regex101.com/r/ERsucr/1/
+    // group 1: path before the search term
+    private static final Pattern V1_TRACKS_REGEX
+            = Pattern.compile("^(/v1/tracks/search/[a-z]+)/.+$");
 
     /**
      * Only instrument paths of known complexity to avoid an explosion of metric samples due to path variables.
      */
     private void instrumentBeforeApiRequest(HttpServletRequest request) {
         String servletPath = request.getServletPath().toLowerCase();
+        if (servletPath.isEmpty()) { //this can happen in tests
+            servletPath = request.getRequestURI().toLowerCase();
+        }
 
         for (String ignored : IGNORED_PATHS) {
             if (servletPath.startsWith(ignored)) {
@@ -158,10 +181,30 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
             return;
         }
 
-        //todo v1 paths are not done yet
+        Matcher v1GuildModulesMatcher = V1_GUILD_MODULES_REGEX.matcher(servletPath);
+        if (v1GuildModulesMatcher.matches()) {
+            String invariantPath = v1GuildModulesMatcher.group(1) + v1GuildModulesMatcher.group(2);
+            countIt(invariantPath, request);
+            return;
+        }
+
+        Matcher v1GuildPermissionsMatcher = V1_GUILD_PERMISSIONS_REGEX.matcher(servletPath);
+        if (v1GuildPermissionsMatcher.matches()) {
+            String invariantPath = v1GuildPermissionsMatcher.group(1) + v1GuildPermissionsMatcher.group(2);
+            countIt(invariantPath, request);
+            return;
+        }
+
+        Matcher v1TracksMatcher = V1_TRACKS_REGEX.matcher(servletPath);
+        if (v1TracksMatcher.matches()) {
+            String invariantPath = v1TracksMatcher.group(1);
+            countIt(invariantPath, request);
+            return;
+        }
+
 
         log.debug("Did not instrument unknown path: {}", servletPath);
-        Metrics.apiRequestsNotInstrumented.inc();
+        this.apiRequestsNotInstrumented.inc();
     }
 
     private void countIt(String sanitizedPath, HttpServletRequest request) {
