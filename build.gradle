@@ -63,7 +63,7 @@ subprojects {
 
         jUnitVersion                = '5.2.0'
         apiGuardianVersion          = '1.0.0'
-        springSecurityTestVersion   = '5.0.4.RELEASE'
+        springSecurityTestVersion   = '5.0.6.RELEASE'
         dockerComposeRuleVersion    = '0.34.0'
         //@formatter:on
     }
