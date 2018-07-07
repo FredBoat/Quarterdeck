@@ -26,4 +26,6 @@ publishing {
     }
 }
 
-dependencies {}
+dependencies {
+    compileOnly group: 'space.npstr', name: 'annotations', version: napsterAnnotations
+}
