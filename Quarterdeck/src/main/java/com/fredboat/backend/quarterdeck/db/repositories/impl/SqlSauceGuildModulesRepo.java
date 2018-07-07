@@ -27,7 +27,7 @@ package com.fredboat.backend.quarterdeck.db.repositories.impl;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildModules;
 import com.fredboat.backend.quarterdeck.db.repositories.api.GuildModulesRepo;
-import fredboat.definitions.Module;
+import com.fredboat.backend.shared.Module;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
 

@@ -26,7 +26,7 @@
 package com.fredboat.backend.quarterdeck.db.repositories.api;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildModules;
-import fredboat.definitions.Module;
+import com.fredboat.backend.shared.Module;
 
 /**
  * Created by napster on 05.02.18.
