@@ -109,8 +109,6 @@ dependencies {
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: jUnitVersion
     //required for the docker compose rule https://github.com/palantir/docker-compose-rule/issues/224
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-migrationsupport', version: jUnitVersion
-    // To avoid compiler warnings about @API annotations in JUnit code.
-    testCompileOnly group: 'org.apiguardian', name: 'apiguardian-api', version: apiGuardianVersion
     //allows us to fire up docker containers to test with, for example our postgres database
     testCompile group: 'com.palantir.docker.compose', name: 'docker-compose-rule-junit4', version: dockerComposeRuleVersion
 }
