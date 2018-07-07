@@ -20,7 +20,6 @@ subprojects {
             //plugin versions
             gradleGitVersion        = '1.4.21'
             springBootVersion       = '2.0.1.RELEASE'
-            propDepsVersion         = '0.0.9.RELEASE'
             sonarqubeVersion        = '2.6.2'
 
             //@formatter:on
@@ -33,7 +32,6 @@ subprojects {
         dependencies {
             classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:${gradleGitVersion}"
             classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-            classpath "io.spring.gradle:propdeps-plugin:${propDepsVersion}"
             classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${sonarqubeVersion}"
         }
     }
