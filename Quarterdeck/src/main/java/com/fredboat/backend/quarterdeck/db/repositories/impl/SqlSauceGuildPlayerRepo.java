@@ -30,7 +30,7 @@ import com.fredboat.backend.quarterdeck.db.repositories.api.GuildPlayerRepo;
 import com.fredboat.backend.quarterdeck.parsing.PatchParseUtil;
 import com.fredboat.backend.quarterdeck.parsing.RepeatModeParseException;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
-import fredboat.definitions.RepeatMode;
+import com.fredboat.backend.shared.RepeatMode;
 import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DatabaseWrapper;
 

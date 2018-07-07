@@ -25,8 +25,8 @@
 
 package com.fredboat.backend.quarterdeck;
 
-import fredboat.definitions.RepeatMode;
 import com.fredboat.backend.shared.Language;
+import com.fredboat.backend.shared.RepeatMode;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
