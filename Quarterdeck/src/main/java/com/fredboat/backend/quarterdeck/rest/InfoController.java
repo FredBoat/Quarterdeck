@@ -25,7 +25,7 @@
 
 package com.fredboat.backend.quarterdeck.rest;
 
-import com.fredboat.backend.quarterdeck.rest.v0.EntityController;
+import com.fredboat.backend.quarterdeck.rest.v1.EntityController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,12 +37,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/info")
 public class InfoController {
 
+    private static final String[] VERSIONS = {
+            Integer.toString(com.fredboat.backend.quarterdeck.rest.v0.EntityController.API_VERSION),
+            Integer.toString(EntityController.API_VERSION),
+    };
+
     //a string array of supported version numbers
     @GetMapping("/api/versions")
     public String[] getVersion() {
-        String[] version = new String[1];
-        version[0] = Integer.toString(EntityController.API_VERSION);
-
-        return version;
+        return VERSIONS;
     }
 }
