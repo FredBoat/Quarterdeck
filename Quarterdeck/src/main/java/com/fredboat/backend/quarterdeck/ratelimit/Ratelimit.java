@@ -28,10 +28,11 @@ package com.fredboat.backend.quarterdeck.ratelimit;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.RatelimitRequest;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.RatelimitResponse;
+import com.google.common.base.Throwables;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import fredboat.util.rest.CacheUtil;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import io.prometheus.client.guava.cache.CacheMetricsCollector;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import org.slf4j.Logger;
@@ -97,7 +98,7 @@ public class Ratelimit {
 
         long id = idOpt.get().longValue();
 
-        Bucket bucket = CacheUtil.getUncheckedUnwrapped(this.rates, id);
+        Bucket bucket = getUncheckedUnwrapped(this.rates, id);
         if (bucket == null) {
             log.warn("Shiver me timbers, cache calling new Bucket({}) returned null", id);
             return RatelimitResponse.granted(); //not expected to happen, let it slip in a user friendly way
@@ -169,6 +170,18 @@ public class Ratelimit {
         public boolean equals(Object obj) {
             return (obj instanceof Bucket)
                     && ((Bucket) obj).id == this.id;
+        }
+    }
+
+
+    private static <K, V> V getUncheckedUnwrapped(LoadingCache<K, V> cache, K key) {
+        try {
+            return cache.getUnchecked(key);
+        } catch (UncheckedExecutionException e) {
+            Throwables.throwIfUnchecked(e.getCause());
+
+            // Will never run.
+            throw new IllegalStateException(e);
         }
     }
 }
