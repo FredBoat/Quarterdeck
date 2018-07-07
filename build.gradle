@@ -59,7 +59,7 @@ subprojects {
         dsProxyVersion              = '1.4.9'
         jaxbApiVersion              = '2.3.0'
         springfoxVersion            = '2.8.0'
-        fastUtilVersion             = '8.1.1'
+        fastUtilVersion             = '8.2.1'
 
         jUnitVersion                = '5.2.0'
         apiGuardianVersion          = '1.0.0'
