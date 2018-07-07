@@ -30,7 +30,7 @@ import com.fredboat.backend.quarterdeck.parsing.ModuleParseException;
 import com.fredboat.backend.quarterdeck.parsing.PatchParseUtil;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.CommandModules;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
-import fredboat.definitions.Module;
+import com.fredboat.backend.shared.Module;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.web.bind.annotation.DeleteMapping;

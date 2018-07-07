@@ -23,38 +23,43 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v1.transfer;
+package com.fredboat.backend.shared;
 
-import com.fredboat.backend.quarterdeck.db.entities.main.GuildModules;
-import com.fredboat.backend.shared.Module;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.Optional;
 
 /**
- * Created by napster on 09.04.18.
- *
- * @see com.fredboat.backend.quarterdeck.rest.v1.transfer (package-info.java)
+ * Created by napster on 07.07.18.
  */
-public class CommandModule {
+public enum Module {
+    ADMIN,
+    INFO,
+    CONFIG,
+    MUSIC,
+    MOD,
+    UTIL,
+    FUN,
+    //
+    ;
 
-    private final Module moduleId;
-    private final boolean enabled;
-
-    public static CommandModule of(GuildModules guildModules, Module module) {
-        return new CommandModule(module, guildModules.isModuleEnabledOrDefault(module));
+    public boolean isEnabledByDefault() {
+        return true;
     }
 
-    public CommandModule(Module moduleId, boolean enabled) {
-        this.moduleId = moduleId;
-        this.enabled = enabled;
-    }
+    /**
+     * This method tries to parse an input into a module that we recognize.
+     *
+     * @param input
+     *         input to be parsed into a Module known to us (= defined in this enum)
+     *
+     * @return the optional module identified from the input.
+     */
+    public static Optional<Module> parse(String input) {
+        for (Module module : Module.values()) {
+            if (module.name().equalsIgnoreCase(input)) {
+                return Optional.of(module);
+            }
+        }
 
-    // the getters are picked up by springfox for the documentation
-    @ApiModelProperty(position = -1)
-    public Module getModuleId() {
-        return this.moduleId;
-    }
-
-    public boolean isEnabled() {
-        return this.enabled;
+        return Optional.empty();
     }
 }

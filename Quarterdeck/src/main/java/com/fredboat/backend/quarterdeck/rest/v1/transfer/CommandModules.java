@@ -26,7 +26,7 @@
 package com.fredboat.backend.quarterdeck.rest.v1.transfer;
 
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildModules;
-import fredboat.definitions.Module;
+import com.fredboat.backend.shared.Module;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;

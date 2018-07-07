@@ -26,7 +26,7 @@
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import fredboat.definitions.Module;
+import com.fredboat.backend.shared.Module;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import space.npstr.sqlsauce.entities.SaucedEntity;
