@@ -28,8 +28,11 @@ package com.fredboat.backend.quarterdeck.config;
 import com.fasterxml.classmate.TypeResolver;
 import com.fredboat.backend.quarterdeck.config.property.DocsConfig;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
+import com.fredboat.backend.shared.GuildPermissionLevel;
 import com.fredboat.backend.shared.Language;
+import com.fredboat.backend.shared.Module;
 import com.fredboat.backend.shared.RepeatMode;
+import com.fredboat.backend.shared.SearchProvider;
 import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -85,7 +88,12 @@ public class SwaggerConfiguration {
                 .paths(or(ant("/v1/guilds/**"),
                         ant("/v1/tracks/**")))
                 .build()
-                .additionalModels(this.typeResolver.resolve(Language.class), this.typeResolver.resolve(RepeatMode.class))
+                .additionalModels(
+                        this.typeResolver.resolve(GuildPermissionLevel.class),
+                        this.typeResolver.resolve(Language.class),
+                        this.typeResolver.resolve(Module.class),
+                        this.typeResolver.resolve(RepeatMode.class),
+                        this.typeResolver.resolve(SearchProvider.class))
                 .securitySchemes(List.of(new BasicAuth("test")))
                 .securityContexts(List.of(securityContext()))
                 ;
