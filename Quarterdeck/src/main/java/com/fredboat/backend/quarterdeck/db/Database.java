@@ -26,14 +26,18 @@
 package com.fredboat.backend.quarterdeck.db;
 
 import com.fredboat.backend.quarterdeck.config.property.DatabaseConfig;
+import com.github.benmanes.caffeine.jcache.configuration.CaffeineConfiguration;
+import com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory;
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
-import net.sf.ehcache.CacheManager;
 import net.ttddyy.dsproxy.listener.logging.SLF4JLogLevel;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
+import org.hibernate.cache.jcache.internal.JCacheRegionFactory;
+import org.hibernate.cfg.Environment;
+import org.hibernate.tool.schema.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -44,6 +48,12 @@ import space.npstr.sqlsauce.DatabaseConnection;
 import space.npstr.sqlsauce.DatabaseException;
 
 import javax.annotation.Nullable;
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+import javax.cache.Caching;
+import javax.cache.configuration.Factory;
+import javax.cache.expiry.ExpiryPolicy;
+import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -157,13 +167,12 @@ public class Database {
         Flyway flyway = buildFlyway("classpath:com/fredboat/backend/quarterdeck/db/migrations/main");
 
         DatabaseConnection databaseConnection = getBasicConnectionBuilder(MAIN_PERSISTENCE_UNIT_NAME, this.dbConf.getMainJdbcUrl())
-                .setHibernateProps(buildHibernateProps("ehcache_main.xml"))
+                .setHibernateProps(buildHibernateProps())
                 .addEntityPackage("com.fredboat.backend.quarterdeck.db.entities.main")
                 .setFlyway(flyway)
                 .build();
 
-        log.debug(CacheManager.getCacheManager("MAIN_CACHEMANAGER").getActiveConfigurationText());
-
+        log2ndLevelCacheConfig();
         return databaseConnection;
     }
 
@@ -176,13 +185,12 @@ public class Database {
         Flyway flyway = buildFlyway("classpath:com/fredboat/backend/quarterdeck/db/migrations/cache");
 
         DatabaseConnection databaseConnection = getBasicConnectionBuilder(CACHE_PERSISTENCE_UNIT_NAME, jdbc)
-                .setHibernateProps(buildHibernateProps("ehcache_cache.xml"))
+                .setHibernateProps(buildHibernateProps())
                 .addEntityPackage("com.fredboat.backend.quarterdeck.db.entities.cache")
                 .setFlyway(flyway)
                 .build();
 
-        log.debug(CacheManager.getCacheManager("CACHE_CACHEMANAGER").getActiveConfigurationText());
-
+        log2ndLevelCacheConfig();
         return databaseConnection;
     }
 
@@ -216,18 +224,56 @@ public class Database {
         return hikariConfig;
     }
 
-    private Properties buildHibernateProps(String ehcacheXmlFile) {
+    private Properties buildHibernateProps() {
         Properties hibernateProps = DatabaseConnection.Builder.getDefaultHibernateProps();
-        hibernateProps.put("hibernate.cache.use_second_level_cache", "true");
-        hibernateProps.put("hibernate.cache.use_query_cache", "true");
-        hibernateProps.put("net.sf.ehcache.configurationResourceName", ehcacheXmlFile);
-        hibernateProps.put("hibernate.cache.provider_configuration_file_resource_path", ehcacheXmlFile);
-        hibernateProps.put("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
+        hibernateProps.put(Environment.USE_SECOND_LEVEL_CACHE, true);
+        hibernateProps.put(Environment.USE_QUERY_CACHE, true);
+        hibernateProps.put(Environment.CACHE_REGION_FACTORY, JCacheRegionFactory.class.getName());
+        hibernateProps.put("hibernate.javax.cache.provider", CaffeineCachingProvider.class.getName());
+        hibernateProps.put("hibernate.javax.cache.missing_cache_strategy", "fail");
         //hide some exception spam on start, as postgres does not support CLOBs
         // https://stackoverflow.com/questions/43905119/postgres-error-method-org-postgresql-jdbc-pgconnection-createclob-is-not-imple
-        hibernateProps.put("hibernate.jdbc.lob.non_contextual_creation", "true");
-        hibernateProps.put("hibernate.hbm2ddl.auto", "validate");
+        hibernateProps.put(Environment.NON_CONTEXTUAL_LOB_CREATION, true);
+        hibernateProps.put(Environment.HBM2DDL_AUTO, Action.VALIDATE);
 
         return hibernateProps;
+    }
+
+    private void log2ndLevelCacheConfig() {
+        CacheManager cacheManager = Caching.getCachingProvider().getCacheManager();
+        cacheManager.getCacheNames().forEach(name -> {
+            Cache<Object, Object> cache = cacheManager.getCache(name);
+            @SuppressWarnings("unchecked")
+            CaffeineConfiguration cacheConfiguration = cache.getConfiguration(CaffeineConfiguration.class);
+            String configAsString = caffeineConfigToString(cacheConfiguration);
+            log.debug("\nCache config: {}\n{}", name, configAsString);
+        });
+    }
+
+    private String caffeineConfigToString(CaffeineConfiguration<?, ?> caffeineConfig) {
+        Factory<ExpiryPolicy> expiryPolicyFactory = caffeineConfig.getExpiryPolicyFactory();
+        ExpiryPolicy expiryPolicy = expiryPolicyFactory.create();
+        javax.cache.expiry.Duration expiryForCreation = expiryPolicy.getExpiryForCreation();
+        javax.cache.expiry.Duration expiryForUpdate = expiryPolicy.getExpiryForUpdate();
+        javax.cache.expiry.Duration expiryForAccess = expiryPolicy.getExpiryForAccess();
+        Duration creation = Duration.of(expiryForCreation.getDurationAmount(), expiryForCreation.getTimeUnit().toChronoUnit());
+        Duration update = Duration.of(expiryForUpdate.getDurationAmount(), expiryForUpdate.getTimeUnit().toChronoUnit());
+        Duration access = Duration.of(expiryForAccess.getDurationAmount(), expiryForAccess.getTimeUnit().toChronoUnit());
+        return "  Key type: " + caffeineConfig.getKeyType()
+                + "\n  Value type: " + caffeineConfig.getValueType()
+                + "\n  Store by value: " + caffeineConfig.isStoreByValue()
+                + "\n  Read through: " + caffeineConfig.isReadThrough()
+                + "\n  Write through: " + caffeineConfig.isWriteThrough()
+                + "\n  Statistics: " + caffeineConfig.isStatisticsEnabled()
+                + "\n  Management: " + caffeineConfig.isManagementEnabled()
+                + "\n  Lazy creation expiration: " + creation
+                + "\n  Lazy update expiration: " + update
+                + "\n  Lazy access expiration: " + access
+                + "\n  Eager expire after access: " + caffeineConfig.getExpireAfterAccess()
+                + "\n  Eager expire after write: " + caffeineConfig.getExpireAfterWrite()
+                + "\n  Refresh after write: " + caffeineConfig.getRefreshAfterWrite()
+                + "\n  Maximum size: " + caffeineConfig.getMaximumSize()
+                + "\n  Maximum wight: " + caffeineConfig.getMaximumWeight()
+                ;
     }
 }
