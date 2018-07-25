@@ -41,7 +41,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "guild_config")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "guild_config")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "guild_config")
 public class GuildConfig extends SaucedEntity<String, GuildConfig> {
 
     public static final Language DEFAULT_LANGAUGE = Language.EN_US;

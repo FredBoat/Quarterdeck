@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 @Entity
 @Table(name = "guild_permissions")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "guild_permissions")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "guild_permissions")
 public class GuildPermissions extends SaucedEntity<String, GuildPermissions> {
     
     private static final String UNEXPECTED_ENUM_ERROR = "Unexpected enum ";

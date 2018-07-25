@@ -66,7 +66,7 @@ import java.util.Optional;
 @Entity
 @Table(name = "guild_modules")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "guild_modules")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "guild_modules")
 public class GuildModules extends SaucedEntity<Long, GuildModules> {
 
     @Id
