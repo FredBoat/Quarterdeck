@@ -25,8 +25,11 @@
 
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import space.npstr.sqlsauce.entities.SaucedEntity;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -39,6 +42,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "blacklist")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "blacklist")
 public class BlacklistEntry extends SaucedEntity<Long, BlacklistEntry> {
 
     //id of the user or guild that this blacklist entry belongs to
