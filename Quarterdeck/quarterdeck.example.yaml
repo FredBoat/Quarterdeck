@@ -48,8 +48,8 @@ security:
   admins:
     # Set a name and a pass. These have to be the same as set up in the fredboat.yaml
     # Do not leave any of them blank or empty.
-    - name: ""
-      pass: ""
+    - name: "admin"
+      pass: "admin"
 
 whitelist:
   userIds:                   # a list of discord user ids that shall never be ratelimited or blacklisted

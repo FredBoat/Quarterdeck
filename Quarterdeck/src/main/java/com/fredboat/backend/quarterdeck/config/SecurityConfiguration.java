@@ -27,6 +27,8 @@ package com.fredboat.backend.quarterdeck.config;
 
 import com.fredboat.backend.quarterdeck.config.property.DocsConfig;
 import com.fredboat.backend.quarterdeck.config.property.SecurityConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -47,6 +49,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfiguration.class);
     private final DocsConfig docsConfig;
 
     protected SecurityConfiguration(DocsConfig docsConfig) {
@@ -90,6 +93,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             if (admin.getPass().isEmpty()) {
                 throw new InvalidConfigurationException("Admin " + admin.getName() + " configured with empty pass.");
             }
+
+            if (admin.getName().equals("admin") && admin.getPass().equals("admin")) {
+                log.warn("An admin account has been configured with default username and password. " +
+                        "This is unsafe if Quarterdeck is exposed to the internet.");
+            }
+
             //we are treating the pass as tokens right now so using the noop encoder is fine
             inMemoryAuth.withUser(admin.getName()).password("{noop}" + admin.getPass()).roles("ADMIN", "USER");
         }
