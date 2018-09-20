@@ -25,6 +25,7 @@
 
 package com.fredboat.backend.quarterdeck;
 
+import com.fredboat.backend.quarterdeck.metrics.Metrics;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalCause;

@@ -23,36 +23,15 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.config;
-
-import com.fredboat.backend.quarterdeck.RequestLoggerAndStats;
-import com.fredboat.backend.quarterdeck.metrics.Metrics;
-import io.prometheus.client.guava.cache.CacheMetricsCollector;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.filter.AbstractRequestLoggingFilter;
 
 /**
- * Created by napster on 17.02.18.
+ * Created by napster on 20.09.18.
  */
-@Configuration
-public class RequestLoggerConfiguration {
+@FieldsAreNonNullByDefault
+@ParametersAreNonnullByDefault
+@ReturnTypesAreNonNullByDefault
+package com.fredboat.backend.quarterdeck.metrics;
 
-    private final CacheMetricsCollector cacheMetrics;
-
-    public RequestLoggerConfiguration(CacheMetricsCollector cacheMetrics) {
-        this.cacheMetrics = cacheMetrics;
-    }
-
-    @Bean
-    public AbstractRequestLoggingFilter logFilter() {
-        RequestLoggerAndStats filter = new RequestLoggerAndStats(this.cacheMetrics, Metrics.apiRequestsNotInstrumented);
-        filter.setIncludeQueryString(true);
-        filter.setIncludePayload(true);
-        filter.setMaxPayloadLength(10000);
-        filter.setIncludeHeaders(true);
-        filter.setAfterMessagePrefix("REQUEST DATA : ");
-        return filter;
-    }
-
-}
+import space.npstr.annotations.FieldsAreNonNullByDefault;
+import space.npstr.annotations.ParametersAreNonnullByDefault;
+import space.npstr.annotations.ReturnTypesAreNonNullByDefault;

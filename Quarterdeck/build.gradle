@@ -97,6 +97,7 @@ dependencies {
     compile group: 'io.prometheus', name: 'simpleclient_hibernate', version: prometheusVersion
     compile group: 'io.prometheus', name: 'simpleclient_guava', version: prometheusVersion
     compile group: 'io.prometheus', name: 'simpleclient_servlet', version: prometheusVersion
+    compile group: 'io.prometheus', name: 'simpleclient_caffeine', version: prometheusVersion
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVersion
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion) {

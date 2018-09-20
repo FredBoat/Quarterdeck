@@ -23,7 +23,7 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck;
+package com.fredboat.backend.quarterdeck.metrics;
 
 import ch.qos.logback.classic.LoggerContext;
 import com.fredboat.backend.quarterdeck.config.DatabaseConfiguration;
