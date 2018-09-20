@@ -58,9 +58,7 @@ public class InstrumentedCaffeineCacheManager extends CaffeineCacheManagerProxy 
     }
 
     @Override
-    public <K, V, C extends Configuration<K, V>> javax.cache.Cache<K, V> createCache(String cacheName, C configuration)
-            throws IllegalArgumentException {
-
+    public <K, V, C extends Configuration<K, V>> javax.cache.Cache<K, V> createCache(String cacheName, C configuration) {
         javax.cache.Cache<K, V> cache = super.createCache(cacheName, configuration);
         @SuppressWarnings("unchecked") Cache<K, V> caffeineCache = cache.unwrap(Cache.class);
 

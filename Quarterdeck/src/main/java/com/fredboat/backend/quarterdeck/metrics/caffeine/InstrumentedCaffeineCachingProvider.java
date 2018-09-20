@@ -58,11 +58,8 @@ public class InstrumentedCaffeineCachingProvider extends CaffeineCachingProvider
 
         InstrumentedCaffeineCacheManager result;
         synchronized (this.cacheManagers) {
-            result = this.cacheManagers.get(cacheManager);
-            if (result == null) {
-                result = new InstrumentedCaffeineCacheManager(cacheManager, CaffeineCacheMetricsCollectorHolder.get());
-                this.cacheManagers.put(cacheManager, result);
-            }
+            result = this.cacheManagers.computeIfAbsent(cacheManager,
+                    cm -> new InstrumentedCaffeineCacheManager(cm, CaffeineCacheMetricsCollectorHolder.get()));
         }
 
         return result;

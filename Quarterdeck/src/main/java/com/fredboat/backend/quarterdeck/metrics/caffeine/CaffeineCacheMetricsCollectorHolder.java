@@ -40,4 +40,6 @@ public class CaffeineCacheMetricsCollectorHolder {
     public static CacheMetricsCollector get() {
         return cacheMetricsCollector;
     }
+
+    private CaffeineCacheMetricsCollectorHolder() {}
 }
