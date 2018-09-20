@@ -26,8 +26,8 @@
 package com.fredboat.backend.quarterdeck.db;
 
 import com.fredboat.backend.quarterdeck.config.property.DatabaseConfig;
+import com.fredboat.backend.quarterdeck.metrics.caffeine.InstrumentedCaffeineCachingProvider;
 import com.github.benmanes.caffeine.jcache.configuration.CaffeineConfiguration;
-import com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory;
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
@@ -67,6 +67,7 @@ public class Database {
 
     private static final String MAIN_PERSISTENCE_UNIT_NAME = "fredboat.main";
     private static final String CACHE_PERSISTENCE_UNIT_NAME = "fredboat.cache";
+    private static final String CACHE_PROVIDER_CLASS_NAME = InstrumentedCaffeineCachingProvider.class.getName();
 
     private final DatabaseConfig dbConf;
     private final HibernateStatisticsCollector hibernateStats;
@@ -229,7 +230,7 @@ public class Database {
         hibernateProps.put(Environment.USE_SECOND_LEVEL_CACHE, true);
         hibernateProps.put(Environment.USE_QUERY_CACHE, true);
         hibernateProps.put(Environment.CACHE_REGION_FACTORY, JCacheRegionFactory.class.getName());
-        hibernateProps.put("hibernate.javax.cache.provider", CaffeineCachingProvider.class.getName());
+        hibernateProps.put("hibernate.javax.cache.provider", CACHE_PROVIDER_CLASS_NAME);
         hibernateProps.put("hibernate.javax.cache.missing_cache_strategy", "fail");
         //hide some exception spam on start, as postgres does not support CLOBs
         // https://stackoverflow.com/questions/43905119/postgres-error-method-org-postgresql-jdbc-pgconnection-createclob-is-not-imple
@@ -240,7 +241,7 @@ public class Database {
     }
 
     private void log2ndLevelCacheConfig() {
-        CacheManager cacheManager = Caching.getCachingProvider().getCacheManager();
+        CacheManager cacheManager = Caching.getCachingProvider(CACHE_PROVIDER_CLASS_NAME).getCacheManager();
         cacheManager.getCacheNames().forEach(name -> {
             Cache<Object, Object> cache = cacheManager.getCache(name);
             @SuppressWarnings("unchecked")
