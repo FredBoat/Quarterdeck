@@ -234,7 +234,7 @@ public class Database {
         //hide some exception spam on start, as postgres does not support CLOBs
         // https://stackoverflow.com/questions/43905119/postgres-error-method-org-postgresql-jdbc-pgconnection-createclob-is-not-imple
         hibernateProps.put(Environment.NON_CONTEXTUAL_LOB_CREATION, true);
-        hibernateProps.put(Environment.HBM2DDL_AUTO, Action.VALIDATE);
+        hibernateProps.put(Environment.HBM2DDL_AUTO, Action.VALIDATE.name().toLowerCase());
 
         return hibernateProps;
     }
