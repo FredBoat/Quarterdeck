@@ -51,8 +51,7 @@ import java.util.Set;
 public class JCacheCollector extends Collector {
 
     private static final int MICROSECONDS_PER_SECOND = 1000_000;
-
-    public JCacheCollector() {}
+    private static final String CACHE_BEAN_COORDINATES = "javax.cache:type=CacheStatistics,CacheManager=*,Cache=*";
 
     @Override
     public List<MetricFamilySamples> collect() {
@@ -153,9 +152,10 @@ public class JCacheCollector extends Collector {
         final MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
         ObjectName objectName;
         try {
-            objectName = ObjectName.getInstance("javax.cache:type=CacheStatistics,CacheManager=*,Cache=*");
+            objectName = ObjectName.getInstance(CACHE_BEAN_COORDINATES);
         } catch (MalformedObjectNameException e) {
-            throw new RuntimeException("Illegal ObjectName for getting all CacheMxBeans", e);
+            throw new IllegalStateException("Illegal ObjectName '" + CACHE_BEAN_COORDINATES
+                    + "', failed to get CacheStatisticsMXBeans", e);
         }
         Set<ObjectInstance> objectInstances = beanServer.queryMBeans(objectName, null);
 

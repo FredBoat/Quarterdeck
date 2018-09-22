@@ -95,7 +95,6 @@ dependencies {
     compile group: 'io.prometheus', name: 'simpleclient_hotspot', version: prometheusVersion
     compile group: 'io.prometheus', name: 'simpleclient_logback', version: prometheusVersion
     compile group: 'io.prometheus', name: 'simpleclient_hibernate', version: prometheusVersion
-    compile group: 'io.prometheus', name: 'simpleclient_guava', version: prometheusVersion
     compile group: 'io.prometheus', name: 'simpleclient_servlet', version: prometheusVersion
     compile group: 'io.prometheus', name: 'simpleclient_caffeine', version: prometheusVersion
 

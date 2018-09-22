@@ -27,7 +27,7 @@ package com.fredboat.backend.quarterdeck.config;
 
 import com.fredboat.backend.quarterdeck.RequestLoggerAndStats;
 import com.fredboat.backend.quarterdeck.metrics.Metrics;
-import io.prometheus.client.guava.cache.CacheMetricsCollector;
+import io.prometheus.client.cache.caffeine.CacheMetricsCollector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;

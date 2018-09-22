@@ -29,7 +29,7 @@ import com.fredboat.backend.quarterdeck.config.property.WhitelistConfig;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.RatelimitRequest;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.RatelimitResponse;
-import io.prometheus.client.guava.cache.CacheMetricsCollector;
+import io.prometheus.client.cache.caffeine.CacheMetricsCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

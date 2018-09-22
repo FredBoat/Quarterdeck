@@ -28,12 +28,9 @@ package com.fredboat.backend.quarterdeck.ratelimit;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.RatelimitRequest;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.RatelimitResponse;
-import com.google.common.base.Throwables;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.UncheckedExecutionException;
-import io.prometheus.client.guava.cache.CacheMetricsCollector;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+import io.prometheus.client.cache.caffeine.CacheMetricsCollector;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,11 +62,11 @@ public class Ratelimit {
      *         metrics collector to register the rates cache of this ratelimit with
      */
     public Ratelimit(Rate rate, CacheMetricsCollector cacheMetrics) {
-        this.rates = CacheBuilder.newBuilder()
+        this.rates = Caffeine.newBuilder()
                 .recordStats()
                 //we can completely forget the object after this period, the rates would be reset anyways
                 .expireAfterAccess(rate.getTimeFrameMillis(), TimeUnit.MILLISECONDS)
-                .build(CacheLoader.from(Bucket::new));
+                .build(Bucket::new);
         cacheMetrics.addCache(rate.getAltName() + "Ratelimit", this.rates);
 
         this.rate = rate;
@@ -98,7 +95,7 @@ public class Ratelimit {
 
         long id = idOpt.get().longValue();
 
-        Bucket bucket = getUncheckedUnwrapped(this.rates, id);
+        Bucket bucket = this.rates.get(id);
         if (bucket == null) {
             log.warn("Shiver me timbers, cache calling new Bucket({}) returned null", id);
             return RatelimitResponse.granted(); //not expected to happen, let it slip in a user friendly way
@@ -170,18 +167,6 @@ public class Ratelimit {
         public boolean equals(Object obj) {
             return (obj instanceof Bucket)
                     && ((Bucket) obj).id == this.id;
-        }
-    }
-
-
-    private static <K, V> V getUncheckedUnwrapped(LoadingCache<K, V> cache, K key) {
-        try {
-            return cache.getUnchecked(key);
-        } catch (UncheckedExecutionException e) {
-            Throwables.throwIfUnchecked(e.getCause());
-
-            // Will never run.
-            throw new IllegalStateException(e);
         }
     }
 }

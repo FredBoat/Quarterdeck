@@ -28,7 +28,7 @@ package com.fredboat.backend.quarterdeck;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import io.prometheus.client.Counter;
-import io.prometheus.client.guava.cache.CacheMetricsCollector;
+import io.prometheus.client.cache.caffeine.CacheMetricsCollector;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;

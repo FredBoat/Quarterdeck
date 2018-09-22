@@ -47,8 +47,6 @@ import java.util.Set;
 
 /**
  * Created by napster on 22.12.17.
- * <p>
- * The caching of this entity is not managed by ehcache, instead a guava cache is used on the client side.
  */
 @Entity
 @Table(name = "prefixes")
