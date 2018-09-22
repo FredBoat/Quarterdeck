@@ -26,8 +26,8 @@
 package com.fredboat.backend.quarterdeck.db;
 
 import com.fredboat.backend.quarterdeck.config.property.DatabaseConfig;
-import com.fredboat.backend.quarterdeck.metrics.caffeine.InstrumentedCaffeineCachingProvider;
 import com.github.benmanes.caffeine.jcache.configuration.CaffeineConfiguration;
+import com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory;
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
@@ -67,7 +67,7 @@ public class Database {
 
     private static final String MAIN_PERSISTENCE_UNIT_NAME = "fredboat.main";
     private static final String CACHE_PERSISTENCE_UNIT_NAME = "fredboat.cache";
-    private static final String CACHE_PROVIDER_CLASS_NAME = InstrumentedCaffeineCachingProvider.class.getName();
+    private static final String CACHE_PROVIDER_CLASS_NAME = CaffeineCachingProvider.class.getName();
 
     private final DatabaseConfig dbConf;
     private final HibernateStatisticsCollector hibernateStats;

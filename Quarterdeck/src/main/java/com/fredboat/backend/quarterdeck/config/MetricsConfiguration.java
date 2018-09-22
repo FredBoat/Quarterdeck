@@ -25,7 +25,6 @@
 
 package com.fredboat.backend.quarterdeck.config;
 
-import com.fredboat.backend.quarterdeck.metrics.caffeine.CaffeineCacheMetricsCollectorHolder;
 import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory;
 import io.prometheus.client.guava.cache.CacheMetricsCollector;
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
@@ -43,12 +42,6 @@ public class MetricsConfiguration {
     @Bean
     public CacheMetricsCollector guavaCacheMetrics() {
         return new CacheMetricsCollector().register();
-    }
-
-    //caffeine cache metrics
-    @Bean
-    public io.prometheus.client.cache.caffeine.CacheMetricsCollector caffeineCacheMetrics() {
-        return CaffeineCacheMetricsCollectorHolder.get();
     }
 
     //challenge: call register on the hibernate stats after all database connections are set up

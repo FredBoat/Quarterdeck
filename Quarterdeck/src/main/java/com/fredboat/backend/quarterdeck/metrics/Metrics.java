@@ -28,6 +28,7 @@ package com.fredboat.backend.quarterdeck.metrics;
 import ch.qos.logback.classic.LoggerContext;
 import com.fredboat.backend.quarterdeck.config.DatabaseConfiguration;
 import com.fredboat.backend.quarterdeck.db.repositories.api.SearchResultRepo;
+import com.fredboat.backend.quarterdeck.metrics.collectors.JCacheCollector;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.Summary;
@@ -58,7 +59,7 @@ public class Metrics {
 
     public Metrics(InstrumentedAppender prometheusAppender, HibernateStatisticsCollector hibernateStats,
                    DatabaseWrapper mainWrapper, DatabaseConfiguration databaseConfiguration,
-                   SearchResultRepo searchResultRepo) {
+                   SearchResultRepo searchResultRepo, JCacheCollector jCacheCollector) {
         //log metrics
         final LoggerContext factory = (LoggerContext) LoggerFactory.getILoggerFactory();
         final ch.qos.logback.classic.Logger root = factory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -75,6 +76,9 @@ public class Metrics {
         databaseConfiguration.getCacheDbWrapper();
         // 2. register the metrics
         hibernateStats.register();
+
+        //custom collectors
+        jCacheCollector.register();
 
         //start jobs to collect "expensive" metrics
         this.scheduler.scheduleAtFixedRate(() -> {
