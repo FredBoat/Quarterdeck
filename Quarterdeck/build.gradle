@@ -69,6 +69,11 @@ test {
     }
 }
 
+jacoco {
+    // 0.8.1 is incompatible with OpenJDK 11
+    toolVersion = "0.8.2"
+}
+
 sonarqube {
     properties {
         property 'sonar.inclusions', 'src/main/java/com/fredboat/backend/**/*'
