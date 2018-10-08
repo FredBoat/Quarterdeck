@@ -25,10 +25,10 @@
 
 package com.fredboat.backend.quarterdeck.ratelimit;
 
-import com.fredboat.backend.quarterdeck.Metrics;
 import com.fredboat.backend.quarterdeck.config.property.WhitelistConfig;
 import com.fredboat.backend.quarterdeck.db.entities.main.BlacklistEntry;
 import com.fredboat.backend.quarterdeck.db.repositories.api.BlacklistRepo;
+import com.fredboat.backend.quarterdeck.metrics.Metrics;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;

@@ -26,7 +26,7 @@
 package com.fredboat.backend.quarterdeck.config;
 
 import com.zaxxer.hikari.metrics.prometheus.PrometheusMetricsTrackerFactory;
-import io.prometheus.client.guava.cache.CacheMetricsCollector;
+import io.prometheus.client.cache.caffeine.CacheMetricsCollector;
 import io.prometheus.client.hibernate.HibernateStatisticsCollector;
 import io.prometheus.client.logback.InstrumentedAppender;
 import org.springframework.context.annotation.Bean;
@@ -38,9 +38,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MetricsConfiguration {
 
-    //guava cache metrics
     @Bean
-    public CacheMetricsCollector cacheMetrics() {
+    public CacheMetricsCollector caffeineCacheMetrics() {
         return new CacheMetricsCollector().register();
     }
 

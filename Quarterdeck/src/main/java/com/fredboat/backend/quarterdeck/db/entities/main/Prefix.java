@@ -26,6 +26,8 @@
 package com.fredboat.backend.quarterdeck.db.entities.main;
 
 import com.fredboat.backend.quarterdeck.rest.v0.transfer.PrefixTransfer;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import space.npstr.sqlsauce.entities.SaucedEntity;
 import space.npstr.sqlsauce.fp.types.EntityKey;
@@ -33,6 +35,7 @@ import space.npstr.sqlsauce.hibernate.types.BasicType;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -44,11 +47,11 @@ import java.util.Set;
 
 /**
  * Created by napster on 22.12.17.
- * <p>
- * The caching of this entity is not managed by ehcache, instead a guava cache is used on the client side.
  */
 @Entity
 @Table(name = "prefixes")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "prefixes")
 public class Prefix extends SaucedEntity<GuildBotId, Prefix> {
 
     public static final Set<String> DEFAULT_PREFIXES = Collections.unmodifiableSet(Set.of(";;", "!"));

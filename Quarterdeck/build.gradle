@@ -69,12 +69,10 @@ test {
     }
 }
 
-
 jacoco {
+    // 0.8.1 is incompatible with OpenJDK 11
     toolVersion = "0.8.2"
 }
-
-
 
 sonarqube {
     properties {
@@ -89,7 +87,8 @@ dependencies {
     compile group: 'io.sentry', name: 'sentry-logback', version: sentryVersion
 
     compile group: 'space.npstr.SqlSauce', name: 'sqlsauce-core', version: sqlsauceVersion
-    compile group: 'org.hibernate', name: 'hibernate-ehcache', version: hibernateVersion
+    compile group: 'org.hibernate', name: 'hibernate-jcache', version: hibernateVersion
+    compile group: 'com.github.ben-manes.caffeine', name: 'jcache', version: caffeineVersion
     compile group: 'org.flywaydb', name: 'flyway-core', version: flywayVersion
     compile group: 'net.ttddyy', name: 'datasource-proxy', version: dsProxyVersion
     compile group: 'javax.xml.bind', name: 'jaxb-api', version: jaxbApiVersion // required by hibernate for java 9+
@@ -101,8 +100,8 @@ dependencies {
     compile group: 'io.prometheus', name: 'simpleclient_hotspot', version: prometheusVersion
     compile group: 'io.prometheus', name: 'simpleclient_logback', version: prometheusVersion
     compile group: 'io.prometheus', name: 'simpleclient_hibernate', version: prometheusVersion
-    compile group: 'io.prometheus', name: 'simpleclient_guava', version: prometheusVersion
     compile group: 'io.prometheus', name: 'simpleclient_servlet', version: prometheusVersion
+    compile group: 'io.prometheus', name: 'simpleclient_caffeine', version: prometheusVersion
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVersion
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion) {

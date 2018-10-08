@@ -25,17 +25,19 @@
 
 package com.fredboat.backend.quarterdeck;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalCause;
-import com.google.common.cache.RemovalNotification;
+import com.fredboat.backend.quarterdeck.metrics.Metrics;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.RemovalCause;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Summary;
-import io.prometheus.client.guava.cache.CacheMetricsCollector;
+import io.prometheus.client.cache.caffeine.CacheMetricsCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.Set;
@@ -55,13 +57,13 @@ public class RequestLoggerAndStats extends AbstractRequestLoggingFilter {
 
     private final AtomicLong requestCounter = new AtomicLong(0);
 
-    private final Cache<Long, Summary.Timer> timers = CacheBuilder.newBuilder()
+    private final Cache<Long, Summary.Timer> timers = Caffeine.newBuilder()
             .recordStats()
             .expireAfterWrite(60, TimeUnit.SECONDS)
-            .removalListener((RemovalNotification<Long, Summary.Timer> notif) -> {
-                if (notif.getCause() == RemovalCause.EXPIRED) {
+            .removalListener((@Nullable Long key, @Nullable Summary.Timer value, @Nonnull RemovalCause cause) -> {
+                if (cause == RemovalCause.EXPIRED) {
                     log.warn("A request took over 60 seconds to complete, or forgot to remove its timer");
-                    notif.getValue().observeDuration();
+                    if (value != null) value.observeDuration();
                 }
             })
             .build();
