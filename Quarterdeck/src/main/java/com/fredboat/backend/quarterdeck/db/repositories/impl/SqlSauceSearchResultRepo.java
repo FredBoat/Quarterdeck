@@ -76,6 +76,8 @@ public class SqlSauceSearchResultRepo extends SqlSauceRepo<SearchResultId, Searc
         return this.dbWrapper.merge(entity);
     }
 
+    /*
+    // Removed because slow
     @Override
     public long getSize() {
         //language=JPAQL
@@ -84,7 +86,7 @@ public class SqlSauceSearchResultRepo extends SqlSauceRepo<SearchResultId, Searc
         String modernTableQuery = "SELECT COUNT(sr) FROM SearchResult sr";
         return this.dbWrapper.selectJpqlQuerySingleResult(legacyTableQuery, null, Long.class)
                 + this.dbWrapper.selectJpqlQuerySingleResult(modernTableQuery, null, Long.class);
-    }
+    }*/
 
     @Override
     public Optional<SearchResult> find(SearchResultId id, long maxAgeMillis) {

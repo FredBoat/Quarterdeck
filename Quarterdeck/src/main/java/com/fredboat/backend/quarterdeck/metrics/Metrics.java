@@ -80,7 +80,8 @@ public class Metrics {
         //custom collectors
         jCacheCollector.register();
 
-        //start jobs to collect "expensive" metrics
+        // Removed because it was too slow
+        /*
         this.scheduler.scheduleAtFixedRate(() -> {
             try {
                 searchResultCacheSize.set(searchResultRepo.getSize());
@@ -89,6 +90,7 @@ public class Metrics {
             }
 
         }, 0, 5, TimeUnit.MINUTES);
+        */
 
         log.info("Metrics set up");
     }
