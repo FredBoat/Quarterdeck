@@ -38,6 +38,7 @@ public class GuildConfig {
     private final DiscordSnowflake guildId;
     private final boolean trackAnnounce;
     private final boolean autoResume;
+    private final boolean clearOnEmpty;
     private final Language language;
 
     public static GuildConfig of(com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig guildConfig) {
@@ -49,6 +50,7 @@ public class GuildConfig {
         this.trackAnnounce = guildConfig.isTrackAnnounce();
         this.autoResume = guildConfig.isAutoResume();
         this.language = guildConfig.getLanguage();
+        this.clearOnEmpty = guildConfig.isClearOnEmpty();
     }
 
 
@@ -64,6 +66,10 @@ public class GuildConfig {
 
     public boolean isAutoResume() {
         return this.autoResume;
+    }
+
+    public boolean isClearOnEmpty() {
+        return this.clearOnEmpty;
     }
 
     public Language getLanguage() {
