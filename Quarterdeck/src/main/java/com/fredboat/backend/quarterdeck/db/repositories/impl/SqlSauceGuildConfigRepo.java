@@ -63,6 +63,11 @@ public class SqlSauceGuildConfigRepo extends SqlSauceRepo<String, GuildConfig> i
             update = update.andThen(guildConfig -> guildConfig.setAutoResume(autoResume));
         }
 
+        if (partialUpdate.containsKey("clearOnEmpty")) {
+            boolean clearOnEmpty =  PatchParseUtil.parseBoolean("clearOnEmpty", partialUpdate);
+            update = update.andThen(guildConfig -> guildConfig.setClearOnEmpty(clearOnEmpty));
+        }
+
         //lang
         if (partialUpdate.containsKey("language")) {
             String langRaw = PatchParseUtil.cast("language", partialUpdate, String.class);
