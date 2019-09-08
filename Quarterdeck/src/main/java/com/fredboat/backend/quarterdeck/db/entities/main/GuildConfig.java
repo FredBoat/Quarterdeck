@@ -56,6 +56,9 @@ public class GuildConfig extends SaucedEntity<String, GuildConfig> {
     @Column(name = "auto_resume", nullable = false)
     private boolean autoResume = false;
 
+    @Column(name = "clear_on_empty", nullable = false)
+    private boolean clearOnEmpty = false;
+
     @Column(name = "lang", nullable = false)
     private String lang = DEFAULT_LANGAUGE.getCode();
 
@@ -108,6 +111,15 @@ public class GuildConfig extends SaucedEntity<String, GuildConfig> {
 
     public GuildConfig setAutoResume(boolean autoplay) {
         this.autoResume = autoplay;
+        return this;
+    }
+
+    public boolean isClearOnEmpty() {
+        return clearOnEmpty;
+    }
+
+    public GuildConfig setClearOnEmpty(boolean clearOnEmpty) {
+        this.clearOnEmpty = clearOnEmpty;
         return this;
     }
 
