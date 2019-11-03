@@ -1,4 +1,5 @@
 sudo: required
+install: true  # skips unnecessary "gradle assemble" install step
 
 services:
 - docker
@@ -35,8 +36,8 @@ cache:
     - "$HOME/.sonar/cache"
 
 stages:
-  - build & test
-  - sonar
+  - assemble
+  - test
 
 jobs:
   fast_finish: true
@@ -44,27 +45,31 @@ jobs:
     - jdk: openjdk-ea
     - jdk: oraclejdk-ea
   include:
-    - stage: build & test
-      jdk: openjdk10
-      script:
-        - "java -Xmx32m -version"
-        - "./gradlew build --info"
-
-    - stage: build & test
-      jdk: openjdk-ea
-      script:
-        - "java -Xmx32m -version"
-        - "./gradlew build --info"
-
-    - stage: build & test
-      jdk: oraclejdk-ea
-      script:
-        - "java -Xmx32m -version"
-        - "./gradlew build --info"
-
-    - stage: sonar
+    - stage: assemble
       jdk: openjdk10
       before_script:
+        - "java -Xmx32m -version"
+      script:
+        - "./gradlew assemble --info"
+
+    - stage: assemble
+      jdk: openjdk-ea
+      before_script:
+        - "java -Xmx32m -version"
+      script:
+        - "./gradlew assemble --info"
+
+    - stage: assemble
+      jdk: oraclejdk-ea
+      before_script:
+        - "java -Xmx32m -version"
+      script:
+        - "./gradlew assemble --info"
+
+    - stage: test
+      jdk: openjdk10
+      before_script:
+        - "java -Xmx32m -version"
         #for full sonar cloud blame information
         - "git fetch --unshallow"
       script:
