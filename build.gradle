@@ -10,6 +10,11 @@ allprojects {
 
     apply plugin: 'idea'
     group = 'com.fredboat.backend'
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
 }
 
 subprojects {
@@ -39,14 +44,6 @@ subprojects {
 
     sourceCompatibility = 10
     targetCompatibility = 10
-
-    compileJava.dependsOn 'clean'
-    compileJava.options.encoding = 'UTF-8'
-    compileJava.options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
 
     ext {
         //@formatter:off
