@@ -24,6 +24,7 @@
  */
 
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.sonarqube.gradle.SonarQubeTask
 
 apply plugin: 'com.gorylenko.gradle-git-properties'
 apply plugin: 'org.springframework.boot'
@@ -72,6 +73,12 @@ test {
 sonarqube {
     properties {
         property 'sonar.inclusions', 'src/main/java/com/fredboat/backend/**/*'
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
     }
 }
 
@@ -128,6 +135,10 @@ dependencies {
 
 //required by spring boot configuration processor
 compileJava.dependsOn(processResources)
+
+tasks.withType(SonarQubeTask) {
+    dependsOn jacocoTestReport
+}
 
 processResources {
     //inject values into app.properties
