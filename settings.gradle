@@ -1,5 +1,3 @@
-enableFeaturePreview('STABLE_PUBLISHING')// remove me after introducing Gradle 5.0
-
 rootProject.name = 'Backend'
 include ':Quarterdeck'
 include ':Shared'
