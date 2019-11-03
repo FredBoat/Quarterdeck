@@ -35,7 +35,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import static org.hamcrest.core.CombinableMatcher.both;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.hamcrest.core.IsIterableContaining.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -58,7 +58,7 @@ public class PrefixControllerTest extends BaseTest {
         DiscordSnowflake botId = generateUniqueSnowflakeId();
         this.mockMvc.perform(get(urlTemplate, guildId, botId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.botId", both(isA(String.class)).and(is(botId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.prefixes", hasItems(Prefix.DEFAULT_PREFIXES.toArray(new String[0]))))
@@ -73,9 +73,9 @@ public class PrefixControllerTest extends BaseTest {
         DiscordSnowflake botId = generateUniqueSnowflakeId();
         this.mockMvc.perform(
                 delete(urlTemplate, guildId, botId)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.botId", both(isA(String.class)).and(is(botId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.prefixes", hasItems(Prefix.DEFAULT_PREFIXES.toArray(new String[0]))))
@@ -92,9 +92,9 @@ public class PrefixControllerTest extends BaseTest {
         this.mockMvc.perform(
                 post(urlTemplate, guildId, botId)
                         .content(this.mapper.writeValueAsString(addPrefix))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.botId", both(isA(String.class)).and(is(botId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.prefixes", hasItems(Prefix.DEFAULT_PREFIXES.toArray(new String[0]))))
@@ -112,9 +112,9 @@ public class PrefixControllerTest extends BaseTest {
         this.mockMvc.perform(
                 delete(urlTemplate, guildId, botId)
                         .content(this.mapper.writeValueAsString(removePrefix))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.botId", both(isA(String.class)).and(is(botId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.prefixes", hasItems("!")))
@@ -131,9 +131,9 @@ public class PrefixControllerTest extends BaseTest {
         this.mockMvc.perform(
                 post(urlTemplate, guildId, botId)
                         .content(this.mapper.writeValueAsString(addPrefixes))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.botId", both(isA(String.class)).and(is(botId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.prefixes", hasItems(Prefix.DEFAULT_PREFIXES.toArray(new String[0]))))
@@ -152,9 +152,9 @@ public class PrefixControllerTest extends BaseTest {
         this.mockMvc.perform(
                 post(urlTemplate, guildId, botId)
                         .content(this.mapper.writeValueAsString(addPrefixes))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.botId", both(isA(String.class)).and(is(botId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.prefixes", hasItems(Prefix.DEFAULT_PREFIXES.toArray(new String[0]))))
@@ -164,9 +164,9 @@ public class PrefixControllerTest extends BaseTest {
         this.mockMvc.perform(
                 delete(urlTemplate, guildId, botId)
                         .content(this.mapper.writeValueAsString(addPrefixes))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.botId", both(isA(String.class)).and(is(botId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.prefixes", hasItems(Prefix.DEFAULT_PREFIXES.toArray(new String[0]))))
@@ -188,9 +188,9 @@ public class PrefixControllerTest extends BaseTest {
         this.mockMvc.perform(
                 delete(urlTemplate, guildId, botId)
                         .content(this.mapper.writeValueAsString(current))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.botId", both(isA(String.class)).and(is(botId.getSnowflakeId()))))
                 //ensure the default ones are returned after emptying it completely

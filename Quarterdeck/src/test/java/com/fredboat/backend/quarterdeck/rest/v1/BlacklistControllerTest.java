@@ -30,6 +30,7 @@ import com.fredboat.backend.quarterdeck.ratelimit.BlacklistService;
 import com.fredboat.backend.quarterdeck.ratelimit.Rate;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.RatelimitRequest;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -75,7 +76,7 @@ public class BlacklistControllerTest extends BaseTest {
 
         MockHttpServletRequestBuilder ratelimitRequest = post(RatelimitControllerTest.baseTemplate)
                 .content(this.mapper.writeValueAsString(payload))
-                .contentType(MediaType.APPLICATION_JSON_UTF8);
+                .contentType(MediaType.APPLICATION_JSON);
 
         //exhaust the ratelimit
         for (int ii = 0; ii < rate.getRequests(); ii++) {
@@ -95,11 +96,11 @@ public class BlacklistControllerTest extends BaseTest {
         //now, check the blacklist entry
         this.mockMvc.perform(get(urlTemplate, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.snowflakeId", both(isA(String.class)).and(is(userId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.level", is(0)))
                 .andExpect(jsonPath("$.blacklistedUntil",
-                        both(isA(String.class)).and(isGreaterThan(System.currentTimeMillis()))));
+                        both(Is.<String>isA(String.class)).and(isGreaterThan(System.currentTimeMillis()))));
 
 
         //reset the entry
@@ -112,10 +113,10 @@ public class BlacklistControllerTest extends BaseTest {
     private void requestAndExpectEmptyEntry(DiscordSnowflake snowflake) throws Exception {
         this.mockMvc.perform(get(urlTemplate, snowflake))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.snowflakeId", both(isA(String.class)).and(is(snowflake.getSnowflakeId()))))
                 .andExpect(jsonPath("$.level", is(-1)))
                 .andExpect(jsonPath("$.blacklistedUntil",
-                        both(isA(String.class)).and(isLowerThan(System.currentTimeMillis()))));
+                        both(Is.<String>isA(String.class)).and(isLowerThan(System.currentTimeMillis()))));
     }
 }
