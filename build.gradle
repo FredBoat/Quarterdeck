@@ -81,12 +81,6 @@ ext {
     moduleName = 'Backend'
 }
 
-wrapper {
-    gradleVersion = '4.10.2'
-    //noinspection UnnecessaryQualifiedReference
-    distributionType = Wrapper.DistributionType.ALL
-}
-
 //create a simple version file that we will be reading to create appropriate docker tags
 void versionTxt() {
     new File("$projectDir/VERSION.txt").text = "$rootProject.version\n"
