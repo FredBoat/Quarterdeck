@@ -44,8 +44,8 @@ stages:
 jobs:
   fast_finish: true
   allow_failures:
+    - jdk: openjdk11
     - jdk: openjdk-ea
-    - jdk: oraclejdk-ea
   include:
     - stage: assemble
       jdk: openjdk10
@@ -55,14 +55,14 @@ jobs:
         - "./gradlew assemble --info"
 
     - stage: assemble
-      jdk: openjdk-ea
+      jdk: openjdk11
       before_script:
         - "java -Xmx32m -version"
       script:
         - "./gradlew assemble --info"
 
     - stage: assemble
-      jdk: oraclejdk-ea
+      jdk: openjdk-ea
       before_script:
         - "java -Xmx32m -version"
       script:
