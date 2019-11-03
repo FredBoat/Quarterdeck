@@ -35,6 +35,7 @@ import org.springframework.stereotype.Component;
 import space.npstr.sqlsauce.DbUtils;
 
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,17 +77,14 @@ public class SqlSauceSearchResultRepo extends SqlSauceRepo<SearchResultId, Searc
         return this.dbWrapper.merge(entity);
     }
 
-    /*
-    // Removed because slow
+    //see https://wiki.postgresql.org/wiki/Count_estimate
     @Override
-    public long getSize() {
-        //language=JPAQL
-        String legacyTableQuery = "SELECT COUNT(tsr) FROM TrackSearchResult tsr";
-        //language=JPAQL
-        String modernTableQuery = "SELECT COUNT(sr) FROM SearchResult sr";
-        return this.dbWrapper.selectJpqlQuerySingleResult(legacyTableQuery, null, Long.class)
-                + this.dbWrapper.selectJpqlQuerySingleResult(modernTableQuery, null, Long.class);
-    }*/
+    public long estimateSize() {
+        //language=PostgreSQL
+        String query = "SELECT sum(CAST (reltuples AS BIGINT)) FROM pg_class"
+                + " WHERE relname = 'search_results' OR relname = 'track_search_results';";
+        return this.dbWrapper.selectSqlQuerySingleResult(query, null, BigDecimal.class).longValue();
+    }
 
     @Override
     public Optional<SearchResult> find(SearchResultId id, long maxAgeMillis) {

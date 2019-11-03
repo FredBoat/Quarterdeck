@@ -62,6 +62,11 @@ public interface SearchResultRepo extends Repo<SearchResultId, SearchResult> {
     TrackSearchResult mergeLegacy(TrackSearchResult entity);
 
     /**
+     * @return estimated size of the table containing the search results
+     */
+    long estimateSize();
+
+    /**
      * @param id
      *         id of the search result to be returned
      * @param maxAgeMillis
