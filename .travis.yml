@@ -13,12 +13,25 @@ env:
   global:
     - BUILD_NUMBER: "$TRAVIS_BUILD_NUMBER"
 
+# See https://github.com/travis-ci/docs-travis-ci-com/pull/611#issuecomment-321394366
+before_cache:
+  - rm -fr $HOME/.gradle/caches/build-cache-1/
+  - rm -fr $HOME/.gradle/caches/journal-1/
+  - rm -f  $HOME/.gradle/caches/modules-2/metadata-*/module-metadata.bin
+  - rm -f  $HOME/.gradle/caches/modules-2/metadata-*/resource-at-url.bin
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -f  $HOME/.gradle/caches/*/executionHistory/executionHistory.lock
+  - rm -f  $HOME/.gradle/caches/*/fileContent/fileContent.lock
+  - rm -f  $HOME/.gradle/caches/*/fileHashes/fileHashes.bin
+  - rm -f  $HOME/.gradle/caches/*/fileHashes/fileHashes.lock
+  - rm -f  $HOME/.gradle/caches/*/javaCompile/javaCompile.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
 cache:
   directories:
     - "$HOME/.m2"
-    - "$HOME/.gradle"
-    - ".gradle/wrapper"
-    - ".gradle/caches"
+    - "$HOME/.gradle/wrapper"
+    - "$HOME/.gradle/caches"
     - "$HOME/.sonar/cache"
 
 stages:
