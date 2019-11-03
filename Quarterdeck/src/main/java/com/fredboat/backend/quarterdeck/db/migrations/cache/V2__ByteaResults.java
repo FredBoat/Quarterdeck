@@ -25,15 +25,15 @@
 
 package com.fredboat.backend.quarterdeck.db.migrations.cache;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
-import java.sql.Connection;
 import java.sql.Statement;
 
 /**
  * Created by napster on 05.04.18.
  */
-public class V2__ByteaResults implements JdbcMigration {
+public class V2__ByteaResults extends BaseJavaMigration {
 
     //language=PostgreSQL
     private static final String DROP_TYPE_SEARCH_PROVIDER
@@ -67,21 +67,12 @@ public class V2__ByteaResults implements JdbcMigration {
 
 
     @Override
-    public void migrate(Connection connection) throws Exception {
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(DROP_TYPE_SEARCH_PROVIDER);
-        }
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(CREATE_TYPE_SEARCH_PROVIDER);
-        }
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(DROP_TABLE_TRACK_SEARCH_RESULTS);
-        }
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(CREATE_TABLE_TRACK_SEARCH_RESULTS);
+    public void migrate(Context context) throws Exception {
+        try (Statement statement = context.getConnection().createStatement()) {
+            statement.execute(DROP_TYPE_SEARCH_PROVIDER);
+            statement.execute(CREATE_TYPE_SEARCH_PROVIDER);
+            statement.execute(DROP_TABLE_TRACK_SEARCH_RESULTS);
+            statement.execute(CREATE_TABLE_TRACK_SEARCH_RESULTS);
         }
     }
 }

@@ -25,15 +25,15 @@
 
 package com.fredboat.backend.quarterdeck.db.migrations.main;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
-import java.sql.Connection;
 import java.sql.Statement;
 
 /**
  * Created by napster on 03.04.18.
  */
-public class V6__MultiplePrefixes implements JdbcMigration {
+public class V6__MultiplePrefixes extends BaseJavaMigration {
 
     //current:
     // table: public.prefixes
@@ -61,19 +61,11 @@ public class V6__MultiplePrefixes implements JdbcMigration {
     //todo write migration to delete the old row after this one is successful
 
     @Override
-    public void migrate(Connection connection) throws Exception {
-
-        try (Statement statement = connection.createStatement()) {
+    public void migrate(Context context) throws Exception {
+        try (Statement statement = context.getConnection().createStatement()) {
             statement.execute(DELETE_NULLS);
-        }
-
-        try (Statement statement = connection.createStatement()) {
             statement.execute(ADD_COLUMN);
-        }
-
-        try (Statement statement = connection.createStatement()) {
             statement.execute(MIGRATE);
         }
-
     }
 }

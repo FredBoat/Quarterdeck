@@ -36,7 +36,7 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
 import org.hibernate.cache.jcache.internal.JCacheRegionFactory;
-import org.hibernate.cfg.Environment;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.tool.schema.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -210,13 +210,12 @@ public class Database {
     }
 
     private Flyway buildFlyway(String locations) {
-        Flyway flyway = new Flyway();
-        flyway.setBaselineOnMigrate(true);
-        flyway.setBaselineVersion(MigrationVersion.fromVersion("0"));
-        flyway.setBaselineDescription("Base Migration");
-        flyway.setLocations(locations);
-
-        return flyway;
+        return Flyway.configure()
+                .baselineOnMigrate(true)
+                .baselineVersion(MigrationVersion.fromVersion("0"))
+                .baselineDescription("Base Migration")
+                .locations(locations)
+                .load();
     }
 
     private HikariConfig buildHikariConfig() {
@@ -227,15 +226,15 @@ public class Database {
 
     private Properties buildHibernateProps() {
         Properties hibernateProps = DatabaseConnection.Builder.getDefaultHibernateProps();
-        hibernateProps.put(Environment.USE_SECOND_LEVEL_CACHE, true);
-        hibernateProps.put(Environment.USE_QUERY_CACHE, true);
-        hibernateProps.put(Environment.CACHE_REGION_FACTORY, JCacheRegionFactory.class.getName());
+        hibernateProps.put(AvailableSettings.USE_SECOND_LEVEL_CACHE, true);
+        hibernateProps.put(AvailableSettings.USE_QUERY_CACHE, true);
+        hibernateProps.put(AvailableSettings.CACHE_REGION_FACTORY, JCacheRegionFactory.class.getName());
         hibernateProps.put("hibernate.javax.cache.provider", CACHE_PROVIDER_CLASS_NAME);
         hibernateProps.put("hibernate.javax.cache.missing_cache_strategy", "fail");
         //hide some exception spam on start, as postgres does not support CLOBs
         // https://stackoverflow.com/questions/43905119/postgres-error-method-org-postgresql-jdbc-pgconnection-createclob-is-not-imple
-        hibernateProps.put(Environment.NON_CONTEXTUAL_LOB_CREATION, true);
-        hibernateProps.put(Environment.HBM2DDL_AUTO, Action.VALIDATE.name().toLowerCase());
+        hibernateProps.put(AvailableSettings.NON_CONTEXTUAL_LOB_CREATION, true);
+        hibernateProps.put(AvailableSettings.HBM2DDL_AUTO, Action.VALIDATE.name().toLowerCase());
 
         return hibernateProps;
     }

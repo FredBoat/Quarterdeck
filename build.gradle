@@ -53,10 +53,10 @@ subprojects {
         logbackVersion              = '1.2.3'
         sentryVersion               = '1.7.5'
 
-        sqlsauceVersion             = '0.3.0'
-        hibernateVersion            = '5.3.3.Final'
+        sqlsauceVersion             = '0.4.2'
+        hibernateVersion            = '5.4.7.Final'
         caffeineVersion             = '2.6.2'
-        flywayVersion               = '5.1.4'
+        flywayVersion               = '5.2.4'
         dsProxyVersion              = '1.4.9'
         jaxbApiVersion              = '2.3.0'
         springfoxVersion            = '2.9.2'

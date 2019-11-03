@@ -25,15 +25,15 @@
 
 package com.fredboat.backend.quarterdeck.db.migrations.main;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
-import java.sql.Connection;
 import java.sql.Statement;
 
 /**
  * Created by napster on 03.04.18.
  */
-public class V7__ClearOnEmpty implements JdbcMigration {
+public class V7__ClearOnEmpty extends BaseJavaMigration {
 
     //current:
     // table: public.guild_config
@@ -50,9 +50,8 @@ public class V7__ClearOnEmpty implements JdbcMigration {
             = "ALTER TABLE public.guild_config ADD COLUMN IF NOT EXISTS clear_on_empty BOOLEAN NOT NULL DEFAULT(FALSE);";
 
     @Override
-    public void migrate(Connection connection) throws Exception {
-
-        try (Statement statement = connection.createStatement()) {
+    public void migrate(Context context) throws Exception {
+        try (Statement statement = context.getConnection().createStatement()) {
             statement.execute(ADD_COLUMN);
         }
     }

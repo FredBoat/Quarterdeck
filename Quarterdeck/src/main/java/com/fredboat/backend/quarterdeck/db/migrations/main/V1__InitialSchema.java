@@ -25,7 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.db.migrations.main;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -35,10 +36,11 @@ import java.sql.Statement;
  * <p>
  * This initializes our schema at the point where we turned off hibernate-auto-ddl
  */
-public class V1__InitialSchema implements JdbcMigration {
+public class V1__InitialSchema extends BaseJavaMigration {
 
     @Override
-    public void migrate(Connection connection) throws Exception {
+    public void migrate(Context context) throws Exception {
+        Connection connection = context.getConnection();
 
         //UConfig
         //drop UConfig if exists; it was never used anyways, and can be readded later if we actually use it

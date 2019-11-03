@@ -25,15 +25,15 @@
 
 package com.fredboat.backend.quarterdeck.db.migrations.cache;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
-import java.sql.Connection;
 import java.sql.Statement;
 
 /**
  * Created by napster on 17.04.18.
  */
-public class V4__UsePosixCollation implements JdbcMigration {
+public class V4__UsePosixCollation extends BaseJavaMigration {
 
     //language=PostgreSQL
     private static final String ALTER_COLLATION
@@ -41,10 +41,9 @@ public class V4__UsePosixCollation implements JdbcMigration {
 
 
     @Override
-    public void migrate(Connection connection) throws Exception {
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(ALTER_COLLATION);
+    public void migrate(Context context) throws Exception {
+        try (Statement statement = context.getConnection().createStatement()) {
+            statement.execute(ALTER_COLLATION);
         }
     }
 }
