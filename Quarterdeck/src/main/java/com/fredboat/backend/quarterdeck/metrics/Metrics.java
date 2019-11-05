@@ -80,17 +80,14 @@ public class Metrics {
         //custom collectors
         jCacheCollector.register();
 
-        // Removed because it was too slow
-        /*
         this.scheduler.scheduleAtFixedRate(() -> {
             try {
-                searchResultCacheSize.set(searchResultRepo.getSize());
+                searchResultCacheSize.set(searchResultRepo.estimateSize());
             } catch (Exception e) {
-                log.error("Failed to gauge track search results size", e);
+                log.error("Failed to estimate track search results size", e);
             }
 
         }, 0, 5, TimeUnit.MINUTES);
-        */
 
         log.info("Metrics set up");
     }
