@@ -35,6 +35,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,7 +84,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth, SecurityConfig securityConfig) throws Exception {
-        InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuth = auth.inMemoryAuthentication();
+        InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuth = auth.inMemoryAuthentication()
+                .passwordEncoder(passwordEncoder());
         for (SecurityConfig.Admin admin : securityConfig.getAdmins()) {
             if (admin.getName().isEmpty()) {
                 throw new InvalidConfigurationException("An admin has configured with an empty name.");
@@ -90,8 +93,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             if (admin.getPass().isEmpty()) {
                 throw new InvalidConfigurationException("Admin " + admin.getName() + " configured with empty pass.");
             }
-            //we are treating the pass as tokens right now so using the noop encoder is fine
-            inMemoryAuth.withUser(admin.getName()).password("{noop}" + admin.getPass()).roles("ADMIN", "USER");
+            inMemoryAuth.withUser(admin.getName()).password(admin.getPass()).roles("ADMIN", "USER");
         }
+    }
+
+
+    @SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"})
+    private PasswordEncoder passwordEncoder() {
+        //we are treating the pass as tokens right now so using the noop encoder is fine
+        // if we dont set it like this, the expensive bcrypt encoder might get used
+        return NoOpPasswordEncoder.getInstance();
     }
 }
