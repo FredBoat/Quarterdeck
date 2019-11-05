@@ -82,7 +82,7 @@ public class SearchResultControllerTest extends BaseTest {
 
         this.mockMvc.perform(get(baseTemplate, provider, searchTerm))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.provider", both(isA(String.class)).and(is(provider.name()))))
                 .andExpect(jsonPath("$.searchTerm", both(isA(String.class)).and(is(searchTerm))))
                 .andExpect(jsonPath("$.lookedUp", both(isA(String.class)).and(is(Long.toString(lookedUp)))))
@@ -104,7 +104,7 @@ public class SearchResultControllerTest extends BaseTest {
         long superOld = Long.MAX_VALUE;
         this.mockMvc.perform(get(maxAgeTemplate, provider, searchTerm, superOld))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.provider", both(isA(String.class)).and(is(provider.name()))))
                 .andExpect(jsonPath("$.searchTerm", both(isA(String.class)).and(is(searchTerm))))
                 .andExpect(jsonPath("$.lookedUp", both(isA(String.class)).and(is(Long.toString(now)))))
@@ -129,7 +129,7 @@ public class SearchResultControllerTest extends BaseTest {
 
         this.mockMvc.perform(put(baseTemplate, provider, searchTerm)
                 .content(this.mapper.writeValueAsString(body))
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -141,12 +141,12 @@ public class SearchResultControllerTest extends BaseTest {
 
         RequestBuilder put = put(baseTemplate, provider, searchTerm)
                 .content(this.mapper.writeValueAsString(body))
-                .contentType(MediaType.APPLICATION_JSON_UTF8);
+                .contentType(MediaType.APPLICATION_JSON);
 
 
         this.mockMvc.perform(put)
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.provider", both(isA(String.class)).and(is(provider.name()))))
                 .andExpect(jsonPath("$.searchTerm", both(isA(String.class)).and(is(searchTerm))))
                 .andExpect(jsonPath("$.lookedUp", both(isA(String.class)).and(is(Long.toString(lookedUp)))))

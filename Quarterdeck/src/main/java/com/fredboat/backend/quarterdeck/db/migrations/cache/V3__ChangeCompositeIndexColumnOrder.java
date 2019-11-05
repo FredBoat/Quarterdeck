@@ -25,15 +25,15 @@
 
 package com.fredboat.backend.quarterdeck.db.migrations.cache;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
-import java.sql.Connection;
 import java.sql.Statement;
 
 /**
  * Created by napster on 17.04.18.
  */
-public class V3__ChangeCompositeIndexColumnOrder implements JdbcMigration {
+public class V3__ChangeCompositeIndexColumnOrder extends BaseJavaMigration {
 
     //this is not the actual old table, just a precaution
     //language=PostgreSQL
@@ -53,14 +53,10 @@ public class V3__ChangeCompositeIndexColumnOrder implements JdbcMigration {
 
 
     @Override
-    public void migrate(Connection connection) throws Exception {
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(DROP_TABLE_SEARCH_RESULTS);
-        }
-
-        try (Statement createSearchResults = connection.createStatement()) {
-            createSearchResults.execute(CREATE_TABLE_SEARCH_RESULTS);
+    public void migrate(Context context) throws Exception {
+        try (Statement statement = context.getConnection().createStatement()) {
+            statement.execute(DROP_TABLE_SEARCH_RESULTS);
+            statement.execute(CREATE_TABLE_SEARCH_RESULTS);
         }
     }
 

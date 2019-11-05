@@ -28,6 +28,7 @@ package com.fredboat.backend.quarterdeck.rest.v1;
 import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.fredboat.backend.shared.Module;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -63,28 +64,28 @@ public class GuildModulesControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.modules.length()", is(7)))
-                .andExpect(jsonPath("$.modules[0].moduleId", both(isA(String.class))
+                .andExpect(jsonPath("$.modules[0].moduleId", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(Module.ADMIN.name())))))
                 .andExpect(jsonPath("$.modules[0].enabled", isA(Boolean.class)))
-                .andExpect(jsonPath("$.modules[1].moduleId", both(isA(String.class))
+                .andExpect(jsonPath("$.modules[1].moduleId", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(Module.INFO.name())))))
                 .andExpect(jsonPath("$.modules[1].enabled", isA(Boolean.class)))
-                .andExpect(jsonPath("$.modules[2].moduleId", both(isA(String.class))
+                .andExpect(jsonPath("$.modules[2].moduleId", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(Module.CONFIG.name())))))
                 .andExpect(jsonPath("$.modules[2].enabled", isA(Boolean.class)))
-                .andExpect(jsonPath("$.modules[3].moduleId", both(isA(String.class))
+                .andExpect(jsonPath("$.modules[3].moduleId", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(Module.MUSIC.name())))))
                 .andExpect(jsonPath("$.modules[3].enabled", isA(Boolean.class)))
-                .andExpect(jsonPath("$.modules[4].moduleId", both(isA(String.class))
+                .andExpect(jsonPath("$.modules[4].moduleId", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(Module.MOD.name())))))
                 .andExpect(jsonPath("$.modules[4].enabled", isA(Boolean.class)))
-                .andExpect(jsonPath("$.modules[5].moduleId", both(isA(String.class))
+                .andExpect(jsonPath("$.modules[5].moduleId", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(Module.UTIL.name())))))
                 .andExpect(jsonPath("$.modules[5].enabled", isA(Boolean.class)))
-                .andExpect(jsonPath("$.modules[6].moduleId", both(isA(String.class))
+                .andExpect(jsonPath("$.modules[6].moduleId", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(Module.FUN.name())))))
                 .andExpect(jsonPath("$.modules[6].enabled", isA(Boolean.class)));
     }
@@ -103,7 +104,7 @@ public class GuildModulesControllerTest extends BaseTest {
         patchGuildModule.put("enabled", !module.isEnabledByDefault()); //no fun allowed :[
         MockHttpServletRequestBuilder patch = patch(urlTemplateModule, guildId, module.name())
                 .content(this.mapper.writeValueAsString(patchGuildModule))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.modules[6].moduleId", is(equalToIgnoringCase(module.name()))))
                 .andExpect(jsonPath("$.modules[6].enabled", is(!module.isEnabledByDefault())));
@@ -138,9 +139,9 @@ public class GuildModulesControllerTest extends BaseTest {
         this.mockMvc.perform(
                 patch(urlTemplateModule, guildId, module.name())
                         .content(this.mapper.writeValueAsString(patchGuildModule))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.modules.length()", is(7)))
                 .andExpect(jsonPath("$.modules[?(@.moduleId =~ /^" + module.name() + "$/i)].enabled",
@@ -166,7 +167,7 @@ public class GuildModulesControllerTest extends BaseTest {
         patchGuildModule.put("enabled", !module.isEnabledByDefault());
         MockHttpServletRequestBuilder patch = patch(urlTemplateModule, guildId, module.name())
                 .content(this.mapper.writeValueAsString(patchGuildModule))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.modules[?(@.moduleId =~ /^" + module.name() + "$/i)].enabled",
                         iterableWithSize(1)))

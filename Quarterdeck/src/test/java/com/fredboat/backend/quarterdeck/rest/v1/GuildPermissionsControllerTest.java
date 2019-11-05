@@ -32,7 +32,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         this.mockMvc.perform(get(REQUEST_GUILDPERMISSION_URL_TEMPLATE, guildId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -46,7 +46,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake userId = generateUniqueSnowflakeId();
         this.mockMvc.perform(put(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, ADMIN_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds", hasItems(userId.toString())))
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -60,7 +60,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake userId = generateUniqueSnowflakeId();
         this.mockMvc.perform(put(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, DJ_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString(), userId.toString())))
@@ -74,7 +74,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake userId = generateUniqueSnowflakeId();
         this.mockMvc.perform(put(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, USER_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -88,7 +88,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake userId = generateUniqueSnowflakeId();
         this.mockMvc.perform(delete(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, USER_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -101,7 +101,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         this.mockMvc.perform(delete(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, USER_PERMISSION_LEVEL, guildId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -114,7 +114,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         this.mockMvc.perform(delete(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, DJ_PERMISSION_LEVEL, guildId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds").isEmpty())
@@ -128,7 +128,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake userId = generateUniqueSnowflakeId();
         this.mockMvc.perform(put(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, ADMIN_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds", hasItems(userId.toString())))
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -136,7 +136,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
 
         this.mockMvc.perform(delete(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, ADMIN_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -150,7 +150,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake userId = generateUniqueSnowflakeId();
         this.mockMvc.perform(put(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, DJ_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(userId.toString(), guildId.toString())))
@@ -158,7 +158,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
 
         this.mockMvc.perform(delete(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, DJ_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -172,7 +172,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake userId = generateUniqueSnowflakeId();
         this.mockMvc.perform(put(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, USER_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -180,7 +180,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
 
         this.mockMvc.perform(delete(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, USER_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -195,7 +195,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake userId2 = generateUniqueSnowflakeId();
         this.mockMvc.perform(put(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, USER_PERMISSION_LEVEL, userId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -203,7 +203,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
 
         this.mockMvc.perform(put(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, USER_PERMISSION_LEVEL, userId2))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.adminIds").isEmpty())
                 .andExpect(jsonPath("$.djIds", hasItems(guildId.toString())))
@@ -217,7 +217,7 @@ public class GuildPermissionsControllerTest extends BaseTest {
         DiscordSnowflake userId = generateUniqueSnowflakeId();
         this.mockMvc.perform(put(MODIFY_GUILDPERMISSION_URL_TEMPLATE, guildId, "supersuperadmin", userId))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
     }
 
 }

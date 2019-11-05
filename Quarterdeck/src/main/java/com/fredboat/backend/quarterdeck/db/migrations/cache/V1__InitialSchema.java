@@ -25,7 +25,8 @@
 
 package com.fredboat.backend.quarterdeck.db.migrations.cache;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -33,9 +34,11 @@ import java.sql.Statement;
 /**
  * Created by napster on 23.12.17.
  */
-public class V1__InitialSchema implements JdbcMigration {
+public class V1__InitialSchema extends BaseJavaMigration {
+
     @Override
-    public void migrate(Connection connection) throws Exception {
+    public void migrate(Context context) throws Exception {
+        Connection connection = context.getConnection();
 
         //SearchResult
         //language=PostgreSQL

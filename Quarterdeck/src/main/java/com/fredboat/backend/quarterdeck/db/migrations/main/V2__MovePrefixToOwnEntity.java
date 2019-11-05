@@ -25,15 +25,15 @@
 
 package com.fredboat.backend.quarterdeck.db.migrations.main;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
-import java.sql.Connection;
 import java.sql.Statement;
 
 /**
  * Created by napster on 23.12.17.
  */
-public class V2__MovePrefixToOwnEntity implements JdbcMigration {
+public class V2__MovePrefixToOwnEntity extends BaseJavaMigration {
 
     //language=PostgreSQL
     private static final String DROP
@@ -60,14 +60,10 @@ public class V2__MovePrefixToOwnEntity implements JdbcMigration {
             = "INSERT INTO prefixes(guild_id, bot_id, prefix) VALUES(?, ?, ?)";
 
     @Override
-    public void migrate(Connection connection) throws Exception {
-
-        try (Statement drop = connection.createStatement()) {
-            drop.execute(DROP);
-        }
-
-        try (Statement create = connection.createStatement()) {
-            create.execute(CREATE);
+    public void migrate(Context context) throws Exception {
+        try (Statement statement = context.getConnection().createStatement()) {
+            statement.execute(DROP);
+            statement.execute(CREATE);
         }
 
         //below snippet (migrating of existing prefixes to new table) has been disabled when introducing the database

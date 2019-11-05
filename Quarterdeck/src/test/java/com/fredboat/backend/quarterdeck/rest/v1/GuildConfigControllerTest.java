@@ -29,6 +29,7 @@ import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.fredboat.backend.shared.Language;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -61,7 +62,7 @@ public class GuildConfigControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
@@ -79,15 +80,15 @@ public class GuildConfigControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
                 .content(this.mapper.writeValueAsString(patchGuildConfig))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
 
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.trackAnnounce", both(isA(Boolean.class)).and(is(false))))
                 .andExpect(jsonPath("$.autoResume", both(isA(Boolean.class)).and(is(true))))
-                .andExpect(jsonPath("$.language", both(isA(String.class))
+                .andExpect(jsonPath("$.language", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(Language.DE_DE.getCode())))));
     }
 
@@ -103,7 +104,7 @@ public class GuildConfigControllerTest extends BaseTest {
         patchGuildConfig.put("language", Language.DE_DE.getCode());
         MockHttpServletRequestBuilder patch = patch(urlTemplate, guildId)
                 .content(this.mapper.writeValueAsString(patchGuildConfig))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.language", is(equalToIgnoringCase(Language.DE_DE.getCode()))));
 

@@ -25,15 +25,15 @@
 
 package com.fredboat.backend.quarterdeck.db.migrations.cache;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
-import java.sql.Connection;
 import java.sql.Statement;
 
 /**
  * Created by napster on 18.05.18.
  */
-public class V5__ImplementV1ApiSearchResult implements JdbcMigration {
+public class V5__ImplementV1ApiSearchResult extends BaseJavaMigration {
 
     //language=PostgreSQL
     private static final String DROP
@@ -52,11 +52,9 @@ public class V5__ImplementV1ApiSearchResult implements JdbcMigration {
 
 
     @Override
-    public void migrate(Connection connection) throws Exception {
-        try (Statement statement = connection.createStatement()) {
+    public void migrate(Context context) throws Exception {
+        try (Statement statement = context.getConnection().createStatement()) {
             statement.execute(DROP);
-        }
-        try (Statement statement = connection.createStatement()) {
             statement.execute(CREATE);
         }
     }

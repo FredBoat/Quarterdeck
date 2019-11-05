@@ -109,7 +109,7 @@ public class DatabaseConfigProperties implements DatabaseConfig {
         this.cache = cache;
     }
 
-    private static class Db {
+    protected static class Db {
         private String jdbcUrl = "";
 
         public String getJdbcUrl() {

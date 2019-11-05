@@ -26,15 +26,15 @@
 package com.fredboat.backend.quarterdeck.db.migrations.main;
 
 import com.fredboat.backend.shared.RepeatMode;
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
-import java.sql.Connection;
 import java.sql.Statement;
 
 /**
  * Created by napster on 28.03.18.
  */
-public class V5__CreateGuildPlayer implements JdbcMigration {
+public class V5__CreateGuildPlayer extends BaseJavaMigration {
 
     //language=PostgreSQL
     private static final String DROP_TYPE_REPEAT_MODE
@@ -70,19 +70,12 @@ public class V5__CreateGuildPlayer implements JdbcMigration {
             + ");";
 
     @Override
-    public void migrate(Connection connection) throws Exception {
-        try (Statement drop = connection.createStatement()) {
-            drop.execute(DROP_TYPE_REPEAT_MODE);
-        }
-        try (Statement create = connection.createStatement()) {
-            create.execute(CREATE_TYPE_REPEAT_MODE);
-        }
-
-        try (Statement drop = connection.createStatement()) {
-            drop.execute(DROP_TABLE_GUILD_PLAYERS);
-        }
-        try (Statement create = connection.createStatement()) {
-            create.execute(CREATE_TABLE_GUILD_PLAYERS);
+    public void migrate(Context context) throws Exception {
+        try (Statement statement = context.getConnection().createStatement()) {
+            statement.execute(DROP_TYPE_REPEAT_MODE);
+            statement.execute(CREATE_TYPE_REPEAT_MODE);
+            statement.execute(DROP_TABLE_GUILD_PLAYERS);
+            statement.execute(CREATE_TABLE_GUILD_PLAYERS);
         }
     }
 }

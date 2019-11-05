@@ -59,7 +59,7 @@ public class GuildDataControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.helloSent", isA(String.class)));
     }
@@ -74,11 +74,11 @@ public class GuildDataControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
                 .content(this.mapper.writeValueAsString(patchGuildData))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
 
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.helloSent", both(isA(String.class)).and(is(Long.toString(now)))));
     }
@@ -96,7 +96,7 @@ public class GuildDataControllerTest extends BaseTest {
         patchGuildData.put("helloSent", now);
         MockHttpServletRequestBuilder patch = patch(urlTemplate, guildId)
                 .content(this.mapper.writeValueAsString(patchGuildData))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.helloSent", is(Long.toString(now))));
 

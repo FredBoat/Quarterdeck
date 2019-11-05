@@ -29,6 +29,7 @@ import com.fredboat.backend.quarterdeck.BaseTest;
 import com.fredboat.backend.quarterdeck.db.entities.main.GuildPlayer;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.fredboat.backend.shared.RepeatMode;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -61,7 +62,7 @@ public class GuildPlayerControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         this.mockMvc.perform(get(urlTemplate, guildId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.voiceChannelId", isA(String.class)))
                 .andExpect(jsonPath("$.activeTextChannelId", isA(String.class)))
@@ -84,18 +85,18 @@ public class GuildPlayerControllerTest extends BaseTest {
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
         MockHttpServletRequestBuilder request = patch(urlTemplate, guildId)
                 .content(this.mapper.writeValueAsString(patchGuildPlayer))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
 
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.voiceChannelId", both(isA(String.class)).and(is("42"))))
                 .andExpect(jsonPath("$.activeTextChannelId", both(isA(String.class))
                         .and(is(Long.toString(Long.MAX_VALUE)))))
                 .andExpect(jsonPath("$.paused", both(isA(Boolean.class)).and(is(false))))
                 .andExpect(jsonPath("$.volume", both(isA(Integer.class)).and(is(3))))
-                .andExpect(jsonPath("$.repeatMode", both(isA(String.class))
+                .andExpect(jsonPath("$.repeatMode", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(RepeatMode.ALL.name())))))
                 .andExpect(jsonPath("$.shuffled", both(isA(Boolean.class)).and(is(false))));
     }
@@ -112,7 +113,7 @@ public class GuildPlayerControllerTest extends BaseTest {
         patchGuildData.put("volume", 69);
         MockHttpServletRequestBuilder patch = patch(urlTemplate, guildId)
                 .content(this.mapper.writeValueAsString(patchGuildData))
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
         this.mockMvc.perform(patch)
                 .andExpect(jsonPath("$.volume", is(69)));
 

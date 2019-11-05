@@ -112,8 +112,8 @@ public class SwaggerConfiguration {
         TypeResolver resolver = new TypeResolver();
         Docket baseDocket = new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(metadata())
-                .produces(Set.of(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .consumes(Set.of(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .produces(Set.of(MediaType.APPLICATION_JSON_VALUE))
+                .consumes(Set.of(MediaType.APPLICATION_JSON_VALUE))
                 .directModelSubstitute(DiscordSnowflake.class, String.class)
                 .alternateTypeRules(new AlternateTypeRule(
                         resolver.resolve(List.class, DiscordSnowflake.class),

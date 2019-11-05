@@ -32,6 +32,7 @@ import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.RatelimitRequest;
 import com.fredboat.backend.quarterdeck.rest.v1.transfer.RatelimitResponse;
 import org.hamcrest.Matcher;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -42,7 +43,6 @@ import static com.fredboat.backend.quarterdeck.Matchers.IsGreaterThan.isGreaterT
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.Is.isA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -69,7 +69,7 @@ public class RatelimitControllerTest extends BaseTest {
 
         requestAndExpectGranted(this.mockMvc, post(baseTemplate)
                 .content(this.mapper.writeValueAsString(payload))
-                .contentType(MediaType.APPLICATION_JSON_UTF8));
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
 
@@ -86,7 +86,7 @@ public class RatelimitControllerTest extends BaseTest {
 
         MockHttpServletRequestBuilder request = post(baseTemplate)
                 .content(this.mapper.writeValueAsString(payload))
-                .contentType(MediaType.APPLICATION_JSON_UTF8);
+                .contentType(MediaType.APPLICATION_JSON);
 
         //exhaust the ratelimit
         for (int ii = 0; ii < rate.getRequests(); ii++) {
@@ -110,7 +110,7 @@ public class RatelimitControllerTest extends BaseTest {
 
         MockHttpServletRequestBuilder request = post(baseTemplate)
                 .content(this.mapper.writeValueAsString(payload))
-                .contentType(MediaType.APPLICATION_JSON_UTF8);
+                .contentType(MediaType.APPLICATION_JSON);
 
         //exhaust the ratelimit
         for (int ii = 0; ii < rate.getRequests(); ii++) {
@@ -141,7 +141,7 @@ public class RatelimitControllerTest extends BaseTest {
 
         MockHttpServletRequestBuilder request = post(baseTemplate)
                 .content(this.mapper.writeValueAsString(payload))
-                .contentType(MediaType.APPLICATION_JSON_UTF8);
+                .contentType(MediaType.APPLICATION_JSON);
 
         //exhaust the ratelimit
         for (int ii = 0; ii < rate.getRequests(); ii++) {
@@ -169,7 +169,7 @@ public class RatelimitControllerTest extends BaseTest {
 
         MockHttpServletRequestBuilder request = post(baseTemplate)
                 .content(this.mapper.writeValueAsString(payload))
-                .contentType(MediaType.APPLICATION_JSON_UTF8);
+                .contentType(MediaType.APPLICATION_JSON);
 
         //exhaust the ratelimit
         for (int ii = 0; ii < rate.getRequests(); ii++) {
@@ -222,9 +222,9 @@ public class RatelimitControllerTest extends BaseTest {
                                   Matcher<String> blacklistedLengthMatcher) throws Exception {
         mock.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.rate", rateMatcher))
                 .andExpect(jsonPath("$.blacklistedLength",
-                        both(isA(String.class)).and(blacklistedLengthMatcher)));
+                        both(Is.<String>isA(String.class)).and(blacklistedLengthMatcher)));
     }
 }

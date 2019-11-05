@@ -26,6 +26,7 @@
 package com.fredboat.backend.quarterdeck.rest;
 
 import com.fredboat.backend.quarterdeck.BaseTest;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -33,7 +34,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.Is.isA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -60,8 +60,8 @@ public class TeapotTest extends BaseTest {
         for (Teapot.Tea.TeaType type : Teapot.Tea.TeaType.values()) {
             this.mockMvc.perform(get(urlTemplate, type.name()))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                    .andExpect(jsonPath("$.teaType", both(isA(String.class))
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(jsonPath("$.teaType", both(Is.<String>isA(String.class))
                             .and(is(equalToIgnoringCase(type.name())))));
         }
     }
