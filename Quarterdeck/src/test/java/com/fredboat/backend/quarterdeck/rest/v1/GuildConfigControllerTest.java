@@ -90,7 +90,7 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.trackAnnounce", both(isA(Boolean.class)).and(is(false))))
                 .andExpect(jsonPath("$.autoResume", both(isA(Boolean.class)).and(is(true))))
-                .andExpect(jsonPath("$.enableUnknownCommand", both(isA(Boolean.class)).and(is(true))))
+                .andExpect(jsonPath("$.enableUnknownCommand", both(isA(Boolean.class)).and(is(false))))
                 .andExpect(jsonPath("$.language", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(Language.DE_DE.getCode())))));
     }
