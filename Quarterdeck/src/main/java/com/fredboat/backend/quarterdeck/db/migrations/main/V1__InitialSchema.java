@@ -75,6 +75,7 @@ public class V1__InitialSchema extends BaseJavaMigration {
                 + "    track_announce BOOLEAN NOT NULL, "
                 + "    auto_resume    BOOLEAN NOT NULL, "
                 + "    lang           CHARACTER VARYING(255) COLLATE pg_catalog.\"default\" NOT NULL, "
+                + "    msg_unknown_command BOOLEAN NOT NULL"
                 + "    prefix         TEXT COLLATE pg_catalog.\"default\", "
                 + "    CONSTRAINT guild_config_pkey PRIMARY KEY(guildid) "
                 + ");";

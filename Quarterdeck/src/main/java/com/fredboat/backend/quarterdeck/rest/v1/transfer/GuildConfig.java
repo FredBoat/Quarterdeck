@@ -78,5 +78,7 @@ public class GuildConfig {
         return this.language;
     }
 
-    public boolean isEnableUnknownCommand() { return this.enableUnknownCommand;}
+    public boolean isEnableUnknownCommand() {
+        return this.enableUnknownCommand;
+    }
 }
