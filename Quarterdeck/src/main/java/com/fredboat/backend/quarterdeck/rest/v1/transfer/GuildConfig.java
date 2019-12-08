@@ -40,6 +40,7 @@ public class GuildConfig {
     private final boolean autoResume;
     private final boolean clearOnEmpty;
     private final Language language;
+    private final boolean enableUnknownCommand;
 
     public static GuildConfig of(com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig guildConfig) {
         return new GuildConfig(guildConfig);
@@ -51,6 +52,7 @@ public class GuildConfig {
         this.autoResume = guildConfig.isAutoResume();
         this.language = guildConfig.getLanguage();
         this.clearOnEmpty = guildConfig.isClearOnEmpty();
+        this.enableUnknownCommand = guildConfig.isEnableUnknownCommand();
     }
 
 
@@ -75,4 +77,6 @@ public class GuildConfig {
     public Language getLanguage() {
         return this.language;
     }
+
+    public boolean isEnableUnknownCommand() { return this.enableUnknownCommand;}
 }

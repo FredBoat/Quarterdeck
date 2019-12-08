@@ -62,6 +62,9 @@ public class GuildConfig extends SaucedEntity<String, GuildConfig> {
     @Column(name = "lang", nullable = false)
     private String lang = DEFAULT_LANGAUGE.getCode();
 
+    @Column(name="enable_unknown_command", nullable = false)
+    private boolean enableUnknownCommand = false;
+
     //for jpa / db wrapper
     GuildConfig() {
     }
@@ -129,6 +132,15 @@ public class GuildConfig extends SaucedEntity<String, GuildConfig> {
 
     public Language getLanguage() {
         return Language.parse(this.lang).orElse(DEFAULT_LANGAUGE);
+    }
+
+    public boolean isEnableUnknownCommand() {
+        return enableUnknownCommand;
+    }
+
+    public GuildConfig setEnableUnknownCommand(boolean enableUnknownCommand) {
+        this.enableUnknownCommand = enableUnknownCommand;
+        return this;
     }
 
     public GuildConfig setLang(String lang) {
