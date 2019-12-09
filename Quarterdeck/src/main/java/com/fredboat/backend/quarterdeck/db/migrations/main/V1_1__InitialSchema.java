@@ -1,28 +1,3 @@
-/*
- * MIT License
- *
- * Copyright (c) 2016-2018 The FredBoat Org https://github.com/FredBoat/
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- */
-
 package com.fredboat.backend.quarterdeck.db.migrations.main;
 
 import org.flywaydb.core.api.migration.BaseJavaMigration;
@@ -31,12 +6,7 @@ import org.flywaydb.core.api.migration.Context;
 import java.sql.Connection;
 import java.sql.Statement;
 
-/**
- * Created by napster on 23.12.17.
- * <p>
- * This initializes our schema at the point where we turned off hibernate-auto-ddl
- */
-public class V1__InitialSchema extends BaseJavaMigration {
+public class V1_1__InitialSchema extends BaseJavaMigration {
 
     @Override
     public void migrate(Context context) throws Exception {
@@ -75,6 +45,7 @@ public class V1__InitialSchema extends BaseJavaMigration {
                 + "    track_announce BOOLEAN NOT NULL, "
                 + "    auto_resume    BOOLEAN NOT NULL, "
                 + "    lang           CHARACTER VARYING(255) COLLATE pg_catalog.\"default\" NOT NULL, "
+                + "    enable_unknown_command BOOLEAN NOT NULL, "
                 + "    prefix         TEXT COLLATE pg_catalog.\"default\", "
                 + "    CONSTRAINT guild_config_pkey PRIMARY KEY(guildid) "
                 + ");";
