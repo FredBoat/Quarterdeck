@@ -23,8 +23,9 @@
  *
  */
 
-package com.fredboat.backend.quarterdeck.rest.v1.transfer;
+package com.fredboat.backend.quarterdeck.rest.v1_1.transfer;
 
+import com.fredboat.backend.quarterdeck.rest.v1.transfer.DiscordSnowflake;
 import com.fredboat.backend.shared.Language;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -40,6 +41,7 @@ public class GuildConfig {
     private final boolean autoResume;
     private final boolean clearOnEmpty;
     private final Language language;
+    private final boolean enableUnknownCommand;
 
     public static GuildConfig of(com.fredboat.backend.quarterdeck.db.entities.main.GuildConfig guildConfig) {
         return new GuildConfig(guildConfig);
@@ -51,6 +53,7 @@ public class GuildConfig {
         this.autoResume = guildConfig.isAutoResume();
         this.language = guildConfig.getLanguage();
         this.clearOnEmpty = guildConfig.isClearOnEmpty();
+        this.enableUnknownCommand = guildConfig.isEnableUnknownCommand();
     }
 
 
@@ -76,4 +79,7 @@ public class GuildConfig {
         return this.language;
     }
 
+    public boolean isEnableUnknownCommand() {
+        return this.enableUnknownCommand;
+    }
 }
