@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Created by napster on 28.03.18.
+ * Created by langlais on 10.12.2019.
  */
 public class GuildConfigControllerTest extends BaseTest {
 
