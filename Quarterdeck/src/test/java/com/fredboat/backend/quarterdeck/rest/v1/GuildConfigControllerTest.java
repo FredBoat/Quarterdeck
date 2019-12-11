@@ -66,6 +66,7 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.trackAnnounce", isA(Boolean.class)))
                 .andExpect(jsonPath("$.autoResume", isA(Boolean.class)))
+                .andExpect(jsonPath("$.enableUnknownCommand", isA(Boolean.class)))
                 .andExpect(jsonPath("$.language", isA(String.class)));
     }
 
@@ -74,7 +75,8 @@ public class GuildConfigControllerTest extends BaseTest {
     public void testPatch() throws Exception {
         Map<String, Object> patchGuildConfig = new HashMap<>();
         patchGuildConfig.put("trackAnnounce", false);
-        patchGuildConfig.put("autoResume", true);
+        patchGuildConfig.put("autoResume", true);;
+        patchGuildConfig.put("enableUnknownCommand", true);
         patchGuildConfig.put("language", Language.DE_DE.getCode());
 
         DiscordSnowflake guildId = generateUniqueSnowflakeId();
@@ -88,6 +90,7 @@ public class GuildConfigControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.guildId", both(isA(String.class)).and(is(guildId.getSnowflakeId()))))
                 .andExpect(jsonPath("$.trackAnnounce", both(isA(Boolean.class)).and(is(false))))
                 .andExpect(jsonPath("$.autoResume", both(isA(Boolean.class)).and(is(true))))
+                .andExpect(jsonPath("$.enableUnknownCommand", both(isA(Boolean.class)).and(is(true))))
                 .andExpect(jsonPath("$.language", both(Is.<String>isA(String.class))
                         .and(is(equalToIgnoringCase(Language.DE_DE.getCode())))));
     }

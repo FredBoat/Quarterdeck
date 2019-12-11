@@ -63,7 +63,7 @@ public class SqlSauceGuildConfigRepo extends SqlSauceRepo<String, GuildConfig> i
             update = update.andThen(guildConfig -> guildConfig.setAutoResume(autoResume));
         }
 
-        if (partialUpdate.containsKey("enable_unknown_command")) {
+        if (partialUpdate.containsKey("enableUnknownCommand")) {
             boolean enableUnknownCommand = PatchParseUtil.parseBoolean("enable_unknown_command", partialUpdate);
             update = update.andThen(guildConfig -> guildConfig.setEnableUnknownCommand(enableUnknownCommand));
         }
