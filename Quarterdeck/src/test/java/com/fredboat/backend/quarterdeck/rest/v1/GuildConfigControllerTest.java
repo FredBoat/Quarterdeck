@@ -75,7 +75,7 @@ public class GuildConfigControllerTest extends BaseTest {
     public void testPatch() throws Exception {
         Map<String, Object> patchGuildConfig = new HashMap<>();
         patchGuildConfig.put("trackAnnounce", false);
-        patchGuildConfig.put("autoResume", true);;
+        patchGuildConfig.put("autoResume", true);
         patchGuildConfig.put("enableUnknownCommand", true);
         patchGuildConfig.put("language", Language.DE_DE.getCode());
 
