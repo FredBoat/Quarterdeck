@@ -34,6 +34,15 @@ project {
 object Build : BuildType({
     name = "Build"
 
+    artifactRules = """
+        Quarterdeck/build/libs/Quarterdeck.jar
+        Quarterdeck/quarterdeck.example.yaml
+        Quarterdeck/.dockerignore
+        Quarterdeck/Dockerfile
+        Quarterdeck/Dockerfile.arm64v8
+        VERSION.txt
+    """.trimIndent()
+    
     vcs {
         root(DslContext.settingsRoot)
     }
